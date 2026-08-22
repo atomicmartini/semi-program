@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반도체 뉴스 데일리 — 후보 A 신문</title>
+<style>
+  :root{
+    --paper:#faf8f4; --ink:#16150f; --sub:#5d5a4e; --faint:#8b8577;
+    --rule:#d9d3c4; --rule2:#c0b9a6;
+    --ok:#1f6b3a; --no:#9a2b1e; --hold:#8a6212;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Iowan Old Style","Apple SD Gothic Neo","Noto Serif KR",Georgia,serif;
+    font-size:16px;line-height:1.7;word-break:keep-all}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px 80px}
+  .note{background:#fff6d8;border-bottom:1px solid var(--rule2);font-size:13px;
+    padding:10px 24px;text-align:center;color:#6b5405;line-height:1.6;
+    font-family:system-ui,-apple-system,sans-serif}
+  header{border-bottom:3px double var(--ink);padding:36px 0 14px;margin-bottom:6px}
+  h1{margin:0;font-size:44px;letter-spacing:-.03em;font-weight:700;text-align:center}
+  .kicker{text-align:center;font-size:12px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--faint);font-family:system-ui,sans-serif;margin-bottom:10px}
+  .meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:12px;color:var(--sub);padding:8px 0;border-bottom:1px solid var(--rule);
+    font-family:system-ui,sans-serif}
+  h2.cat{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);
+    border-bottom:1px solid var(--rule2);padding-bottom:6px;margin:38px 0 0;
+    font-family:system-ui,sans-serif;font-weight:600}
+  article{padding:20px 0;border-bottom:1px solid var(--rule)}
+  article h3{margin:0 0 6px;font-size:23px;line-height:1.35;letter-spacing:-.02em}
+  .sum{margin:0;color:var(--sub);font-size:15px}
+  .badge{font-family:system-ui,sans-serif;font-size:11px;font-weight:700;
+    letter-spacing:.06em;padding:1px 6px;border:1px solid currentColor;vertical-align:2px}
+  .b-ok{color:var(--ok)} .b-no{color:var(--no)} .b-hold{color:var(--hold)}
+  .thread{margin:12px 0 0;padding:12px 0 0;border-top:1px dotted var(--rule2)}
+  .thread b{font-family:system-ui,sans-serif;font-size:12px;letter-spacing:.04em;color:var(--sub)}
+  .thread ul{margin:6px 0 0;padding-left:0;list-style:none}
+  .thread li{font-size:14px;color:var(--sub);padding:2px 0}
+  .thread li span{font-variant-numeric:tabular-nums;color:var(--faint);margin-right:10px}
+  .diff{margin-top:10px;padding:9px 12px;background:#fff;border-left:3px solid var(--ink);font-size:14px}
+  .src{margin-top:10px;font-size:12px;color:var(--faint);font-family:system-ui,sans-serif}
+  .src a{color:var(--sub)}
+  footer{margin-top:44px;padding-top:16px;border-top:3px double var(--ink);
+    font-size:12px;color:var(--faint);text-align:center;font-family:system-ui,sans-serif}
+  .empty{padding:14px 0;color:var(--faint);font-size:14px;border-bottom:1px solid var(--rule)}
+  @media(max-width:620px){h1{font-size:32px}article h3{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="note">
+  <b>예시 화면입니다.</b> 제목과 원문 링크는 2026-08-22 실제 수집분이고,
+  요약·분류·‘이어지는 흐름’·‘달라진 점’은 <b>배치 확인용으로 지어낸 것</b>입니다.
+</div>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Semiconductor Daily</div>
+  <h1>반도체 뉴스 데일리</h1>
+</header>
+<div class="meta">
+  <span>2026년 8월 22일 금요일</span>
+  <span>10건 · 수집 8곳 중 8곳 정상</span>
+</div>
+
+<h2 class="cat">투자 · 실적</h2>
+
+<article>
+  <h3>삼성전자, 올해 최대 110조원 주주환원 — 국내 기업 첫 100조 돌파
+    <span class="badge b-ok">확정</span></h3>
+  <p class="sum">이사회가 90조~110조원 규모 주주환원을 의결했다. 이번 분기 30조원 현금 배당과 15조원 자사주 취득 계획을 함께 공시했다.</p>
+  <div class="thread">
+    <b>이어지는 흐름 · 2건</b>
+    <ul>
+      <li><span>08-05</span>삼성전자 이사회, 주주환원 확대 검토 착수</li>
+      <li><span>07-29</span>2분기 실적 발표 — 현금성 자산 사상 최대</li>
+    </ul>
+    <div class="diff">달라진 점 — 07-29에는 ‘검토’ 단계였고, 오늘 규모와 시기가 확정됐다.</div>
+  </div>
+  <div class="src">더일렉 · 발행 08-22 18:08 · 수집 08-22 19:30 ·
+    <a href="https://www.thelec.kr/news/articleView.html?idxno=61226">원문</a></div>
+</article>
+
+<article>
+  <h3>SK하이닉스, 성과급 60% 주식 지급 잠정 합의
+    <span class="badge b-hold">보도됨</span></h3>
+  <p class="sum">통합 노조 출범을 앞두고 성과급 지급 방식을 조정하기로 잠정 합의했다.</p>
+  <div class="src">더일렉 · 발행 08-22 16:41 · 수집 08-22 19:30 · <a href="#">원문</a></div>
+</article>
+
+<h2 class="cat">AI · 가속기</h2>
+
+<article>
+  <h3>퀄컴, 신임 총괄 부사장으로 모토로라 사장 영입
+    <span class="badge b-hold">보도됨</span></h3>
+  <p class="sum">모토로라 사장을 총괄 부사장으로 영입했다. 모바일 외 사업 확대를 위한 인선으로 전해진다.</p>
+  <div class="thread">
+    <b>이어지는 흐름 · 1건</b>
+    <ul><li><span>08-11</span>퀄컴, 데이터센터 사업부 신설 발표</li></ul>
+    <div class="diff">달라진 점 — 조직을 만든 데 이어 사람을 채웠다.</div>
+  </div>
+  <div class="src">더일렉 · 발행 08-22 14:20 · 수집 08-22 19:30 · <a href="#">원문</a></div>
+</article>
+
+<h2 class="cat">파운드리 · 공정</h2>
+
+<article>
+  <h3>DB하이텍, 인도 전자산업 전시회 ‘일렉트로니카 인디아’ 참가
+    <span class="badge b-hold">보도됨</span></h3>
+  <p class="sum">인도 시장 고객 발굴을 위해 전시회에 참가한다고 밝혔다.</p>
+  <div class="src">더일렉 · 발행 08-22 11:05 · 수집 08-22 19:30 · <a href="#">원문</a></div>
+</article>
+
+<h2 class="cat">메모리</h2>
+<div class="empty">오늘 이 분야 소식이 없습니다.</div>
+
+<h2 class="cat">장비 · 소재</h2>
+<div class="empty">오늘 이 분야 소식이 없습니다.</div>
+
+<footer>
+  출처 <b>data/sources.md</b> · 8곳 · 요약은 자동 생성입니다<br>
+  이 페이지는 <b>투자 조언이 아닙니다.</b>
+</footer>
+
+</div>
+</body>
+</html>
