@@ -6,4 +6,8 @@ https://semi-program.vercel.app
 
 - 왜·누구·안 만들 것 → `PRD.md`
 - 작업 규칙 → `CLAUDE.md`
+- 작업 쪼갬·세션 배치 → `WBS.md`
+- 명세·화면 → `PLAN.md`
 - 수집처 → `data/sources.md`
+
+현재 화면은 **예시**다. 수집·분석 기능은 아직 만들지 않았다.
