@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개념 — 반도체 뉴스 데일리</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --card:#fff; --line:#e4e2dd; --line2:#cfccc4;
+    --text:#1c1b19; --sub:#63605a; --dim:#94908a;
+    --now:#0b5fff; --now-bg:#eef3ff;
+    --ok:#0a7d3c; --ok-bg:#e9f6ee; --hold:#9a6b00; --hold-bg:#fdf4e0;
+    --r:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Pretendard","Apple SD Gothic Neo",system-ui,-apple-system,sans-serif;
+    font-size:15px;line-height:1.65;word-break:keep-all;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .note{background:#fff4d6;border-bottom:1px solid #e6d08a;color:#6b5405;
+    font-size:13px;padding:10px 20px;text-align:center;line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 72px}
+  header{padding:30px 0 16px}
+  h1{margin:0;font-size:27px;letter-spacing:-.03em;font-weight:700}
+  .date{color:var(--sub);font-size:14px;margin-top:4px}
+  nav{display:flex;gap:26px;border-bottom:1px solid var(--line2);margin-bottom:22px}
+  nav a{padding:9px 1px;font-size:15px;color:var(--dim);text-decoration:none;
+    border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+  nav a.on{color:var(--text);border-bottom-color:var(--text);font-weight:700}
+  nav a .n{font-size:12px;color:var(--dim);margin-left:5px;font-weight:400}
+
+  .today-box{background:var(--now-bg);border:1px solid #c6d8ff;border-radius:var(--r);
+    padding:16px 18px;margin-bottom:26px}
+  .today-box h2{margin:0 0 4px;font-size:14px;color:var(--now);letter-spacing:.02em}
+  .today-box p{margin:0;font-size:13.5px;color:var(--sub)}
+  .today-box .picks{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .pick{background:#fff;border:1px solid #c6d8ff;border-radius:99px;padding:4px 12px;
+    font-size:13px;font-weight:600;color:var(--now);text-decoration:none}
+
+  .filters{display:flex;gap:7px;flex-wrap:wrap;padding-bottom:22px}
+  .chip{font-size:13px;padding:5px 12px;border-radius:99px;border:1px solid var(--line2);
+    color:var(--sub);background:#fff}
+  .chip.on{background:var(--text);color:#fff;border-color:var(--text);font-weight:600}
+
+  .entry{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:20px;margin-bottom:14px;scroll-margin-top:20px}
+  .entry:target{border-color:var(--now);box-shadow:0 0 0 3px var(--now-bg)}
+  .ehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:3px}
+  .entry h3{margin:0;font-size:20px;letter-spacing:-.02em}
+  .en{font-size:13px;color:var(--dim)}
+  .tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;
+    background:var(--ok-bg);color:var(--ok)}
+  .tag.new{background:var(--now-bg);color:var(--now)}
+  .tag.draft{background:var(--hold-bg);color:var(--hold)}
+  .entry p{margin:8px 0 0;color:var(--sub);font-size:14.5px}
+  .meta{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);
+    font-size:12px;color:var(--dim);display:flex;gap:14px;flex-wrap:wrap}
+  .meta a{color:var(--sub)}
+  .seen{margin-top:9px;font-size:13px;color:var(--sub)}
+  .seen a{color:var(--now);text-decoration:none;border-bottom:1px dashed currentColor}
+
+  .pending{margin-top:34px;padding:18px 20px;background:#fff;border:1px dashed var(--line2);
+    border-radius:var(--r)}
+  .pending h2{margin:0 0 6px;font-size:15px}
+  .pending p{margin:0 0 11px;font-size:13.5px;color:var(--sub)}
+  .pending ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--sub)}
+  .pending li{padding:2px 0}
+  .pending b{color:var(--text)}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:12px;color:var(--dim);text-align:center;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="note">
+  <b>예시 화면입니다.</b> 아래 개념 설명은 <b>배치 확인용 초안</b>이며,
+  출처 확인을 거치지 않았습니다.
+</div>
+<div class="wrap">
+
+<header>
+  <h1>개념</h1>
+  <div class="date">42개 · 오늘 2개 추가</div>
+</header>
+
+<nav>
+  <a href="./d-merged.html">오늘</a>
+  <a class="on" href="./concepts.html">개념<span class="n">42</span></a>
+  <a href="#">지난 날짜</a>
+</nav>
+
+<div class="today-box">
+  <h2>오늘 새로 추가된 개념 2개</h2>
+  <p>오늘 기사에 실제로 나왔는데 사전에 없던 말 중, 자주 나온 순으로 골랐습니다.</p>
+  <div class="picks">
+    <a class="pick" href="#packaging-25d">2.5D 패키징</a>
+    <a class="pick" href="#npu">NPU</a>
+  </div>
+</div>
+
+<div class="filters">
+  <span class="chip on">전체 42</span>
+  <span class="chip">패키징 9</span>
+  <span class="chip">공정 11</span>
+  <span class="chip">메모리 7</span>
+  <span class="chip">설계 8</span>
+  <span class="chip">장비 4</span>
+  <span class="chip">정책 3</span>
+</div>
+
+<div class="entry" id="packaging-25d">
+  <div class="ehead">
+    <h3>2.5D 패키징</h3>
+    <span class="en">2.5D packaging</span>
+    <span class="tag new">오늘 추가</span>
+  </div>
+  <p>여러 칩을 하나의 인터포저(중간 배선층) 위에 나란히 올려 연결하는 방식. 칩을 위로 쌓는 3D 와 달리 옆으로 배치해서, 배선 거리를 줄이면서도 발열 관리가 상대적으로 쉽다.</p>
+  <div class="seen">이 개념이 나온 기사 —
+    <a href="./d-merged.html">DB하이텍, 인도 전자산업 전시회 참가</a> (08-22)</div>
+  <div class="meta">
+    <span>출처 <a href="#">(확인 필요)</a></span>
+    <span>확인일 —</span>
+    <span>분류 패키징</span>
+  </div>
+</div>
+
+<div class="entry" id="npu">
+  <div class="ehead">
+    <h3>NPU</h3>
+    <span class="en">Neural Processing Unit</span>
+    <span class="tag new">오늘 추가</span>
+  </div>
+  <p>인공지능 연산에 특화된 처리 장치. 범용 연산을 하는 CPU 나 그래픽 연산에서 출발한 GPU 와 달리, 신경망 계산에 자주 쓰이는 형태의 연산을 전용 회로로 처리한다.</p>
+  <div class="seen">이 개념이 나온 기사 —
+    <a href="./d-merged.html">퀄컴, 신임 총괄 부사장 영입</a> (08-22)</div>
+  <div class="meta">
+    <span>출처 <a href="#">(확인 필요)</a></span>
+    <span>확인일 —</span>
+    <span>분류 설계</span>
+  </div>
+</div>
+
+<div class="entry" id="hbm">
+  <div class="ehead">
+    <h3>HBM</h3>
+    <span class="en">High Bandwidth Memory</span>
+    <span class="tag">확인됨</span>
+  </div>
+  <p>메모리 칩을 수직으로 쌓고 실리콘 관통 전극으로 연결해 대역폭을 크게 높인 메모리. AI 가속기에 함께 쓰이는 경우가 많다.</p>
+  <div class="seen">이 개념이 나온 기사 —
+    <a href="./d-merged.html">SK하이닉스, 성과급 60% 주식 지급 잠정 합의</a> (08-22) 외 6건</div>
+  <div class="meta">
+    <span>출처 <a href="#">JEDEC 규격 문서</a></span>
+    <span>확인일 2026-08-14</span>
+    <span>분류 메모리</span>
+  </div>
+</div>
+
+<div class="pending">
+  <h2>사전에 없어 링크가 안 걸린 말 <b>7개</b></h2>
+  <p>기사에 나왔지만 아직 사전에 없습니다. 자주 나온 순이며, 위에서부터 채웁니다.
+     <b>추측해서 채우지 않고 사람이 출처를 확인한 뒤 넣습니다.</b></p>
+  <ul>
+    <li><b>CoWoS</b> — 5회</li>
+    <li><b>인터포저</b> — 4회</li>
+    <li><b>하이브리드 본딩</b> — 3회</li>
+    <li><b>일렉트로니카 인디아</b> — 2회 <i>(용어가 아닐 수 있음 · 제외 후보)</i></li>
+    <li><b>글라스 기판</b> — 2회</li>
+    <li><b>선단 공정</b> — 1회</li>
+    <li><b>팹리스</b> — 1회</li>
+  </ul>
+</div>
+
+<footer>
+  개념 설명은 <b>사람이 출처를 확인해 넣습니다.</b> 모델이 즉석에서 만들지 않습니다.<br>
+  이 페이지는 <b>투자 조언이 아닙니다.</b>
+</footer>
+
+</div>
+</body>
+</html>
