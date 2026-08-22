@@ -220,3 +220,4 @@ __marimo__/
 # 수집한 기사 원문 (재생성 가능)
 data/articles/
 data/fetch_status.json
+data/articles/*.filtered.json
