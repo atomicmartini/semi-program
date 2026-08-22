@@ -6,8 +6,8 @@
 
 # 실행
 
-아직 코드 없음. 만들면서 채운다.
-수집 `python fetch.py` · 하루 전체 `python daily.py <날짜>`
+아직 코드 없음. 파일을 만들 때마다 여기에 실행 명령을 채운다.
+배포 https://semi-program.vercel.app — `main` 에 push 하면 자동 반영된다.
 
 # 스택
 
@@ -23,7 +23,7 @@ Python · RSS · 정적 HTML · GitHub Actions + Pages (서버 없음)
 - **판정과 구도 도출은 코드가 한다.** 모델은 기사에 적힌 것만 뽑는다
 - 수집처 주소는 `data/sources.md` 에만. 코드에 박지 않는다
 - 기업명은 `data/companies.md` 사전으로만 정규화한다.
-  사전에 없으면 추정하지 말고 `data/unknown_companies.md` 에 쌓는다
+  사전에 없으면 추정하지 말고 그 파일 아래 '미확인' 칸에 쌓는다
 - 커밋은 기능 단위 하나씩. 끝나면 **3줄로 보고**한다
 
 # 이 프로젝트의 암묵지
