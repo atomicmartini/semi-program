@@ -1,5 +1,4 @@
-<!-- 배포 URL: 저장소를 만들고 배포한 뒤 이 줄 아래 첫 줄에 적는다 -->
-(배포 URL 미정)
+https://semi-program.vercel.app
 
 # 반도체 뉴스 데일리
 
