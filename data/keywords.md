@@ -25,13 +25,17 @@ sustainability report, csr, scholarship, volunteer, career fair, job fair, hirin
 
 ## 카테고리 — 먼저 걸린 것을 쓴다. 하나도 안 걸리면 `미분류`
 
-카테고리는 6개 + 미분류로 고정이다 (`PLAN.md`). 임의로 늘리지 않는다.
+카테고리는 7개 + 미분류로 고정이다 (`PLAN.md`). 임의로 늘리지 않는다.
+**순서가 중요하다** — 먼저 걸린 것을 쓰므로 좁은 카테고리를 위에 둔다.
+
+### 패키징
+패키징, 후공정, 인터포저, 본딩, 적층, 2.5d, 3d 적층, 칩렛, 기판, 범프, 몰딩,
+packaging, interposer, bonding, tsv, chiplet, cowos, hybrid bonding, wafer-level,
+fan-out, underfill, bump, die attach, molding, osat, advanced packaging
 
 ### 파운드리·공정
-파운드리, 공정, 노광, 수율, 미세공정, 전공정, 후공정, 패키징, 인터포저, 본딩, 팹,
-2.5d, 3d 적층, 나노, tsmc, 파운드리사, 트랜지스터, 게이트,
-foundry, lithography, yield, fab, packaging, interposer, bonding, tsv, node, euv,
-advanced packaging, cowos, hybrid bonding, wafer-level, chiplet, transistor, cfet,
+파운드리, 공정, 노광, 수율, 미세공정, 전공정, 팹, 나노, tsmc, 트랜지스터, 게이트,
+foundry, lithography, yield, fab, node, euv, transistor, cfet,
 gate-all-around, gaa, backside power, production, manufacturing
 
 ### 메모리
@@ -60,8 +64,8 @@ expansion, stake
 
 ## 확인 필요
 
-- [ ] 패키징을 `파운드리·공정` 에 넣었다. 수집처 8곳 중 2곳이 패키징 전문이라
-      이 카테고리가 커질 수 있다. 실제 분포를 보고 판단한다
+- [x] ~~패키징을 파운드리·공정에 넣었다~~ → 67일치에서 48%를 차지해
+      2026-08-22 별도 카테고리로 분리했다
 - [ ] 제외 목록이 기업 뉴스룸 잡음을 충분히 거르는지
 - [ ] `chip` 처럼 짧은 말이 엉뚱한 기사를 끌어오는지
 - [ ] 기업명은 이 파일이 아니라 `data/companies.md` 를 읽어 포함 판정에 쓴다.
