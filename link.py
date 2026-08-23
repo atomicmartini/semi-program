@@ -1,7 +1,10 @@
-"""오늘 기사와 공통 기업이 있는 과거 기사를 잇는다. 모델을 부르지 않는다.
+"""오늘 기사와 정말 이어지는 과거 기사를 잇는다. 모델을 부르지 않는다.
 
-extract.py 의 관계·인용구는 아직 검증 전이라 쓰지 않는다 (docs/slices/01-이어지는-흐름.md).
-공통 기업 언급만으로 잇는다. 억지로 잇지 않는다 — 임계값 미만이면 '이어지는 흐름 없음'.
+    이어짐 = (기업이 직접 겹침 OR 관계로 이어진 기업) AND 키워드가 겹침
+
+기업 하나만으로는 잇지 않는다 — 삼성전자는 거의 모든 한국어 기사에 나와서 증거가 못 된다
+(docs/slices/06-연결고리-기준.md). 회사가 달라도 extract.py 가 뽑은 관계로 이어져 있으면 잇는다.
+억지로 잇지 않는다 — 조건을 못 채우면 '이어지는 흐름 없음'.
 과거 범위는 제한 없음(있는 전체)이고, 정규화는 companies.md 사전에 있는 것만 한다.
 """
 
@@ -9,13 +12,13 @@ import json
 import sys
 from pathlib import Path
 
-from filter import filter_articles
+from filter import filter_articles, read_keywords
 
 HERE = Path(__file__).parent
 ARTICLE_DIR = HERE / "data" / "articles"
 COMPANIES_FILE = HERE / "data" / "companies.md"
 
-THRESHOLD = 1  # 공통 기업 몇 개부터 잇는가
+MIN_KEYWORDS = 1  # 키워드가 몇 개 겹쳐야 잇는가. 헐거우면 올린다
 MAX_RELATED = 10  # 기사 하나당 최대 몇 건까지 보여주는가
 
 
@@ -52,27 +55,87 @@ def companies_mentioned(text: str, company_map: dict[str, str]) -> set[str]:
     return found
 
 
+def read_topic_keywords() -> list[str]:
+    """무엇에 관한 기사인지 가릴 말들. `### 카테고리` 아래 것만 쓴다.
+
+    `포함` 목록(`반도체` 등)은 거의 모든 기사에 걸려서 증거가 못 된다 —
+    삼성전자가 증거가 못 되는 것과 같은 이유다.
+    """
+    _, _, categories = read_keywords()
+    return sorted({w for words in categories.values() for w in words}, key=len, reverse=True)
+
+
+def topic_keywords(text: str, vocab: list[str]) -> set[str]:
+    """글에 등장하는 카테고리 키워드."""
+    haystack = text.lower()
+    return {w for w in vocab if w in haystack}
+
+
+def read_relation_pairs() -> set[frozenset[str]]:
+    """extract.py 가 뽑아 둔 기업 짝. 회사가 달라도 이어 주는 다리가 된다.
+
+    사용자 요청 — "엔비디아가 개발한 걸 삼성이 만들기로 했다" 같은 것.
+    아직 뽑은 게 없으면 빈 집합. 그러면 직접 겹침만으로 판정한다.
+    """
+    pairs: set[frozenset[str]] = set()
+    for path in ARTICLE_DIR.glob("*.extracted.json"):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for a in data["articles"]:
+            for r in a.get("relations") or []:
+                names = [c for c in (r.get("companies") or []) if c]
+                for i, one in enumerate(names):
+                    for other in names[i + 1 :]:
+                        pairs.add(frozenset({one, other}))
+    return pairs
+
+
+def bridged(today: set[str], past: set[str], pairs: set[frozenset[str]]) -> bool:
+    """회사가 달라도 관계로 이어져 있는가."""
+    return any(frozenset({a, b}) in pairs for a in today for b in past if a != b)
+
+
 def find_related(
-    article: dict, past_articles: list[dict], company_map: dict[str, str], threshold: int = THRESHOLD
+    article: dict,
+    past_articles: list[dict],
+    company_map: dict[str, str],
+    vocab: list[str],
+    relation_pairs: set[frozenset[str]],
+    min_keywords: int = MIN_KEYWORDS,
 ) -> list[dict]:
-    """공통 기업이 임계값 이상인 과거 기사를, 최신순 최대 MAX_RELATED 건 돌려준다."""
-    today_companies = companies_mentioned(f"{article['title']} {article['summary']}", company_map)
-    if not today_companies:
+    """정말 이어지는 과거 기사를, 최신순 최대 MAX_RELATED 건 돌려준다.
+
+        이어짐 = (기업이 직접 겹침 OR 관계로 이어진 기업) AND 키워드가 겹침
+
+    기업 하나만으로는 잇지 않는다 — 삼성전자는 거의 모든 기사에 나와서 증거가 못 된다.
+    """
+    today_text = f"{article['title']} {article['summary']}"
+    today_companies = companies_mentioned(today_text, company_map)
+    today_keywords = topic_keywords(today_text, vocab)
+    if not today_companies or not today_keywords:
         return []
 
     candidates = []
     for past in past_articles:
-        past_companies = companies_mentioned(f"{past['title']} {past['summary']}", company_map)
-        shared = today_companies & past_companies
-        if len(shared) >= threshold:
-            candidates.append(
-                {
-                    "date": (past.get("published") or "")[:10],
-                    "title": past["title"],
-                    "url": past["url"],
-                    "shared_companies": sorted(shared),
-                }
-            )
+        past_text = f"{past['title']} {past['summary']}"
+        past_companies = companies_mentioned(past_text, company_map)
+
+        shared_companies = today_companies & past_companies
+        if not shared_companies and not bridged(today_companies, past_companies, relation_pairs):
+            continue
+
+        shared_keywords = today_keywords & topic_keywords(past_text, vocab)
+        if len(shared_keywords) < min_keywords:
+            continue
+
+        candidates.append(
+            {
+                "date": (past.get("published") or "")[:10],
+                "title": past["title"],
+                "url": past["url"],
+                "shared_companies": sorted(shared_companies),
+                "shared_keywords": sorted(shared_keywords),
+            }
+        )
 
     candidates.sort(key=lambda c: c["date"], reverse=True)
     return candidates[:MAX_RELATED]
@@ -96,11 +159,13 @@ def link_day(day: str) -> list[dict]:
 
     picked, _, _ = select_day(day)
     company_map = read_company_map()
+    vocab = read_topic_keywords()
+    pairs = read_relation_pairs()
     past = _load_all_past(day)
 
     linked = []
     for a in picked:
-        related = find_related(a, past, company_map)
+        related = find_related(a, past, company_map, vocab, pairs)
         linked.append({**a, "related": related})
     return linked
 

@@ -5,9 +5,18 @@
 
 import unittest
 
-from link import companies_mentioned, find_related
+from link import bridged, companies_mentioned, find_related, topic_keywords
 
-COMPANIES = {"삼성전자": "삼성전자", "삼성": "삼성전자", "tsmc": "TSMC", "엔비디아": "엔비디아"}
+COMPANIES = {
+    "삼성전자": "삼성전자",
+    "삼성": "삼성전자",
+    "tsmc": "TSMC",
+    "엔비디아": "엔비디아",
+    "nvidia": "엔비디아",
+    "kla": "KLA",
+    "qnity": "Qnity",
+}
+VOCAB = ["주주환원", "패키징", "hbm", "파운드리", "검사장비", "디자인"]
 
 
 class TestCompaniesMentioned(unittest.TestCase):
@@ -19,32 +28,83 @@ class TestCompaniesMentioned(unittest.TestCase):
         self.assertEqual(companies_mentioned("반도체 뉴스", COMPANIES), set())
 
 
-class TestFindRelated(unittest.TestCase):
+class TestTopicKeywords(unittest.TestCase):
+    """무엇에 관한 기사인가. 카테고리 키워드만 쓴다 — '반도체' 같은 건 증거가 못 된다."""
+
+    def test_finds_keywords(self):
+        self.assertEqual(topic_keywords("HBM 패키징 공정", VOCAB), {"hbm", "패키징"})
+
+    def test_is_case_insensitive(self):
+        self.assertEqual(topic_keywords("hbm 소식", VOCAB), {"hbm"})
+
+    def test_no_match_returns_empty_set(self):
+        self.assertEqual(topic_keywords("회사가 상을 받았다", VOCAB), set())
+
+
+class TestBridged(unittest.TestCase):
+    """기업이 달라도 관계로 이어져 있으면 잇는다 (사용자 요청)."""
+
     def setUp(self):
-        self.today = {"url": "today", "title": "오늘", "summary": "삼성전자 소식", "published": "2026-08-22"}
-        self.past = [
-            {"url": "past1", "title": "지난달 삼성전자", "summary": "삼성전자 실적", "published": "2026-07-01"},
-            {"url": "past2", "title": "무관 기사", "summary": "엔비디아 소식", "published": "2026-07-05"},
-        ]
+        self.pairs = {frozenset({"엔비디아", "삼성전자"}), frozenset({"Qnity", "KLA"})}
 
-    def test_links_article_sharing_one_company(self):
-        related = find_related(self.today, self.past, COMPANIES, threshold=1)
-        urls = [r["url"] for r in related]
-        self.assertIn("past1", urls)
-        self.assertNotIn("past2", urls)
+    def test_bridges_two_different_companies(self):
+        self.assertTrue(bridged({"엔비디아"}, {"삼성전자"}, self.pairs))
 
-    def test_below_threshold_returns_empty(self):
-        related = find_related(self.today, self.past, COMPANIES, threshold=2)
-        self.assertEqual(related, [])
+    def test_bridge_works_both_ways(self):
+        self.assertTrue(bridged({"KLA"}, {"Qnity"}, self.pairs))
+
+    def test_no_bridge_when_pair_unknown(self):
+        self.assertFalse(bridged({"엔비디아"}, {"TSMC"}, self.pairs))
+
+    def test_no_bridge_without_any_relations(self):
+        self.assertFalse(bridged({"엔비디아"}, {"삼성전자"}, set()))
+
+
+class TestFindRelated(unittest.TestCase):
+    def _article(self, title, summary, published="2026-08-22"):
+        return {"url": title, "title": title, "summary": summary, "published": published}
+
+    def test_links_when_company_and_keyword_both_overlap(self):
+        today = self._article("삼성전자 주주환원", "삼성전자가 주주환원을 의결했다")
+        past = [self._article("삼성전자 주주환원 검토", "삼성전자 주주환원 계획", "2026-07-01")]
+        related = find_related(today, past, COMPANIES, VOCAB, set())
+        self.assertEqual(len(related), 1)
+
+    def test_does_not_link_on_company_alone(self):
+        # 지금 문제 그 자체 — 삼성전자 하나 겹쳤다고 주주환원과 디자인상이 이어져 있었다
+        today = self._article("삼성전자 주주환원", "삼성전자가 주주환원을 의결했다")
+        past = [self._article("삼성전자 디자인 수상", "삼성전자가 디자인 상을 받았다", "2026-07-01")]
+        self.assertEqual(find_related(today, past, COMPANIES, VOCAB, set()), [])
+
+    def test_does_not_link_on_keyword_alone(self):
+        today = self._article("삼성전자 패키징", "삼성전자 패키징 투자")
+        past = [self._article("TSMC 패키징", "tsmc 패키징 증설", "2026-07-01")]
+        self.assertEqual(find_related(today, past, COMPANIES, VOCAB, set()), [])
+
+    def test_links_across_companies_through_a_relation(self):
+        # 엔비디아가 개발한 것을 삼성이 만들기로 했다 — 회사는 다르지만 이어져야 한다
+        pairs = {frozenset({"엔비디아", "삼성전자"})}
+        today = self._article("삼성전자 HBM 생산", "삼성전자가 HBM 을 만든다")
+        past = [self._article("엔비디아 HBM 요구", "nvidia 가 HBM 을 쓴다", "2026-07-01")]
+        related = find_related(today, past, COMPANIES, VOCAB, pairs)
+        self.assertEqual(len(related), 1)
+
+    def test_records_why_it_was_linked(self):
+        today = self._article("삼성전자 주주환원", "삼성전자가 주주환원을 의결했다")
+        past = [self._article("삼성전자 주주환원 검토", "삼성전자 주주환원 계획", "2026-07-01")]
+        r = find_related(today, past, COMPANIES, VOCAB, set())[0]
+        self.assertEqual(r["shared_companies"], ["삼성전자"])
+        self.assertEqual(r["shared_keywords"], ["주주환원"])
 
     def test_caps_at_max_related_most_recent(self):
         from link import MAX_RELATED
 
-        many_past = [
-            {"url": f"p{i}", "title": "삼성전자", "summary": "삼성전자", "published": f"2026-01-{i:02d}"}
+        today = self._article("삼성전자 패키징", "삼성전자 패키징 소식")
+        past = [
+            self._article(f"삼성전자 패키징 {i}", "삼성전자 패키징", f"2026-01-{i:02d}")
             for i in range(1, MAX_RELATED + 6)
         ]
-        related = find_related(self.today, many_past, COMPANIES, threshold=1)
+        related = find_related(today, past, COMPANIES, VOCAB, set())
         self.assertEqual(len(related), MAX_RELATED)
         dates = [r["date"] for r in related]
         self.assertEqual(dates, sorted(dates, reverse=True))
