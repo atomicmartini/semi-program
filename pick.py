@@ -1,5 +1,8 @@
 """화면에 올릴 기사를 고른다. 모델을 부르지 않는다.
 
+파일 이름이 pick.py 인 이유 — select 는 파이썬 표준 라이브러리 이름이라
+같은 이름을 쓰면 리눅스에서 subprocess·asyncio 가 이 파일을 불러 깨진다.
+
 10건은 상한이다. 모자라면 있는 만큼만 쓴다 — 억지로 채우지 않는다.
 자른 건수를 반드시 드러낸다 (CLAUDE.md).
 """
@@ -93,7 +96,7 @@ def main(argv: list[str]) -> int:
     sys.stderr.reconfigure(encoding="utf-8")
 
     if len(argv) != 1:
-        print("사용법: python select.py <날짜>   예: python select.py 2026-08-20", file=sys.stderr)
+        print("사용법: python pick.py <날짜>   예: python pick.py 2026-08-20", file=sys.stderr)
         return 1
 
     day = argv[0]

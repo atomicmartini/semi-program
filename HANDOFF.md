@@ -9,7 +9,7 @@
 - 사이트 https://semi-program.vercel.app — **화면은 아직 예시.** `render.py` 를 만들면 진짜 뉴스가 뜬다
 - 코드 `fetch.py` `filter.py` (의존성 0개, 표준 라이브러리만)
 - 데이터 67일치 190건 수집 → 거르기 후 143건
-- 다음에 할 것: **`WBS.md` 의 `4.2 select.py`**
+- 다음에 할 것: **`WBS.md` 의 `4.2 pick.py`**
 
 ---
 
@@ -87,7 +87,7 @@
 
 ### 남은 것
 
-`4.2 select.py` → `5.1 render.py` → (세션 3) `6.1 extract.py` → `7.1 link.py` → `8.1 daily.yml`
+`4.2 pick.py` → `5.1 render.py` → (세션 3) `6.1 extract.py` → `7.1 link.py` → `8.1 daily.yml`
 
 ---
 

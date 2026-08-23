@@ -20,7 +20,7 @@ RSS 8곳 → 오늘 기사 → 뉴스 HTML ─(용어 클릭)→ 개념 HTML →
 | 슬라이스 | 하는 일 | 파일 |
 | --- | --- | --- |
 | `collect` | 모으고 거른다 | `fetch.py` `filter.py` (있음) |
-| `pick` | 무엇을 보여줄지 고른다 | `select.py` (검증 필요) |
+| `pick` | 무엇을 보여줄지 고른다 | `pick.py` (검증 완료) |
 | `publish` | 화면으로 낸다 | `render.py` (오늘) |
 | `concept` | 용어를 설명한다 | `data/glossary.md` + 개념 페이지 (오늘) |
 
@@ -76,8 +76,8 @@ RSS 8곳 → 오늘 기사 → 뉴스 HTML ─(용어 클릭)→ 개념 HTML →
 
 | # | 명령 | 통과 기준 |
 | --- | --- | --- |
-| 1 | `python select.py 2026-08-20` | 16건 → 10건, 카테고리당 3건 이하, **자른 6건**이 출력에 보인다 |
-| 2 | `python select.py 2026-08-22` | 4건 그대로 (상한 미만), 자른 0건 |
+| 1 | `python pick.py 2026-08-20` | 16건 → 10건, 카테고리당 3건 이하, **자른 6건**이 출력에 보인다 |
+| 2 | `python pick.py 2026-08-22` | 4건 그대로 (상한 미만), 자른 0건 |
 | 3 | `python render.py --all` | `docs/` 에 날짜별 HTML · `index.html` · `concepts.html` 생성 |
 | 4 | `curl -s https://semi-program.vercel.app \| grep -c thelec` | **0 보다 크다** (예시가 아니라 실제 기사) |
 | 5 | 브라우저에서 용어 클릭 | 개념 페이지 해당 항목으로 이동하고 출처·확인일이 보인다 |
