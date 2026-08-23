@@ -6,10 +6,24 @@
 
 ## 지금 상태
 
-- 사이트 https://semi-program.vercel.app — **화면은 아직 예시.** `render.py` 를 만들면 진짜 뉴스가 뜬다
-- 코드 `fetch.py` `filter.py` (의존성 0개, 표준 라이브러리만)
-- 데이터 67일치 190건 수집 → 거르기 후 143건
-- 다음에 할 것: **`WBS.md` 의 `4.2 pick.py`**
+**2026-08-23 기준. 세션 3까지 끝났다.**
+
+- 사이트 https://semi-program.vercel.app — **진짜 뉴스가 뜬다.** 예시 화면 아님
+- **스켈레톤 완성** — RSS → JSON → 고르기 → HTML → 배포까지 끊긴 데 없음
+- 코드 `fetch.py` `filter.py` `pick.py` `glossary.py` `render.py` (의존성 0개, 표준 라이브러리만)
+- 데이터 67일치 190건 → 거르기 후 143건 · 개념 5개(출처·확인일 있음)
+- 화면 기능 3개 다 됨 — 뉴스 목록 · 용어 클릭 → 개념 페이지 · 카테고리 칩 필터
+- 커밋·push 다 끝났고 작업트리가 깨끗하다
+
+**한 바퀴 돌리는 법**
+```
+python fetch.py           # RSS 8곳에서 받기
+python render.py --all    # docs/ 에 HTML 생성 (pick·filter·glossary 를 안에서 부른다)
+git add docs && git commit && git push    # 15초 뒤 사이트 반영
+```
+
+**다음에 할 것: `extract.py`** — 모델로 분류·한국어 요약·관계 추출.
+`WBS.md` 6.1. 지금은 영문 기사가 영문 그대로 뜨고 미분류가 19%다.
 
 ---
 
