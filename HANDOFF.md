@@ -22,8 +22,8 @@ python render.py --all    # docs/ 에 HTML 생성 (pick·filter·glossary 를 �
 git add docs && git commit && git push    # 15초 뒤 사이트 반영
 ```
 
-**다음에 할 것: `extract.py`** — 모델로 분류·한국어 요약·관계 추출.
-`WBS.md` 6.1. 지금은 영문 기사가 영문 그대로 뜨고 미분류가 19%다.
+**다음에 할 것: `extract.py` 검증부터 다시.** 코드는 있는데 아직 한 번도 성공 못 했다.
+`WBS.md` 6.1 은 아직 ☐ — 완료 조건(모델 호출 성공)을 못 채웠다. 아래 세션 4 참조.
 
 ---
 
@@ -138,6 +138,51 @@ git add docs && git commit && git push    # 15초 뒤 사이트 반영
 
 `extract.py`(모델) → `link.py`(이어지는 흐름) → `daily.yml`(자동 실행).
 `cluster.py` · 기업명 정규화 · 용어 자동 수집 · 슬라이스 폴더 나누기는 그 뒤.
+
+---
+
+## 세션 4 — 2026-08-23 (extract.py, 막힘)
+
+### 한 일
+`extract.py` 작성 — 모델 호출(`urllib`, 의존성 추가 없음) → 코드가 카테고리를 정해진
+목록으로 강제 → **관계의 인용구가 원문에 실제로 있는지 대조해 없으면 그 관계를 버림.**
+`.env` 를 `my-app` 에서 복사해 열쇠를 마련함 (`.gitignore` 에 있어 커밋 안 됨).
+
+### 막힌 것
+
+**`google/gemma-4-26b-a4b-it:free` 가 OpenRouter 상위 제공자(Google AI Studio)
+공유 무료 풀에서 429 로 막혀 있다.** 기사 1건 호출 → 즉시 429 → 20초 뒤 재시도 →
+같은 429 → **20초 간격 5회(총 100초)** 더 재시도 → 전부 429.
+`CLAUDE.md` 규칙대로 같은 오류 두 번째에 멈추고 사용자에게 물었고,
+**"오늘은 여기서 멈춤"** 으로 답을 받았다. 코드 문제가 아니라 그 모델 자체가
+지금 혼잡한 것으로 보인다 (`limit_source: upstream_provider_shared_pool`).
+
+### 다음 세션이 먼저 할 것
+
+1. 기사 **1건**으로 `python -c` 호출을 다시 해 보고 (아래 명령), 여전히 429 면
+2. **다른 무료 모델로 교체할지 사용자에게 물을 것** — 후보를 조사해 제시한다
+   (`extract.py` 의 `MODEL` 상수 한 줄만 바꾸면 된다)
+
+```
+python -c "
+from pick import select_day
+from filter import read_keywords, UNCLASSIFIED
+from extract import extract_one, _load_key
+picked, _, _ = select_day('2026-08-22')
+_, _, cats = read_keywords()
+a = picked[0]
+print(extract_one(a, [*cats, UNCLASSIFIED], _load_key()))
+"
+```
+
+### 정한 것과 왜
+
+| 정한 것 | 왜 |
+| --- | --- |
+| **`urllib` 로 OpenRouter 를 직접 호출, 랭체인 안 씀** | `CLAUDE.md` 19행(랭체인 안 씀)과 의존성 0개를 지킴. `fetch.py` 가 이미 하는 방식과 같다 |
+| **관계는 타입을 나누지 않는다** (경쟁/협력 등 열거하지 않음) | 관계 종류를 여러 개 만들려면 먼저 질문해야 한다 (`CLAUDE.md`). 지금은 `{companies, description, quote}` 하나뿐 |
+| **인용구가 원문(제목+요약)에 없으면 그 관계를 조용히 버림** | "인용구 없는 관계는 쓰지 않는다" 를 실행 가능한 코드 검사로 바꾼 것. 모델이 그럴듯한 인용구를 지어내도 걸린다 |
+| **카테고리는 모델이 고르되, 목록에 없으면 코드가 `미분류` 로 강제** | 키워드 분류(19% 미분류)보다 모델이 더 잘 나눌 걸로 기대했으나 **아직 검증 못 함** |
 
 ---
 
