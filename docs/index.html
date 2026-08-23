@@ -38,6 +38,12 @@
   .entry .meta a { color:#63605a; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
   .days b { color:#1c1b19; margin-right:10px; }
@@ -50,25 +56,26 @@
   <a class="" href="concepts.html">개념 5</a>
 </nav>
 <div class="meta">2026-08-22 · 4건 · 수집 8곳 중 8곳 정상</div>
-<div class="card">
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">4</span></span><span class="chip empty" data-cat="패키징">패키징<span class="n">0</span></span><span class="chip empty" data-cat="파운드리·공정">파운드리·공정<span class="n">0</span></span><span class="chip" data-cat="메모리">메모리<span class="n">1</span></span><span class="chip empty" data-cat="AI·가속기">AI·가속기<span class="n">0</span></span><span class="chip" data-cat="장비·소재">장비·소재<span class="n">1</span></span><span class="chip empty" data-cat="정책·규제">정책·규제<span class="n">0</span></span><span class="chip" data-cat="투자·실적">투자·실적<span class="n">1</span></span><span class="chip" data-cat="미분류">미분류<span class="n">1</span></span></div>
+<div class="card" data-cat="투자·실적">
   <span class="cat">투자·실적</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 사상 최대 주주환원 실시… 2026년 약 90조~110조원 예상</h2>
   <p class="sum">삼성전자가 2026년 사상 최대 규모의 주주환원을 실시한다. 삼성전자는 21일 이사회를 열고, 약 90조~110조원의 규모로 예상되는 2026년 주주환원 시행 방안을 의결했다. 이는 기존 최대였던 2020년 20조3천억원 규모 주주환원의 약 5배에 달하는 수준이다. 이같은 역대 최대 규모의 주주환원은 회사의 성장에 따른 성과가 주주들에게 실질적인 혜택으로 </p>
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-22 03:27 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%82%ac%ec%83%81-%ec%b5%9c%eb%8c%80-%ec%a3%bc%ec%a3%bc%ed%99%98%ec%9b%90-%ec%8b%a4%ec%8b%9c-2026%eb%85%84-%ec%95%bd-90%ec%a1%b0110%ec%a1%b0%ec%9b%90">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 인간 중심 디자인 경쟁력 강화…IDEA·레드닷 어워드에서 잇따라 수상</h2>
   <p class="sum">삼성전자가 인간 중심의 디자인을 바탕으로 제품을 넘어 서비스와 브랜드, 미래의 디자인 콘셉트까지 경쟁력을 강화하며 권위 있는 국제 디자인 어워드에서 대거 수상했다. IDEA 2026에서는 ‘가전 접근성 디자인’을 비롯해 AI 기반 선행 디자인, 지속가능한 제품·패키지 디자인 등이 수상했으며, 레드닷 디자인 어워드 2026에서는 개인화된 사용자 경험과 브랜드</p>
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-22 01:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%9d%b8%ea%b0%84-%ec%a4%91%ec%8b%ac-%eb%94%94%ec%9e%90%ec%9d%b8-%ea%b2%bd%ec%9f%81%eb%a0%a5-%ea%b0%95%ed%99%94idea%c2%b7%eb%a0%88%eb%93%9c%eb%8b%b7">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="장비·소재">
   <span class="cat">장비·소재</span> <span class="tier">[2차]</span>
   <h2>Nordson Test &amp; Inspection Opens Center of Excellence</h2>
   <p class="sum">New multi-purpose facility showcases company’s industry-leading semiconductor and SMT inspection and metrology offerings and serves as a specialized demonstration, training and testing center.</p>
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-22 06:26 · <a href="https://www.semiconductor-digest.com/nordson-test-inspection-opens-center-of-excellence/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=nordson-test-inspection-opens-center-of-excellence">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>China’s NAND Specialist YMTC Moves Closer to IPO</h2>
   <p class="sum">YMTC must raise capital to explore demand for AI-driven memory while balancing domestic and overseas markets.</p>
@@ -78,5 +85,18 @@
 <div class="days">지난 날짜 <b>08-22</b><a href="2026-08-21.html">08-21</a><a href="2026-08-20.html">08-20</a><a href="2026-08-19.html">08-19</a><a href="2026-08-18.html">08-18</a><a href="2026-08-17.html">08-17</a><a href="2026-08-15.html">08-15</a><a href="2026-08-14.html">08-14</a><a href="2026-08-13.html">08-13</a><a href="2026-08-12.html">08-12</a><a href="2026-08-11.html">08-11</a><a href="2026-08-10.html">08-10</a><a href="2026-08-08.html">08-08</a><a href="2026-08-07.html">08-07</a></div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
 </body>
 </html>

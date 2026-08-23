@@ -1,7 +1,7 @@
 """저장한 기사를 목록으로 내고, 개념 페이지와 날짜 링크를 함께 만든다.
 
 기사 글 속의 용어에는 개념 페이지로 가는 링크를 건다.
-칩 필터는 아직 만들지 않는다 (PLAN.md).
+카테고리 칩을 누르면 그 분야만 남는다.
 """
 
 import html
@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 import glossary
+from filter import UNCLASSIFIED, read_keywords
 from pick import select_day
 
 HERE = Path(__file__).parent
@@ -51,6 +52,12 @@ STYLE = """
   .entry .meta a { color:#63605a; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
   .days b { color:#1c1b19; margin-right:10px; }
@@ -71,15 +78,29 @@ PAGE = """<!doctype html>
   <a class="{concept_on}" href="{prefix}concepts.html">개념 {term_count}</a>
 </nav>
 <div class="meta">{meta}</div>
+{chips}
 {body}
 {days}
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {{
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {{
+    c.classList.toggle('on', c === chip);
+  }});
+  document.querySelectorAll('.card').forEach(function (card) {{
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  }});
+}});
+</script>
 </body>
 </html>
 """
 
-CARD = """<div class="card">
+CARD = """<div class="card" data-cat="{category}">
   <span class="cat">{category}</span> <span class="tier">{tier}</span>
   <h2>{title}</h2>
   <p class="sum">{summary}</p>
@@ -93,6 +114,24 @@ def _status() -> tuple[int, int]:
         return 0, 0
     data = json.loads(STATUS_FILE.read_text(encoding="utf-8"))
     return data.get("ok", 0), data.get("total", 0)
+
+
+def category_chips(picked: list[dict]) -> str:
+    """카테고리 칩. 0건인 것도 보여준다 — 오늘 무엇이 비었는지가 정보다."""
+    counts: dict[str, int] = {}
+    for a in picked:
+        counts[a.get("category", UNCLASSIFIED)] = counts.get(a.get("category", UNCLASSIFIED), 0) + 1
+
+    names = [*read_keywords()[2], UNCLASSIFIED]  # keywords.md 의 순서를 그대로 쓴다
+    chips = [f'<span class="chip on" data-cat="">전체<span class="n">{len(picked)}</span></span>']
+    for name in names:
+        n = counts.get(name, 0)
+        empty = "" if n else " empty"
+        chips.append(
+            f'<span class="chip{empty}" data-cat="{html.escape(name, quote=True)}">'
+            f'{html.escape(name)}<span class="n">{n}</span></span>'
+        )
+    return f'<div class="chips">{"".join(chips)}</div>'
 
 
 def day_links(current: str = "") -> str:
@@ -136,6 +175,7 @@ def render_news(day: str, terms: list[dict]) -> str:
         term_count=len(terms),
         meta=f"{day} · {len(picked)}건 · 수집 {ok}곳 중 {total}곳 정상",
         body=body,
+        chips=category_chips(picked) if picked else "",
         days=day_links(day),
     )
 
@@ -152,6 +192,7 @@ def render_concepts(terms: list[dict]) -> str:
         term_count=len(terms),
         meta=f"{len(terms)}개 · 설명마다 출처와 확인일이 붙어 있습니다",
         body=body,
+        chips="",
         days="",
     )
 

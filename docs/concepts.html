@@ -38,6 +38,12 @@
   .entry .meta a { color:#63605a; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
   .days b { color:#1c1b19; margin-right:10px; }
@@ -50,6 +56,7 @@
   <a class="on" href="concepts.html">개념 5</a>
 </nav>
 <div class="meta">5개 · 설명마다 출처와 확인일이 붙어 있습니다</div>
+
 <div class="entry" id="packaging">
   <div class="ehead"><h2>패키징</h2> <span class="en">Packaging</span>
     <span class="cat">패키징</span></div>
@@ -84,5 +91,18 @@
 
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
 </body>
 </html>

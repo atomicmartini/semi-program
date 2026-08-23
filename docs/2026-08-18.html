@@ -38,6 +38,12 @@
   .entry .meta a { color:#63605a; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
   .days b { color:#1c1b19; margin-right:10px; }
@@ -50,31 +56,32 @@
   <a class="" href="concepts.html">개념 5</a>
 </nav>
 <div class="meta">2026-08-18 · 5건 · 수집 8곳 중 8곳 정상</div>
-<div class="card">
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">5</span></span><span class="chip empty" data-cat="패키징">패키징<span class="n">0</span></span><span class="chip" data-cat="파운드리·공정">파운드리·공정<span class="n">2</span></span><span class="chip empty" data-cat="메모리">메모리<span class="n">0</span></span><span class="chip empty" data-cat="AI·가속기">AI·가속기<span class="n">0</span></span><span class="chip empty" data-cat="장비·소재">장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제">정책·규제<span class="n">0</span></span><span class="chip empty" data-cat="투자·실적">투자·실적<span class="n">0</span></span><span class="chip" data-cat="미분류">미분류<span class="n">3</span></span></div>
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성 아트 스토어에 ‘빈 미술사 박물관’ 대표 소장품 43점 공개</h2>
   <p class="sum">삼성전자가 오스트리아 ‘빈 미술사 박물관(Kunsthistorisches Museum Vienna)’ 대표 소장품 43점을 삼성 아트 스토어에 선보인다. 삼성 아트 스토어에 프랑스 파리 ‘루브르 박물관’, 스페인 마드리드 ‘프라도 미술관’에 이어 ‘빈 미술사 박물관’까지 추가돼 삼성 TV 이용자들은 안방에서 유럽 최고 미술관들의 작품을 감상할 수 있다. 이</p>
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-18 17:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1-%ec%95%84%ed%8a%b8-%ec%8a%a4%ed%86%a0%ec%96%b4%ec%97%90-%eb%b9%88-%eb%af%b8%ec%88%a0%ec%82%ac-%eb%b0%95%eb%ac%bc%ea%b4%80-%eb%8c%80%ed%91%9c-%ec%86%8c%ec%9e%a5%ed%92%88-43">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>[카드뉴스] 얼음, 다 같은 얼음이 아니다? 삼성 제빙 기술이 만드는 얼음의 차이</h2>
   <p class="sum">무더운 여름 더위를 날리는 데는 시원한 음료나 요리가 제격이다. 아이스 커피부터 청량한 탄산음료, 살얼음을 띄운 냉면과 화채까지 여름철 식탁에서 얼음은 빠질 수 없는 존재다. 하지만 음식에 따라 어울리는 얼음은 따로 있다. 음료를 빠르게 차갑게 만들고 싶다면 작고 잘게 부서진 얼음이, 시원함을 오랫동안 유지하고 싶다면 천천히 녹는 큰 얼음이 어울린다. 맑고</p>
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-18 17:00 · <a href="https://news.samsung.com/kr/%ec%b9%b4%eb%93%9c%eb%89%b4%ec%8a%a4-%ec%96%bc%ec%9d%8c-%eb%8b%a4-%ea%b0%99%ec%9d%80-%ec%96%bc%ec%9d%8c%ec%9d%b4-%ec%95%84%eb%8b%88%eb%8b%a4-%ec%82%bc%ec%84%b1-%ec%a0%9c%eb%b9%99-%ea%b8%b0">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[2차]</span>
   <h2>Nvidia Bets on the Classical Side of Quantum Computing</h2>
   <p class="sum">Nvidia positions classical computing infrastructure as a critical layer in the race to build useful quantum computers.</p>
   <div class="src">EE Times · 발행 2026-08-18 03:31 · <a href="https://www.eetimes.com/nvidia-bets-on-the-classical-side-of-quantum-computing/">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>Marvell Targets AI Bottlenecks with Memory-Disaggregation Portfolio</h2>
   <p class="sum">Marvell attacks AI’s memory choke point with SSD, CXL, and photonic fabrics to push data nearer compute.</p>
   <div class="src">EE Times · 발행 2026-08-18 23:39 · <a href="https://www.eetimes.com/marvell-targets-ai-bottlenecks-with-memory-disaggregation-portfolio/">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>RFHIC, 상반기 GaN 트랜지스터 매출 확대</h2>
   <p class="sum">RFHIC가 상반기 매출 946억원, 영업이익 189억원을 기록했다고 14일 공시했다. 전년 동기 대비 각각 23.7%, 57.5% 올랐다.RFHIC는 기지국 핵심 소자인 질화갈륨(GaN) 트랜지스터를 공급한다. 상반기 GaN 트랜지스터 매출은 320억원이다. 지난해(183억원) 대비 74.9% 급증했다. GaN 전력증폭기 매출은 593억원이다. 같은 기간</p>
@@ -84,5 +91,18 @@
 <div class="days">지난 날짜 <a href="2026-08-22.html">08-22</a><a href="2026-08-21.html">08-21</a><a href="2026-08-20.html">08-20</a><a href="2026-08-19.html">08-19</a><b>08-18</b><a href="2026-08-17.html">08-17</a><a href="2026-08-15.html">08-15</a><a href="2026-08-14.html">08-14</a><a href="2026-08-13.html">08-13</a><a href="2026-08-12.html">08-12</a><a href="2026-08-11.html">08-11</a><a href="2026-08-10.html">08-10</a><a href="2026-08-08.html">08-08</a><a href="2026-08-07.html">08-07</a></div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
 </body>
 </html>

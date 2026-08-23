@@ -38,6 +38,12 @@
   .entry .meta a { color:#63605a; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
   .days b { color:#1c1b19; margin-right:10px; }
@@ -50,13 +56,14 @@
   <a class="" href="concepts.html">개념 5</a>
 </nav>
 <div class="meta">2026-08-17 · 2건 · 수집 8곳 중 8곳 정상</div>
-<div class="card">
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">2</span></span><span class="chip empty" data-cat="패키징">패키징<span class="n">0</span></span><span class="chip empty" data-cat="파운드리·공정">파운드리·공정<span class="n">0</span></span><span class="chip empty" data-cat="메모리">메모리<span class="n">0</span></span><span class="chip empty" data-cat="AI·가속기">AI·가속기<span class="n">0</span></span><span class="chip empty" data-cat="장비·소재">장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제">정책·규제<span class="n">0</span></span><span class="chip empty" data-cat="투자·실적">투자·실적<span class="n">0</span></span><span class="chip" data-cat="미분류">미분류<span class="n">2</span></span></div>
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성, 국제올림피아드 수상자에게 장학금… 이공계 인재 육성에 기여</h2>
   <p class="sum">삼성전자∙삼성바이오, 국제올림피아드 수상자 15명에 장학금 수여… 이공계 인재 육성에 기여 삼성전자와 삼성바이오로직스∙삼성바이오에피스는 지난 7월 열린 국제올림피아드 수학∙물리∙생물 대회에서 우수한 성적으로 메달을 획득한 한국 대표 15명과 학부모들을 각 사업장에 초청해 장학금을 수여하고 격려하는 행사를 진행했다. 삼성전자 DX부문은 이달 11일 수원캠퍼스</p>
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-17 21:57 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1-%ea%b5%ad%ec%a0%9c%ec%98%ac%eb%a6%bc%ed%94%bc%ec%95%84%eb%93%9c-%ec%88%98%ec%83%81%ec%9e%90%ec%97%90%ea%b2%8c-%ec%9e%a5%ed%95%99%ea%b8%88-%ec%9d%b4%ea%b3%b5%ea%b3%84">원문</a></div>
 </div>
-<div class="card">
+<div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 액티비전 블리자드와 ‘콜 오브 듀티: 모던 워페어 4’ 파트너십 체결</h2>
   <p class="sum">삼성전자가 글로벌 게임 개발사 액티비전 블리자드(Activision Blizzard)와 대표 1인칭 슈팅 게임(FPS) 신작 ‘콜 오브 듀티®: 모던 워페어 4(Call of Duty®: Modern Warfare® 4)’의 공식 파트너십을 체결했다. 삼성전자는 ‘콜 오브 듀티®: 모던 워페어 4’의 개발 단계부터 참여해 TV, 모니터, 사운드바, Wi-F</p>
@@ -66,5 +73,18 @@
 <div class="days">지난 날짜 <a href="2026-08-22.html">08-22</a><a href="2026-08-21.html">08-21</a><a href="2026-08-20.html">08-20</a><a href="2026-08-19.html">08-19</a><a href="2026-08-18.html">08-18</a><b>08-17</b><a href="2026-08-15.html">08-15</a><a href="2026-08-14.html">08-14</a><a href="2026-08-13.html">08-13</a><a href="2026-08-12.html">08-12</a><a href="2026-08-11.html">08-11</a><a href="2026-08-10.html">08-10</a><a href="2026-08-08.html">08-08</a><a href="2026-08-07.html">08-07</a></div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
 </body>
 </html>
