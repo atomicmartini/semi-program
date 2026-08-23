@@ -68,8 +68,13 @@
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
-  .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
-  .days b { color:#1c1b19; margin-right:10px; }
+  .days-head { color:#94908a; margin-bottom:6px; }
+  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    padding:4px 0; border-top:1px solid #eeece7; }
+  .days .ym { color:#94908a; font-variant-numeric:tabular-nums; min-width:62px; }
+  .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
+  .days a:hover { text-decoration:underline; }
+  .days b { color:#1c1b19; }
 </style>
 </head>
 <body>
@@ -85,10 +90,38 @@
   <h2>삼성, 국제올림피아드 수상자에게 장학금… 이공계 인재 육성에 기여</h2>
   <p class="sum">삼성전자∙삼성바이오, 국제올림피아드 수상자 15명에 장학금 수여… 이공계 인재 육성에 기여 삼성전자와 삼성바이오로직스∙삼성바이오에피스는 지난 7월 열린 국제올림피아드 수학∙물리∙생물 대회에서 우수한 성적으로 메달을 획득한 한국 대표 15명과 학부모들을 각 사업장에 초청해 장학금을 수여하고 격려하는 행사를 진행했다. 삼성전자 DX부문은 이달 11일 수원캠퍼스</p>
   <details class="thread" open>
-  <summary><span class="arw">›</span>이어지는 흐름 3건</summary>
+  <summary><span class="arw">›</span>이어지는 흐름 10건</summary>
   <div class="rail"><div class="step">
+  <span class="when">01-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=50838">SK하이닉스, 2025년 반도체 매출 3위로 상승...엔비디아·삼성전자, 1·2위</a></div>
+</div>
+<div class="step">
+  <span class="when">02-23</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52586">에이디테크놀로지, 독일 반도체 연구소와 4나노 기술 협력</a></div>
+</div>
+<div class="step">
+  <span class="when">02-24</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52634">팹리스협회, 3대 회장으로 김경호 전 어보브반도체 대표 선임</a></div>
+</div>
+<div class="step">
+  <span class="when">03-18</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=53696">전영현 삼성전자 부회장 &quot;AI·메모리 공급 부족 긍정적...반도체 주도권 확보&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">04-16</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=55205">단독 삼성전자, 4나노 파운드리에 국산 EUV 마스크 첫 테스트</a></div>
+</div>
+<div class="step">
+  <span class="when">06-02</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples">Samsung Electronics Begins Shipment of Industry-First HBM4E Samples</a></div>
+</div>
+<div class="step">
   <span class="when">08-11</span>
   <div class="what"><a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%b2%a0%ed%8a%b8%eb%82%a8-%ed%95%98%eb%85%b8%ec%9d%b4%ec%97%90-%eb%b9%84%ec%a6%88%eb%8b%88%ec%8a%a4-%ec%9d%b5%ec%8a%a4%ed%94%bc%eb%a6%ac%ec%96%b8">삼성전자, 베트남 하노이에 ‘비즈니스 익스피리언스 스튜디오’ 개관…기업 디지털 전환 지원</a></div>
+</div>
+<div class="step">
+  <span class="when">08-11</span>
+  <div class="what"><a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%8f%85%ec%9d%bc-%ea%b2%8c%ec%9e%84%ec%8a%a4%ec%bb%b4-2026-%ec%b0%b8%ea%b0%80-%ed%92%80%ec%8a%a4%ed%83%9d-%ea%b2%8c%ec%9d%b4%eb%b0%8d-%ea%b2%bd">삼성전자, 독일 ‘게임스컴 2026’ 참가… 풀스택 게이밍 경험 제시</a></div>
 </div>
 <div class="step">
   <span class="when">08-12</span>
@@ -108,10 +141,38 @@
   <h2>삼성전자, 액티비전 블리자드와 ‘콜 오브 듀티: 모던 워페어 4’ 파트너십 체결</h2>
   <p class="sum">삼성전자가 글로벌 게임 개발사 액티비전 블리자드(Activision Blizzard)와 대표 1인칭 슈팅 게임(FPS) 신작 ‘콜 오브 듀티®: 모던 워페어 4(Call of Duty®: Modern Warfare® 4)’의 공식 파트너십을 체결했다. 삼성전자는 ‘콜 오브 듀티®: 모던 워페어 4’의 개발 단계부터 참여해 TV, 모니터, 사운드바, Wi-F</p>
   <details class="thread" open>
-  <summary><span class="arw">›</span>이어지는 흐름 3건</summary>
+  <summary><span class="arw">›</span>이어지는 흐름 10건</summary>
   <div class="rail"><div class="step">
+  <span class="when">01-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=50838">SK하이닉스, 2025년 반도체 매출 3위로 상승...엔비디아·삼성전자, 1·2위</a></div>
+</div>
+<div class="step">
+  <span class="when">02-23</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52586">에이디테크놀로지, 독일 반도체 연구소와 4나노 기술 협력</a></div>
+</div>
+<div class="step">
+  <span class="when">02-24</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52634">팹리스협회, 3대 회장으로 김경호 전 어보브반도체 대표 선임</a></div>
+</div>
+<div class="step">
+  <span class="when">03-18</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=53696">전영현 삼성전자 부회장 &quot;AI·메모리 공급 부족 긍정적...반도체 주도권 확보&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">04-16</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=55205">단독 삼성전자, 4나노 파운드리에 국산 EUV 마스크 첫 테스트</a></div>
+</div>
+<div class="step">
+  <span class="when">06-02</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples">Samsung Electronics Begins Shipment of Industry-First HBM4E Samples</a></div>
+</div>
+<div class="step">
   <span class="when">08-11</span>
   <div class="what"><a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%b2%a0%ed%8a%b8%eb%82%a8-%ed%95%98%eb%85%b8%ec%9d%b4%ec%97%90-%eb%b9%84%ec%a6%88%eb%8b%88%ec%8a%a4-%ec%9d%b5%ec%8a%a4%ed%94%bc%eb%a6%ac%ec%96%b8">삼성전자, 베트남 하노이에 ‘비즈니스 익스피리언스 스튜디오’ 개관…기업 디지털 전환 지원</a></div>
+</div>
+<div class="step">
+  <span class="when">08-11</span>
+  <div class="what"><a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%8f%85%ec%9d%bc-%ea%b2%8c%ec%9e%84%ec%8a%a4%ec%bb%b4-2026-%ec%b0%b8%ea%b0%80-%ed%92%80%ec%8a%a4%ed%83%9d-%ea%b2%8c%ec%9d%b4%eb%b0%8d-%ea%b2%bd">삼성전자, 독일 ‘게임스컴 2026’ 참가… 풀스택 게이밍 경험 제시</a></div>
 </div>
 <div class="step">
   <span class="when">08-12</span>
@@ -127,7 +188,7 @@
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-17 17:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%95%a1%ed%8b%b0%eb%b9%84%ec%a0%84-%eb%b8%94%eb%a6%ac%ec%9e%90%eb%93%9c%ec%99%80-%ec%bd%9c-%ec%98%a4%eb%b8%8c-%eb%93%80%ed%8b%b0-%eb%aa%a8%eb%8d%98-%ec%9b%8c">원문</a></div>
 </div>
 
-<div class="days">지난 날짜 <a href="2026-08-22.html">08-22</a><a href="2026-08-21.html">08-21</a><a href="2026-08-20.html">08-20</a><a href="2026-08-19.html">08-19</a><a href="2026-08-18.html">08-18</a><b>08-17</b><a href="2026-08-15.html">08-15</a><a href="2026-08-14.html">08-14</a><a href="2026-08-13.html">08-13</a><a href="2026-08-12.html">08-12</a><a href="2026-08-11.html">08-11</a><a href="2026-08-10.html">08-10</a><a href="2026-08-08.html">08-08</a><a href="2026-08-07.html">08-07</a></div>
+<div class="days"><div class="days-head">지난 날짜</div><div class="month"><span class="ym">2026-08</span><a href="2026-08-22.html">22</a><a href="2026-08-21.html">21</a><a href="2026-08-20.html">20</a><a href="2026-08-19.html">19</a><a href="2026-08-18.html">18</a><b>17</b><a href="2026-08-15.html">15</a><a href="2026-08-14.html">14</a><a href="2026-08-13.html">13</a><a href="2026-08-12.html">12</a><a href="2026-08-11.html">11</a><a href="2026-08-10.html">10</a><a href="2026-08-08.html">08</a><a href="2026-08-07.html">07</a><a href="2026-08-06.html">06</a><a href="2026-08-05.html">05</a><a href="2026-08-04.html">04</a></div><div class="month"><span class="ym">2026-07</span><a href="2026-07-31.html">31</a><a href="2026-07-30.html">30</a><a href="2026-07-29.html">29</a><a href="2026-07-25.html">25</a><a href="2026-07-24.html">24</a><a href="2026-07-18.html">18</a><a href="2026-07-16.html">16</a><a href="2026-07-14.html">14</a><a href="2026-07-11.html">11</a><a href="2026-07-08.html">08</a><a href="2026-07-07.html">07</a><a href="2026-07-03.html">03</a><a href="2026-07-02.html">02</a><a href="2026-07-01.html">01</a></div><div class="month"><span class="ym">2026-06</span><a href="2026-06-27.html">27</a><a href="2026-06-25.html">25</a><a href="2026-06-23.html">23</a><a href="2026-06-20.html">20</a><a href="2026-06-17.html">17</a><a href="2026-06-16.html">16</a><a href="2026-06-12.html">12</a><a href="2026-06-11.html">11</a><a href="2026-06-10.html">10</a><a href="2026-06-09.html">09</a><a href="2026-06-05.html">05</a><a href="2026-06-04.html">04</a><a href="2026-06-03.html">03</a><a href="2026-06-02.html">02</a></div><div class="month"><span class="ym">2026-05</span><a href="2026-05-30.html">30</a><a href="2026-05-29.html">29</a><a href="2026-05-28.html">28</a><a href="2026-05-27.html">27</a><a href="2026-05-23.html">23</a><a href="2026-05-22.html">22</a><a href="2026-05-21.html">21</a><a href="2026-05-20.html">20</a><a href="2026-05-19.html">19</a><a href="2026-05-16.html">16</a><a href="2026-05-15.html">15</a><a href="2026-05-14.html">14</a><a href="2026-05-13.html">13</a><a href="2026-05-12.html">12</a><a href="2026-05-09.html">09</a><a href="2026-05-08.html">08</a><a href="2026-05-06.html">06</a><a href="2026-05-05.html">05</a><a href="2026-05-02.html">02</a><a href="2026-05-01.html">01</a></div><div class="month"><span class="ym">2026-04</span><a href="2026-04-30.html">30</a><a href="2026-04-29.html">29</a><a href="2026-04-23.html">23</a><a href="2026-04-22.html">22</a><a href="2026-04-20.html">20</a><a href="2026-04-16.html">16</a><a href="2026-04-13.html">13</a><a href="2026-04-08.html">08</a><a href="2026-04-07.html">07</a><a href="2026-04-03.html">03</a><a href="2026-04-01.html">01</a></div><div class="month"><span class="ym">2026-03</span><a href="2026-03-25.html">25</a><a href="2026-03-23.html">23</a><a href="2026-03-18.html">18</a><a href="2026-03-16.html">16</a><a href="2026-03-13.html">13</a><a href="2026-03-11.html">11</a><a href="2026-03-08.html">08</a><a href="2026-03-04.html">04</a><a href="2026-03-03.html">03</a><a href="2026-03-01.html">01</a></div><div class="month"><span class="ym">2026-02</span><a href="2026-02-24.html">24</a><a href="2026-02-23.html">23</a><a href="2026-02-19.html">19</a><a href="2026-02-17.html">17</a><a href="2026-02-13.html">13</a><a href="2026-02-11.html">11</a><a href="2026-02-10.html">10</a><a href="2026-02-06.html">06</a><a href="2026-02-05.html">05</a><a href="2026-02-04.html">04</a><a href="2026-02-03.html">03</a><a href="2026-02-02.html">02</a></div><div class="month"><span class="ym">2026-01</span><a href="2026-01-26.html">26</a><a href="2026-01-21.html">21</a><a href="2026-01-19.html">19</a><a href="2026-01-13.html">13</a><a href="2026-01-09.html">09</a><a href="2026-01-06.html">06</a><a href="2026-01-05.html">05</a><a href="2026-01-02.html">02</a></div><div class="month"><span class="ym">2025-12</span><a href="2025-12-24.html">24</a><a href="2025-12-18.html">18</a><a href="2025-12-17.html">17</a><a href="2025-12-12.html">12</a><a href="2025-12-11.html">11</a><a href="2025-12-10.html">10</a><a href="2025-12-09.html">09</a><a href="2025-12-08.html">08</a><a href="2025-12-02.html">02</a><a href="2025-12-01.html">01</a></div><div class="month"><span class="ym">2025-11</span><a href="2025-11-26.html">26</a><a href="2025-11-24.html">24</a><a href="2025-11-19.html">19</a><a href="2025-11-17.html">17</a><a href="2025-11-16.html">16</a><a href="2025-11-13.html">13</a><a href="2025-11-10.html">10</a><a href="2025-11-06.html">06</a><a href="2025-11-03.html">03</a></div></div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 <script>

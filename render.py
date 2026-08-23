@@ -82,8 +82,13 @@ STYLE = """
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
-  .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
-  .days b { color:#1c1b19; margin-right:10px; }
+  .days-head { color:#94908a; margin-bottom:6px; }
+  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    padding:4px 0; border-top:1px solid #eeece7; }
+  .days .ym { color:#94908a; font-variant-numeric:tabular-nums; min-width:62px; }
+  .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
+  .days a:hover { text-decoration:underline; }
+  .days b { color:#1c1b19; }
 """
 
 PAGE = """<!doctype html>
@@ -195,14 +200,36 @@ def category_chips(picked: list[dict]) -> str:
     return f'<div class="chips">{"".join(chips)}</div>'
 
 
+def article_days() -> list[str]:
+    """기사가 있는 모든 날짜. 파생 파일(.filtered/.selected/.linked)은 뺀다.
+
+    자르지 않는다 — 14일로 자르면 과거 기사에 갈 길이 아예 없다 (슬라이스 04).
+    """
+    return sorted(p.stem for p in ARTICLE_DIR.glob("*.json") if "." not in p.stem)
+
+
+def render_day_links(days: list[str], current: str = "") -> str:
+    """지난 날짜 줄. 달별로 묶는다 — 125개를 한 줄에 늘어놓으면 못 읽는다."""
+    if not days:
+        return ""
+
+    by_month: dict[str, list[str]] = {}
+    for d in sorted(days, reverse=True):
+        by_month.setdefault(d[:7], []).append(d)
+
+    rows = []
+    for month in sorted(by_month, reverse=True):
+        items = "".join(
+            f"<b>{d[8:]}</b>" if d == current else f'<a href="{d}.html">{d[8:]}</a>'
+            for d in by_month[month]
+        )
+        rows.append(f'<div class="month"><span class="ym">{month}</span>{items}</div>')
+
+    return f'<div class="days"><div class="days-head">지난 날짜</div>{"".join(rows)}</div>'
+
+
 def day_links(current: str = "") -> str:
-    """지난 날짜 줄. 오늘 기사가 적은 날 다른 날로 갈 길이 필요하다."""
-    days = sorted((p.stem for p in ARTICLE_DIR.glob("*.json") if "." not in p.stem), reverse=True)[:14]
-    items = "".join(
-        f"<b>{d[5:]}</b>" if d == current else f'<a href="{d}.html">{d[5:]}</a>'
-        for d in days
-    )
-    return f'<div class="days">지난 날짜 {items}</div>' if items else ""
+    return render_day_links(article_days(), current)
 
 
 def render_news(day: str, terms: list[dict]) -> str:
@@ -261,7 +288,7 @@ def render_concepts(terms: list[dict]) -> str:
 
 
 def latest_day() -> str:
-    days = sorted(p.stem for p in ARTICLE_DIR.glob("*.json") if "." not in p.stem)
+    days = article_days()
     if not days:
         raise FileNotFoundError("data/articles/ 가 비었습니다. 먼저 python fetch.py 를 실행하세요.")
     return days[-1]
@@ -276,7 +303,7 @@ def main(argv: list[str]) -> int:
     print(f"개념 {len(terms)}개 — {', '.join(t['term'] for t in terms)}")
 
     if argv and argv[0] == "--all":
-        days = sorted((p.stem for p in ARTICLE_DIR.glob("*.json") if "." not in p.stem), reverse=True)[:14]
+        days = sorted(article_days(), reverse=True)  # 자르지 않는다 (슬라이스 04)
     else:
         days = [argv[0] if argv else latest_day()]
 

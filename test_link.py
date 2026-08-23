@@ -37,13 +37,15 @@ class TestFindRelated(unittest.TestCase):
         related = find_related(self.today, self.past, COMPANIES, threshold=2)
         self.assertEqual(related, [])
 
-    def test_caps_at_three_most_recent(self):
+    def test_caps_at_max_related_most_recent(self):
+        from link import MAX_RELATED
+
         many_past = [
-            {"url": f"p{i}", "title": "삼성전자", "summary": "삼성전자", "published": f"2026-0{i}-01"}
-            for i in range(1, 6)
+            {"url": f"p{i}", "title": "삼성전자", "summary": "삼성전자", "published": f"2026-01-{i:02d}"}
+            for i in range(1, MAX_RELATED + 6)
         ]
         related = find_related(self.today, many_past, COMPANIES, threshold=1)
-        self.assertEqual(len(related), 3)
+        self.assertEqual(len(related), MAX_RELATED)
         dates = [r["date"] for r in related]
         self.assertEqual(dates, sorted(dates, reverse=True))
 

@@ -16,7 +16,7 @@ ARTICLE_DIR = HERE / "data" / "articles"
 COMPANIES_FILE = HERE / "data" / "companies.md"
 
 THRESHOLD = 1  # 공통 기업 몇 개부터 잇는가
-MAX_RELATED = 3  # 기사 하나당 최대 몇 건까지 보여주는가
+MAX_RELATED = 10  # 기사 하나당 최대 몇 건까지 보여주는가
 
 
 def read_company_map() -> dict[str, str]:

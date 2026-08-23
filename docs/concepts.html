@@ -68,8 +68,13 @@
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.55; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
-  .days a { color:#63605a; margin-right:10px; white-space:nowrap; }
-  .days b { color:#1c1b19; margin-right:10px; }
+  .days-head { color:#94908a; margin-bottom:6px; }
+  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    padding:4px 0; border-top:1px solid #eeece7; }
+  .days .ym { color:#94908a; font-variant-numeric:tabular-nums; min-width:62px; }
+  .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
+  .days a:hover { text-decoration:underline; }
+  .days b { color:#1c1b19; }
 </style>
 </head>
 <body>
