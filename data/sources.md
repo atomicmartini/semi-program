@@ -34,6 +34,21 @@
 | Tom's Hardware | `https://www.tomshardware.com/feeds/all` | 50 | 2026-08-22 | 소비자 PC 중심이라 잡음 많음 |
 | NVIDIA Blogs | `https://blogs.nvidia.com/feed/` | 18 | 2026-08-22 | `[공식]` 이나 GeForce 게임 소식 위주라 보류 |
 
+## 과거분 목록 페이지 — `archive.py` 가 쓰는 곳
+
+> RSS 는 최근분만 준다. 몇 달 전 사건을 가져오려면 목록 페이지를 거슬러 올라가야 한다.
+> **기사별 원문 페이지는 열지 않는다** — 목록에 제목·요약·날짜가 다 있다.
+> 목록에는 **시각이 없다.** `published` 는 `T00:00:00` 으로 두고 원문 표기를 `published_raw` 에 남긴다.
+
+| 이름 | 주소 | 등급 | 확인일 | 비고 |
+| --- | --- | --- | --- | --- |
+| 더일렉 반도체 (목록) | `https://www.thelec.kr/news/articleList.html?page=N&sc_section_code=S1N2&view_type=sm` | `[2차]` | 2026-08-23 | `view_type=sm` 이어야 요약이 함께 온다. 쪽당 약 20건 |
+| Semiconductor Digest 패키징 (목록) | `https://www.semiconductor-digest.com/category/packaging/page/N/` | `[2차]` | 2026-08-23 | 워드프레스 표준 페이지네이션. 날짜가 `May 1, 2025` 형식 |
+
+| 안 쓰는 곳 | 왜 |
+| --- | --- |
+| 삼성전자 뉴스룸 (`/kr/latest/page/N`) | 2026-08-23 확인 — `page/1` 은 되는데 **N≥2 에서 4회 모두 연결 실패(ECONNRESET)**. 유일한 `[공식]` 후보라 아쉽지만 확인 안 된 것은 넣지 않는다 |
+
 ## 안 쓰는 곳 — 확인했으나 동작하지 않음
 
 | 이름 | 주소 | 확인일 | 결과 |
