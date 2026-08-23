@@ -89,10 +89,10 @@ graph TD
 | 코드 | 산출물 | 완료 조건 | 선행 | 상태 |
 | --- | --- | --- | --- | --- |
 | 3.1 | `fetch.py` · `data/articles/<날짜>.json` | `python fetch.py` → 파일 생성·건수 출력. 재실행 시 새 기사 0건 | 1.3 | ✅ |
-| 3.2 | 과거분 backfill | `python fetch.py --backfill` → 각 피드가 주는 과거분이 일자별로 쌓임 | 3.1 || ✅ |
-| 4.1 | `filter.py` · `data/keywords.md` | `python filter.py <날짜>` → 반도체 무관 기사 제외, 걸러낸 건수 출력 | 3.1 || ✅ |
-| 4.2 | `pick.py` | `python pick.py <날짜>` → 카테고리당 최대 3건·총 10건. **자른 건수 출력** | 4.1 || ✅ |
-| 5.1 | `render.py` · `docs/<날짜>.html` | `python render.py <날짜>` → HTML 생성. 브라우저에서 카드가 보임 | 4.2 || ✅ |
+| 3.2 | 과거분 backfill | `python fetch.py` → 발행일별로 저장하므로 과거분이 저절로 쌓인다 (67일치) | 3.1 | ✅ |
+| 4.1 | `filter.py` · `data/keywords.md` | `python filter.py <날짜>` → 반도체 무관 기사 제외, 걸러낸 건수 출력 | 3.1 | ✅ |
+| 4.2 | `pick.py` | `python pick.py <날짜>` → 카테고리당 최대 3건·총 10건. **자른 건수 출력** | 4.1 | ✅ |
+| 5.1 | `render.py` · `docs/<날짜>.html` | `python render.py <날짜>` → HTML 생성. 브라우저에서 카드가 보임 | 4.2 | ✅ |
 
 > 세션 2 는 **모델을 한 번도 부르지 않는다.** 수집과 화면이 도는지 먼저 확인한다.
 > 이 시점의 카테고리는 키워드로만 나눈다 — 애매하면 전부 `미분류`.
