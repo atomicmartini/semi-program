@@ -5,7 +5,9 @@
 
 import unittest
 
-from extract import resolve_category
+import urllib.error
+
+from extract import ModelError, resolve_category, should_retry
 from filter import UNCLASSIFIED
 
 CATEGORIES = ["패키징", "파운드리·공정", "메모리", "장비·소재", UNCLASSIFIED]
@@ -31,6 +33,31 @@ class TestResolveCategory(unittest.TestCase):
 
     def test_handles_missing_model_answer(self):
         self.assertEqual(resolve_category(None, "패키징", CATEGORIES), "패키징")
+
+
+class TestShouldRetry(unittest.TestCase):
+    """14일치를 돌렸더니 62건 중 22건이 429·502 로 실패했다. 쉬었다 다시 하면 되는 것들이다."""
+
+    def _http(self, code: int) -> urllib.error.HTTPError:
+        return urllib.error.HTTPError("u", code, "msg", {}, None)
+
+    def test_retries_on_rate_limit(self):
+        self.assertTrue(should_retry(self._http(429)))
+
+    def test_retries_on_upstream_overload(self):
+        self.assertTrue(should_retry(self._http(502)))
+        self.assertTrue(should_retry(self._http(503)))
+
+    def test_retries_on_error_body_with_200(self):
+        # 상위 서버 과부하는 HTTP 200 에 error 본문으로 오기도 한다
+        self.assertTrue(should_retry(ModelError('{"error": {"code": 502}}')))
+
+    def test_does_not_retry_on_bad_key(self):
+        # 401 은 쉬었다 해도 안 된다. 다시 해 봐야 시간만 쓴다
+        self.assertFalse(should_retry(self._http(401)))
+
+    def test_does_not_retry_on_bad_request(self):
+        self.assertFalse(should_retry(self._http(400)))
 
 
 if __name__ == "__main__":

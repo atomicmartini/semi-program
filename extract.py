@@ -9,6 +9,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -44,6 +45,22 @@ _JSON_BLOCK = re.compile(r"\{.*\}", re.S)
 
 class ModelError(RuntimeError):
     """모델이 답을 못 준 경우. 그 기사만 실패로 두고 나머지는 계속한다."""
+
+
+PAUSE = 2.0  # 호출 사이 쉬는 시간(초). 몰아치면 429 가 난다
+RETRIES = 3  # 429·502 는 쉬었다 다시 해 본다
+BACKOFF = 10  # 재시도 전에 쉬는 시간(초). 회차마다 곱해서 늘린다
+
+_RETRY_CODES = (429, 500, 502, 503, 504)
+
+
+def should_retry(exc: Exception) -> bool:
+    """쉬었다 다시 하면 될 오류인가. 열쇠가 틀린 것 같은 건 다시 해도 소용없다."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code in _RETRY_CODES
+    if isinstance(exc, ModelError):
+        return any(str(c) in str(exc) for c in _RETRY_CODES)
+    return isinstance(exc, (TimeoutError, urllib.error.URLError))
 
 
 def _load_key() -> str:
@@ -114,10 +131,15 @@ def extract_one(article: dict, categories: list[str], key: str) -> dict:
         categories="/".join(categories), title=article["title"], body=article["summary"]
     )
 
-    try:
-        raw = _call_model(prompt, key)
-    except (urllib.error.URLError, urllib.error.HTTPError, ModelError, TimeoutError) as e:
-        return {**article, "summary_ko": None, "relations": [], "extract_error": str(e)}
+    raw = None
+    for attempt in range(RETRIES):
+        try:
+            raw = _call_model(prompt, key)
+            break
+        except (urllib.error.URLError, urllib.error.HTTPError, ModelError, TimeoutError) as e:
+            if attempt == RETRIES - 1 or not should_retry(e):
+                return {**article, "summary_ko": None, "relations": [], "extract_error": str(e)}
+            time.sleep(BACKOFF * (attempt + 1))
 
     parsed = _parse_json(raw)
     if parsed is None:
@@ -191,6 +213,7 @@ def extract_day(day: str) -> tuple[list[dict], int, int]:
         if result.get("extract_error"):
             errors += 1
         out.append(result)
+        time.sleep(PAUSE)  # 몰아치면 429 가 난다
     return out, errors, skipped
 
 
