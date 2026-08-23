@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,60 +84,70 @@
   <span class="cat">패키징</span> <span class="tier">[공식]</span>
   <h2>AI 전쟁의 무대는 ‘칩’에서 ‘시스템’으로… SK 하이닉스, 네이처 일렉트로닉스 논문으로 ‘랙·포드·시스템’ CPO 상용화 청사진 증명</h2>
   <p class="sum">SK하이닉스가 글로벌 연구진과 함께 차세대 광 인터커넥트 기술 ‘CPO’의 발전 방향을 담은 논문을 네이처 일렉트로닉스에 게재했습니다. 해당 논문에서는 메모리·<a class="term" href="concepts.html#packaging">패키징</a>·광 인터커넥트가 어떻게 융합하고 진화해야 하는지 종합적인 기술 로드맵을 체계화했습니다. 논문 저자인 SK하이닉스 홍승훈 팀장과 버지니아대학교 이규상 교수의 인터뷰도 함께 만나보세요! 👉 Sou</p>
+  
   <div class="src">SK하이닉스 뉴스룸 · 발행 2026-08-20 18:20 · <a href="https://news.skhynix.co.kr/cpo-in-nature-electronics-yb/">원문</a></div>
 </div>
 <div class="card" data-cat="AI·가속기">
   <span class="cat">AI·가속기</span> <span class="tier">[공식]</span>
   <h2>AI 전장은 ‘칩’에서 ‘시스템’으로… SK하이닉스, 네이처 일렉트로닉스 논문으로 ‘랙 · 포드 · 시스템’ CPO 상용화 청사진 증명</h2>
   <p class="sum">Source</p>
+  
   <div class="src">SK하이닉스 뉴스룸 · 발행 2026-08-20 13:44 · <a href="https://news.skhynix.co.kr/cpo-in-nature-electronics-5/">원문</a></div>
 </div>
 <div class="card" data-cat="AI·가속기">
   <span class="cat">AI·가속기</span> <span class="tier">[공식]</span>
   <h2>Six in 10 Leaders Bet Big on Robots. Only Four in 10 Are Ready.</h2>
   <p class="sum">NEWS HIGHLIGHTS Six in 10 senior business and IT leaders, robotics specialists, government and healthcare officials expect their organizations to operate robot fleets within five years. Leaders predic</p>
+  
   <div class="src">Intel Newsroom · 발행 2026-08-20 22:00 · <a href="https://newsroom.intel.com/artificial-intelligence/6-in-10-leaders-bet-big-on-robots-only-4-in-10-are-ready">원문</a></div>
 </div>
 <div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[2차]</span>
   <h2>SK하이닉스, 성과급 60% 주식 지급 잠정 합의...통합 노조 의식</h2>
   <p class="sum">SK하이닉스 노사가 성과급 60%를 주식 지급하기로 잠정합의했다. 적자 상황 시 노사가 함께 대응하는 단체교섭안도 마련했다. SK하이닉스는 20일 구성원들에게 임금·단체협약(임단협)의 주요 합의 사항에 대해 안내하는 설명회를 청주·이천에서 열었다. 임금인상률 6.3%와 성과급의 지급 방식 변경, 노사의 위기 극복 동참 방안 등이 소개됐다.◇ PS 현금 40</p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-20 18:27 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61177">원문</a></div>
 </div>
 <div class="card" data-cat="패키징">
   <span class="cat">패키징</span> <span class="tier">[2차]</span>
   <h2>Breaking the Compute Barrier with Light: Silicon Photonics, Co-Packaged Optics, and Advanced <a class="term" href="concepts.html#packaging">Packaging</a></h2>
   <p class="sum">The rapid development of artificial intelligence (AI), high-performance computing (HPC), and hyperscale data centers is creating unprecedented demand for bandwidth between processors, memory, switches</p>
+  
   <div class="src">3D InCites · 발행 2026-08-20 18:08 · <a href="https://www.3dincites.com/2026/08/breaking-the-compute-barrier-with-light-silicon-photonics-co-packaged-optics-and-advanced-packaging/">원문</a></div>
 </div>
 <div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>SK하이닉스, CPO 청사진 공개…&quot;메모리도 빛으로 연결&quot;</h2>
   <p class="sum">SK하이닉스가 공동패키지광학(CPO) 기술 청사진을 담은 논문을 세계적 학술지 &#x27;네이처 일렉트로닉스&#x27;에 게재했다고 20일 밝혔다.논문 제목은 &#x27;고성능 컴퓨팅, 인공지능을 위한 CPO 기술(Co-packaged optics for high-performance computing and artificial intelligence)&#x27;이다. AI 연산 플랫폼 &#x27;대</p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-20 15:45 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61167">원문</a></div>
 </div>
 <div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>Synopsys Updates CXL IP Portfolio for AI-Era Infrastructure</h2>
   <p class="sum">Synopsys’s CXL 4.0 IP aims to help designers build faster, more flexible and secure disaggregated computing architectures as AI systems demand more memory capacity and bandwidth.</p>
+  
   <div class="src">EE Times · 발행 2026-08-20 23:07 · <a href="https://www.eetimes.com/synopsys-updates-cxl-ip-portfolio-for-ai-era-infrastructure/">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>프라임마스, CXL 솔루션 &#x27;JBOM&#x27;으로 2800억원 매출 도전</h2>
   <p class="sum">프라임마스가 서버 하나로 100TB 이상 메모리 용량을 지원하는 컴퓨트 익스프레스 링크(CXL) 메모리 솔루션으로 내년 말까지 매출 2억달러(약 2800억원)를 올리겠다고 밝혔다. 박일 프라임마스 대표는 20일 경기 성남 사옥에서 기자간담회를 열고 CXL를 활용한 회사의 풀드(Pooled) 메모리 전략을 소개했다. 회사는 CXL 컨트롤러와 모듈을 설계하는 </p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-20 18:12 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61173">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>Don’t Scrap It, Save It: Feedforward Control For Modern Semiconductor Manufacturing</h2>
   <p class="sum">By measuring each <a class="term" href="concepts.html#wafer">wafer</a> after lithography and adjusting the next etch step, fabs can pull more wafers back into spec.</p>
+  
   <div class="src">Semi Engineering · 발행 2026-08-20 16:06 · <a href="https://semiengineering.com/dont-scrap-it-save-it-feedforward-control-for-modern-semiconductor-manufacturing/">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>From Research To Production: Collaboration Is Key For Semiconductor Innovation</h2>
   <p class="sum">Semiconductor R&amp;D depends on access to high-quality data, realistic process assumptions, and practical learning from silicon.</p>
+  
   <div class="src">Semi Engineering · 발행 2026-08-20 16:03 · <a href="https://semiengineering.com/from-research-to-production-collaboration-is-key-for-semiconductor-innovation/">원문</a></div>
 </div>
 

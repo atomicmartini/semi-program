@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,18 +84,21 @@
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>[영상] “공용 디스플레이도 개인 기기처럼” 삼성 전자칠판, 계정 관리 솔루션으로 교사 개인별 수업 환경 제공</h2>
   <p class="sum">최근 전자칠판이 디지털 교육의 중심으로 떠오르고 있다. 교사가 수업에 필요한 교육 자료와 디지털 도구를 손쉽게 활용하도록 돕고 학생들의 학습 몰입도를 높이는 등 교실 풍경을 새롭게 바꾸고 있다. 특히 삼성전자의 전자칠판은 북미 최대 교육 기술 전시회 ‘ISTE Live 2026’에서 ‘올해 최고의 에듀테크 제품상(Tech &amp; Learning Best of </p>
+  
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-12 20:00 · <a href="https://news.samsung.com/kr/%ec%98%81%ec%83%81-%ea%b3%b5%ec%9a%a9-%eb%94%94%ec%8a%a4%ed%94%8c%eb%a0%88%ec%9d%b4%eb%8f%84-%ea%b0%9c%ec%9d%b8-%ea%b8%b0%ea%b8%b0%ec%b2%98%eb%9f%bc-%ec%82%bc%ec%84%b1-%ec%a0%84">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>Koh Young Technology to Double Production Capacity as AI Server and Advanced Semiconductor Demand Grows</h2>
   <p class="sum">New 12,800-square-meter production center will support rising demand from AI server and advanced semiconductor markets while creating capacity for future growth Koh Young Technology, the industry lead</p>
+  
   <div class="src">3D InCites · 발행 2026-08-12 23:05 · <a href="https://www.3dincites.com/2026/08/koh-young-productioncenter/">원문</a></div>
 </div>
 <div class="card" data-cat="패키징">
   <span class="cat">패키징</span> <span class="tier">[2차]</span>
   <h2>Indium Corporation Opens New Manufacturing Facility in Guadalajara, Mexico, Expanding Global Production Network</h2>
   <p class="sum">Indium Corporation, a leading provider of innovative materials solutions for electronics assembly, semiconductor <a class="term" href="concepts.html#packaging">packaging</a>, and thermal management applications, today announced the opening of a new ma</p>
+  
   <div class="src">3D InCites · 발행 2026-08-12 01:07 · <a href="https://www.3dincites.com/2026/08/indium-expanding-manufacturing/">원문</a></div>
 </div>
 

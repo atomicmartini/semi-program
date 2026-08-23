@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,54 +84,63 @@
   <span class="cat">메모리</span> <span class="tier">[공식]</span>
   <h2>[하이널리지 EP3] 생성형 AI 다음 혁명은 ‘몸’이다: 피지컬 AI가 그리는 미래 | 서울대 기계공학부 조규진 교수</h2>
   <p class="sum">SK하이닉스의 오리지널 시리즈 ‘하이널리지’는 AI 시대 속 최신 기술과 이를 가능하게 하는 메모리의 역할을 파헤쳐보는 콘텐츠입니다. 세 번째 시간에는 조규진 서울대학교 기계공학부 교수와 함께 로봇과 AI가 만나 현실 세계로 걸어 나오는 ‘피지컬 AI’의 세계를 들여다봅니다. 화면 속에만 머물던 AI가 이제 Source</p>
+  
   <div class="src">SK하이닉스 뉴스룸 · 발행 2026-08-21 18:20 · <a href="https://news.skhynix.co.kr/hyknowledge_3/">원문</a></div>
 </div>
 <div class="card" data-cat="투자·실적">
   <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
   <h2>삼성전자, 올해 최대 110조원 주주환원...국내 기업 첫 100조 돌파</h2>
   <p class="sum">삼성전자가 올해 국내 기업 사상 최고 규모인 최대 110조원에 달하는 주주환원을 실시하기로 했다.삼성전자는 21일 이사회를 열고 90조~110조원 주주환원 시행 방안을 의결했다고 밝혔다. 이는 기존 최대였던 2020년 20조3000억원 규모 주주환원의 약 5배에 달한다. 2016~2025년 10년간 연평균 주주환원 규모인 13조8천억원의 약 7배 규모기도 </p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-21 18:08 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61226">원문</a></div>
 </div>
 <div class="card" data-cat="AI·가속기">
   <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
   <h2>Chip Industry Week In Review</h2>
   <p class="sum">New Micron lab; chip/AI price jump; multi-die monitoring; cryo links for quantum chips; interconnect RC bottleneck; 18A win; CPO roadmap; 2 new CEOs; humanoid readiness gap; Hot Interconnects.</p>
+  
   <div class="src">Semi Engineering · 발행 2026-08-21 16:01 · <a href="https://semiengineering.com/chip-industry-week-in-review-152/">원문</a></div>
 </div>
 <div class="card" data-cat="AI·가속기">
   <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
   <h2>퀄컴, 신임 총괄 부사장으로 모토로라 사장 영입</h2>
   <p class="sum">퀄컴이 신임 총괄 부사장(EVP)으로 세르지오 부니악 모토로라 모빌리티(모토로라) 사장을 영입했다고 21일 밝혔다.세르지오 부니악 신임 총괄 부사장은 9월 2일 공식 취임하며, 모바일·컴퓨트·퍼스널 인공지능(AI) 그룹 본부장(GGM)을 맡는다.스마트폰과 개인용 컴퓨터(PC), 스마트 웨어러블, 확장현실(XR) 제품을 포함한 퀄컴의 AI 단말기(디바이스) </p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-21 14:04 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61196">원문</a></div>
 </div>
 <div class="card" data-cat="투자·실적">
   <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
   <h2>인텔, &quot;글로벌 로보틱스 준비 미흡하다&quot;</h2>
   <p class="sum">인텔은 로보틱스 수요가 과반을 넘지만 준비 수준은 이에 턱없이 부족하다고 20일 밝혔다.인텔은 맨바이츠도그, 콜맨파크스리서치에 의뢰해 기업 임원, 로봇 전문가, 정부 관계자 800여명을 대상으로 조사한 결과 기업·기관 60%가 향후 5년 이내 조직 내 로봇을 도입한다고 발표했다. 조사 대상은 연간 매출 5억달러(7000억원) 규모 조직이다.현재 인력 12%</p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-21 14:01 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61179">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>DB하이텍, 인도 전자산업 전시회 &#x27;일렉트로니카 인디아&#x27; 참가</h2>
   <p class="sum">DB하이텍이 인도 시장 공략을 본격화한다고 20일 밝혔다.DB하이텍은 다음달 16~18일(현지시간) 인도 벵갈루루에서 열리는 일렉트로니카 인디어 2026에 참가한다. 일렉트로니카 인디아는 남아시아 전자산업 전시회로 전자부품과 시스템, 애플리케이션 솔루션을 아우른다.차세대 전력반도체인 탄화규소(SiC)와 질화갈륨(GaN) 공정 개발 현황을 공개한다. 인도 현</p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-21 07:38 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61176">원문</a></div>
 </div>
 <div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>Micron Unveils Micron Research Labs, a U.S.-Based Long-Horizon Innovation Hub</h2>
   <p class="sum">Backed by a $10 billion planned investment over the next decade, Micron Research Labs will unite academia, government, startups and industry to advance the memory and compute breakthroughs that will d</p>
+  
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-21 05:12 · <a href="https://www.semiconductor-digest.com/micron-unveils-micron-research-labs-a-u-s-based-long-horizon-innovation-hub/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=micron-unveils-micron-research-labs-a-u-s-based-long-horizon-innovation-hub">원문</a></div>
 </div>
 <div class="card" data-cat="투자·실적">
   <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
   <h2>해치텍, 오는 25일 코스닥 상장...230억원 조달</h2>
   <p class="sum">센서 집적회로(IC) 전문 업체 해치텍이 오는 25일 코스닥에 입성한다.한국거래소는 해치텍의 코스닥 신규상장을 최종 승인했다고 21일 밝혔다. 25일부터 매매가 가능하다. 주당 가액은 2만3000원이다. 시가총액은 1285억이다.해치텍은 지난해 11월 코스닥 기술특례상장을 위해 기술보증기금과 나이스평가정보에 반도체 설계 능력에 대해 기술 평가를 받았다. 이</p>
+  
   <div class="src">더일렉 반도체 · 발행 2026-08-21 17:03 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61214">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>Qnity Accelerates Advanced Node Materials Innovation with Next-Generation KLA Inspection Capabilities</h2>
   <p class="sum">Investment sharpens process control from materials development through manufacturing.</p>
+  
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-21 03:54 · <a href="https://www.semiconductor-digest.com/qnity-accelerates-advanced-node-materials-innovation-with-next-generation-kla-inspection-capabilities/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=qnity-accelerates-advanced-node-materials-innovation-with-next-generation-kla-inspection-capabilities">원문</a></div>
 </div>
 

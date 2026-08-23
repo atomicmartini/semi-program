@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,18 +84,21 @@
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>Creating Pathways to Semiconductor Careers: Intel Launches SEPP</h2>
   <p class="sum">As the semiconductor industry continues to drive innovation across nearly every aspect of modern life, Intel is investing in the next generation of talent through the launch of the Semiconductor Educa</p>
+  
   <div class="src">Intel Newsroom · 발행 2026-08-07 04:30 · <a href="https://newsroom.intel.com/corporate/creating-pathways-to-semiconductor-careers-intel-launches-sepp">원문</a></div>
 </div>
 <div class="card" data-cat="AI·가속기">
   <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
   <h2>TFLN: A Material Platform Reaches an Inflection Point</h2>
   <p class="sum">Thin-film lithium niobate (TFLN) has spent years confined to defense applications and lab demonstrations; G&amp;H&#x27;s Stratos Kehayas argues it&#x27;s now graduating into mainstream commercial photonics, driven </p>
+  
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-07 21:52 · <a href="https://www.semiconductor-digest.com/tfln-a-material-platform-reaches-an-inflection-point/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=tfln-a-material-platform-reaches-an-inflection-point">원문</a></div>
 </div>
 <div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>Everspin Technologies and MaxLinear Collaborate to Advance Memory Efficiency in AI Servers</h2>
   <p class="sum">Work will focus on persistent MRAM for metadata management, log data, write buffering and cache functions.</p>
+  
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-07 06:13 · <a href="https://www.semiconductor-digest.com/everspin-technologies-and-maxlinear-collaborate-to-advance-memory-efficiency-in-ai-servers-2/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=everspin-technologies-and-maxlinear-collaborate-to-advance-memory-efficiency-in-ai-servers-2">원문</a></div>
 </div>
 

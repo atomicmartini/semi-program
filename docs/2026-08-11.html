@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,24 +84,28 @@
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 베트남 하노이에 ‘비즈니스 익스피리언스 스튜디오’ 개관…기업 디지털 전환 지원</h2>
   <p class="sum">삼성전자 베트남 법인이 하노이에 ‘비즈니스 익스피리언스 스튜디오(Business Experience Studio, 이하 BES)’를 공식 개관하며 베트남 기업과 기관의 디지털 전환을 지원했다. BES는 실제 비즈니스 환경을 구현한 공간에서 기업 고객들이 삼성전자의 다양한 기술과 통합 솔루션을 직접 체험할 수 있도록 마련됐다. BES는 공공행정과 제조, 교육</p>
+  
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-11 22:18 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%b2%a0%ed%8a%b8%eb%82%a8-%ed%95%98%eb%85%b8%ec%9d%b4%ec%97%90-%eb%b9%84%ec%a6%88%eb%8b%88%ec%8a%a4-%ec%9d%b5%ec%8a%a4%ed%94%bc%eb%a6%ac%ec%96%b8">원문</a></div>
 </div>
 <div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 독일 ‘게임스컴 2026’ 참가… 풀스택 게이밍 경험 제시</h2>
   <p class="sum">삼성전자가 26일부터 30일(현지시간)까지 독일 쾰른에서 열리는 ‘게임스컴 2026(gamescom 2026)’에 참가해 여러 게이밍 플랫폼을 유기적으로 연결하는 풀스택 게이밍 경험을 선보인다. 게임스컴은 지난해 방문객 수만 36만명에 달하는 세계 최대 규모 게임 전시회다. 올해는 약 1500개 소프트웨어·하드웨어·게임 콘텐츠 제작사가 참여하며, ‘미래를 </p>
+  
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-11 17:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%8f%85%ec%9d%bc-%ea%b2%8c%ec%9e%84%ec%8a%a4%ec%bb%b4-2026-%ec%b0%b8%ea%b0%80-%ed%92%80%ec%8a%a4%ed%83%9d-%ea%b2%8c%ec%9d%b4%eb%b0%8d-%ea%b2%bd">원문</a></div>
 </div>
 <div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>Intel Announces Upsize and Pricing of $20 Billion Common Stock Offering</h2>
   <p class="sum">Intel today announced the pricing of its previously announced registered public offering of common stock.Intel priced the underwritten public offering of 210,526,315 shares of common stock at a public</p>
+  
   <div class="src">Intel Newsroom · 발행 2026-08-11 15:36 · <a href="https://newsroom.intel.com/corporate/intel-announces-upsize-and-pricing-of-20-billion-common-stock-offering">원문</a></div>
 </div>
 <div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>Intel Gamer Days 2026 Kicking Off with AAA Gaming Bundle &amp; Partnerships</h2>
   <p class="sum">What’s New: Intel’s annual Gamer Days campaign officially kicks off today, bringing gamers around the globe exciting new retail promotions, giveaways, and content collaborations with participating par</p>
+  
   <div class="src">Intel Newsroom · 발행 2026-08-11 00:00 · <a href="https://newsroom.intel.com/client-computing/intel-gamer-days-2026-kicking-off-with-aaa-gaming-bundle-partnerships">원문</a></div>
 </div>
 

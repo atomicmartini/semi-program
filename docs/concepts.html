@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,31 +84,31 @@
   <div class="ehead"><h2>패키징</h2> <span class="en">Packaging</span>
     <span class="cat">패키징</span></div>
   <p class="def">칩을 외부 환경으로부터 보호하고 단자 간 연결을 위해 전기적으로 포장하는 공정. 반도체 제조의 마지막 단계로 상호배선·전력 공급·방열을 담당한다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/">삼성반도체 용어사전 — 패키징</a> · 확인일 2026-08-22</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/">삼성반도체 용어사전 — 패키징</a> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="wafer">
   <div class="ehead"><h2>웨이퍼</h2> <span class="en">Wafer</span>
     <span class="cat">장비·소재</span></div>
   <p class="def">실리콘 등의 단결정 기둥을 얇게 자른 원판. 그 위에 전자회로를 새겨 칩을 만든다. 직경이 클수록 버리는 부분이 적어 효율이 높다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/">삼성반도체 용어사전 — 웨이퍼</a> · 확인일 2026-08-22</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/">삼성반도체 용어사전 — 웨이퍼</a> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="foundry">
   <div class="ehead"><h2>파운드리</h2> <span class="en">Foundry</span>
     <span class="cat">파운드리·공정</span></div>
   <p class="def">반도체 제조 과정만 전담하는 위탁 생산업체. 직접 설계하지 않고 외부 기업의 설계를 받아 생산한다. 설계 전문 기업(팹리스)이 생산시설 투자를 피하려고 활용한다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/">삼성반도체 용어사전 — 파운드리</a> · 확인일 2026-08-22</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/">삼성반도체 용어사전 — 파운드리</a> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="dram">
   <div class="ehead"><h2>D램</h2> <span class="en">DRAM</span>
     <span class="cat">메모리</span></div>
   <p class="def">용량이 크고 속도가 빨라 컴퓨터의 주력 메모리로 쓰이는 휘발성 메모리. 커패시터의 전하가 새기 때문에 일정 시간마다 데이터를 되살리는 &#x27;리프레시&#x27;가 필요하다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/">삼성반도체 용어사전 — D램</a> · 확인일 2026-08-22</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/">삼성반도체 용어사전 — D램</a> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="yield">
   <div class="ehead"><h2>수율</h2> <span class="en">Yield</span>
     <span class="cat">파운드리·공정</span></div>
   <p class="def">웨이퍼 한 장에 설계된 최대 칩 개수 대비 실제로 나온 정상 칩 개수의 백분율. 높을수록 생산성이 좋아 공정장비 정확도·클린룸 청정도 등을 관리해 끌어올린다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/">삼성반도체 용어사전 — 수율</a> · 확인일 2026-08-22</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/">삼성반도체 용어사전 — 수율</a> · 확인일 2026-08-23</div>
 </div>
 
 

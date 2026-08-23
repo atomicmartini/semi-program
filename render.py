@@ -39,6 +39,29 @@ STYLE = """
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -104,9 +127,47 @@ CARD = """<div class="card" data-cat="{category}">
   <span class="cat">{category}</span> <span class="tier">{tier}</span>
   <h2>{title}</h2>
   <p class="sum">{summary}</p>
+  {thread}
   <div class="src">{source} · 발행 {published} · <a href="{url}">원문</a></div>
 </div>
 """
+
+THREAD = """<details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 {n}건</summary>
+  <div class="rail">{steps}</div>
+</details>
+"""
+
+STEP = """<div class="step">
+  <span class="when">{when}</span>
+  <div class="what"><a href="{url}">{title}</a></div>
+</div>
+"""
+
+
+def load_related(day: str) -> dict[str, list[dict]]:
+    """<날짜>.linked.json 에서 URL → 이어지는 흐름 목록. 파일이 없으면 빈 dict (에러 아님)."""
+    path = ARTICLE_DIR / f"{day}.linked.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {a["url"]: a.get("related", []) for a in data["articles"]}
+
+
+def render_thread(related: list[dict]) -> str:
+    """흐름이 없으면 빈 문자열. link.py 는 최신순으로 주지만 화면은 오래된 것부터 보여준다."""
+    if not related:
+        return ""
+    oldest_first = sorted(related, key=lambda r: r["date"])
+    steps = "".join(
+        STEP.format(
+            when=html.escape(r["date"][5:] or r["date"]),
+            title=html.escape(r["title"]),
+            url=html.escape(r["url"], quote=True),
+        )
+        for r in oldest_first
+    )
+    return THREAD.format(n=len(related), steps=steps)
 
 
 def _status() -> tuple[int, int]:
@@ -148,6 +209,7 @@ def render_news(day: str, terms: list[dict]) -> str:
     """하루치 목록 HTML."""
     picked, _, _ = select_day(day)
     ok, total = _status()
+    related_map = load_related(day)
 
     if picked:
         body = "".join(
@@ -156,6 +218,7 @@ def render_news(day: str, terms: list[dict]) -> str:
                 tier=html.escape(a.get("tier", "")),
                 title=glossary.link_terms(html.escape(a["title"]), terms),
                 summary=glossary.link_terms(html.escape(a["summary"][:200]), terms),
+                thread=render_thread(related_map.get(a["url"], [])),
                 source=html.escape(a["source"]),
                 published=html.escape((a.get("published") or "—")[:16].replace("T", " ")),
                 url=html.escape(a["url"], quote=True),

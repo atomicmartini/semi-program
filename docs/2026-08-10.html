@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,18 +84,21 @@
   <span class="cat">패키징</span> <span class="tier">[공식]</span>
   <h2>Intel Announces Proposed $15 Billion Common Stock Offering</h2>
   <p class="sum">SANTA CLARA, Calif., August 10, 2026 - Intel Corporation (Nasdaq: INTC) today announced a $15 billion underwritten public offering of common stock.Why NowCustomers continue to signal a strong and sust</p>
+  
   <div class="src">Intel Newsroom · 발행 2026-08-10 20:30 · <a href="https://newsroom.intel.com/corporate/intel-announces-proposed-15-billion-common-stock-offering">원문</a></div>
 </div>
 <div class="card" data-cat="파운드리·공정">
   <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
   <h2>Innovating Through Precision and Speed: How Laser Etching Is Redefining RF Manufacturing</h2>
   <p class="sum">As satellites shrink, 5G systems scale, and sensing technologies push into harsher and more demanding environments, the margin for error all but disappears. Circuit traces must be tighter. Performance</p>
+  
   <div class="src">3D InCites · 발행 2026-08-10 23:52 · <a href="https://www.3dincites.com/2026/08/heraeus-electronics-laser-etching-article/">원문</a></div>
 </div>
 <div class="card" data-cat="메모리">
   <span class="cat">메모리</span> <span class="tier">[2차]</span>
   <h2>Conference Report: System Level Thinking Needed in AI Era</h2>
   <p class="sum">Progress on Perf/Watt and Perf/TCO now depends on co-optimizing compute, memory, and interconnect as a system, not as separate scaling problems</p>
+  
   <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-10 23:30 · <a href="https://www.semiconductor-digest.com/conference-report-system-level-thinking-needed-in-ai-era/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=conference-report-system-level-thinking-needed-in-ai-era">원문</a></div>
 </div>
 

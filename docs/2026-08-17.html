@@ -25,6 +25,29 @@
   .none { color:#94908a; }
   a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
   a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
   .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
   .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
@@ -61,12 +84,14 @@
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성, 국제올림피아드 수상자에게 장학금… 이공계 인재 육성에 기여</h2>
   <p class="sum">삼성전자∙삼성바이오, 국제올림피아드 수상자 15명에 장학금 수여… 이공계 인재 육성에 기여 삼성전자와 삼성바이오로직스∙삼성바이오에피스는 지난 7월 열린 국제올림피아드 수학∙물리∙생물 대회에서 우수한 성적으로 메달을 획득한 한국 대표 15명과 학부모들을 각 사업장에 초청해 장학금을 수여하고 격려하는 행사를 진행했다. 삼성전자 DX부문은 이달 11일 수원캠퍼스</p>
+  
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-17 21:57 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1-%ea%b5%ad%ec%a0%9c%ec%98%ac%eb%a6%bc%ed%94%bc%ec%95%84%eb%93%9c-%ec%88%98%ec%83%81%ec%9e%90%ec%97%90%ea%b2%8c-%ec%9e%a5%ed%95%99%ea%b8%88-%ec%9d%b4%ea%b3%b5%ea%b3%84">원문</a></div>
 </div>
 <div class="card" data-cat="미분류">
   <span class="cat">미분류</span> <span class="tier">[공식]</span>
   <h2>삼성전자, 액티비전 블리자드와 ‘콜 오브 듀티: 모던 워페어 4’ 파트너십 체결</h2>
   <p class="sum">삼성전자가 글로벌 게임 개발사 액티비전 블리자드(Activision Blizzard)와 대표 1인칭 슈팅 게임(FPS) 신작 ‘콜 오브 듀티®: 모던 워페어 4(Call of Duty®: Modern Warfare® 4)’의 공식 파트너십을 체결했다. 삼성전자는 ‘콜 오브 듀티®: 모던 워페어 4’의 개발 단계부터 참여해 TV, 모니터, 사운드바, Wi-F</p>
+  
   <div class="src">삼성전자 뉴스룸 · 발행 2026-08-17 17:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%95%a1%ed%8b%b0%eb%b9%84%ec%a0%84-%eb%b8%94%eb%a6%ac%ec%9e%90%eb%93%9c%ec%99%80-%ec%bd%9c-%ec%98%a4%eb%b8%8c-%eb%93%80%ed%8b%b0-%eb%aa%a8%eb%8d%98-%ec%9b%8c">원문</a></div>
 </div>
 
