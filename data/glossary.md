@@ -10,11 +10,11 @@
 
 | 용어 | 영문 | 별칭 | 분류 | 설명 | 출처 | 확인일 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 패키징 | Packaging | packaging, 후공정 | 패키징 | 칩을 외부 환경으로부터 보호하고 단자 간 연결을 위해 전기적으로 포장하는 공정. 반도체 제조의 마지막 단계로 상호배선·전력 공급·방열을 담당한다. | [삼성반도체 용어사전 — 패키징](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/) `[공식]` | 2026-08-22 |
-| 웨이퍼 | Wafer | wafer | 장비·소재 | 실리콘 등의 단결정 기둥을 얇게 자른 원판. 그 위에 전자회로를 새겨 칩을 만든다. 직경이 클수록 버리는 부분이 적어 효율이 높다. | [삼성반도체 용어사전 — 웨이퍼](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/) `[공식]` | 2026-08-22 |
-| 파운드리 | Foundry | foundry | 파운드리·공정 | 반도체 제조 과정만 전담하는 위탁 생산업체. 직접 설계하지 않고 외부 기업의 설계를 받아 생산한다. 설계 전문 기업(팹리스)이 생산시설 투자를 피하려고 활용한다. | [삼성반도체 용어사전 — 파운드리](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/) `[공식]` | 2026-08-22 |
-| D램 | DRAM | dram, 디램 | 메모리 | 용량이 크고 속도가 빨라 컴퓨터의 주력 메모리로 쓰이는 휘발성 메모리. 커패시터의 전하가 새기 때문에 일정 시간마다 데이터를 되살리는 '리프레시'가 필요하다. | [삼성반도체 용어사전 — D램](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/) `[공식]` | 2026-08-22 |
-| 수율 | Yield | yield | 파운드리·공정 | 웨이퍼 한 장에 설계된 최대 칩 개수 대비 실제로 나온 정상 칩 개수의 백분율. 높을수록 생산성이 좋아 공정장비 정확도·클린룸 청정도 등을 관리해 끌어올린다. | [삼성반도체 용어사전 — 수율](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/) `[공식]` | 2026-08-22 |
+| 패키징 | Packaging | packaging, 후공정 | 패키징 | 칩을 외부 환경으로부터 보호하고 단자 간 연결을 위해 전기적으로 포장하는 공정. 반도체 제조의 마지막 단계로 상호배선·전력 공급·방열을 담당한다. | [삼성반도체 용어사전 — 패키징](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/) `[공식]` | 2026-08-23 |
+| 웨이퍼 | Wafer | wafer | 장비·소재 | 실리콘 등의 단결정 기둥을 얇게 자른 원판. 그 위에 전자회로를 새겨 칩을 만든다. 직경이 클수록 버리는 부분이 적어 효율이 높다. | [삼성반도체 용어사전 — 웨이퍼](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/) `[공식]` | 2026-08-23 |
+| 파운드리 | Foundry | foundry | 파운드리·공정 | 반도체 제조 과정만 전담하는 위탁 생산업체. 직접 설계하지 않고 외부 기업의 설계를 받아 생산한다. 설계 전문 기업(팹리스)이 생산시설 투자를 피하려고 활용한다. | [삼성반도체 용어사전 — 파운드리](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/) `[공식]` | 2026-08-23 |
+| D램 | DRAM | dram, 디램 | 메모리 | 용량이 크고 속도가 빨라 컴퓨터의 주력 메모리로 쓰이는 휘발성 메모리. 커패시터의 전하가 새기 때문에 일정 시간마다 데이터를 되살리는 '리프레시'가 필요하다. | [삼성반도체 용어사전 — D램](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/) `[공식]` | 2026-08-23 |
+| 수율 | Yield | yield | 파운드리·공정 | 웨이퍼 한 장에 설계된 최대 칩 개수 대비 실제로 나온 정상 칩 개수의 백분율. 높을수록 생산성이 좋아 공정장비 정확도·클린룸 청정도 등을 관리해 끌어올린다. | [삼성반도체 용어사전 — 수율](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/) `[공식]` | 2026-08-23 |
 
 > **별칭**은 기사 본문에서 이 용어를 찾을 때 쓴다. 영문 기사가 많아 영어 표기가 필요하다.
 > 설명은 출처 내용을 짧게 옮긴 것이며 원문을 통째로 복제하지 않는다 (`CLAUDE.md`).
