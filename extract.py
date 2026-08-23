@@ -21,7 +21,10 @@ ARTICLE_DIR = HERE / "data" / "articles"
 ENV_FILE = HERE / ".env"
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "google/gemma-4-26b-a4b-it:free"
+# 무료 모델은 언제든 막힌다. 이 한 줄만 바꾸면 갈아탈 수 있게 둔다.
+# google/gemma-4-* 는 2026-08-23 기준 상위 제공자(Google AI Studio) 공유 풀이 429 로 계속 막혔다.
+# 다른 후보 — nvidia/nemotron-3-nano-30b-a3b:free (빠름) · dots-studio/dots-3-note-preview:free
+MODEL = "nvidia/nemotron-3-super-120b-a12b:free"
 
 PROMPT = """다음 반도체 뉴스 기사를 분석해 아래 JSON 형식으로만 답하라. 다른 말은 하지 마라.
 
@@ -37,6 +40,10 @@ relations 는 기사에 **명시적으로 등장하는** 기업 간 관계(경�
 """
 
 _JSON_BLOCK = re.compile(r"\{.*\}", re.S)
+
+
+class ModelError(RuntimeError):
+    """모델이 답을 못 준 경우. 그 기사만 실패로 두고 나머지는 계속한다."""
 
 
 def _load_key() -> str:
@@ -62,6 +69,11 @@ def _call_model(prompt: str, key: str) -> str:
     )
     with urllib.request.urlopen(req, timeout=60) as resp:
         data = json.loads(resp.read().decode("utf-8"))
+
+    # HTTP 200 인데 choices 가 없을 때가 있다 (제공자가 중간에 실패하면 error 만 온다).
+    # 여기서 KeyError 로 터지면 앞서 처리한 기사까지 통째로 날아간다. 한 건만 실패로 넘긴다.
+    if "choices" not in data:
+        raise ModelError(json.dumps(data, ensure_ascii=False)[:200])
     return data["choices"][0]["message"]["content"]
 
 
@@ -93,7 +105,7 @@ def extract_one(article: dict, categories: list[str], key: str) -> dict:
 
     try:
         raw = _call_model(prompt, key)
-    except (urllib.error.URLError, urllib.error.HTTPError) as e:
+    except (urllib.error.URLError, urllib.error.HTTPError, ModelError, TimeoutError) as e:
         return {**article, "summary_ko": None, "relations": [], "extract_error": str(e)}
 
     parsed = _parse_json(raw)
