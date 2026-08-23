@@ -34,6 +34,8 @@ STYLE = """
   .tier { font-size:12px; color:#0a7d3c; }
   .card h2 { font-size:17px; margin:4px 0 6px; }
   .sum { color:#63605a; font-size:14px; margin:0; }
+  .by-ai { font-size:11px; color:#94908a; border:1px solid #e4e2dd; border-radius:99px;
+    padding:1px 7px; margin-left:6px; white-space:nowrap; vertical-align:1px; }
   .src { font-size:12px; color:#94908a; margin-top:10px; }
   .src a { color:#63605a; }
   .none { color:#94908a; }
@@ -131,7 +133,7 @@ document.addEventListener('click', function (e) {{
 CARD = """<div class="card" data-cat="{category}">
   <span class="cat">{category}</span> <span class="tier">{tier}</span>
   <h2>{title}</h2>
-  <p class="sum">{summary}</p>
+  <p class="sum">{summary}{made_by}</p>
   {thread}
   <div class="src">{source} · 발행 {published} · <a href="{url}">원문</a></div>
 </div>
@@ -157,6 +159,27 @@ def load_related(day: str) -> dict[str, list[dict]]:
         return {}
     data = json.loads(path.read_text(encoding="utf-8"))
     return {a["url"]: a.get("related", []) for a in data["articles"]}
+
+
+def load_extracted(day: str) -> dict[str, dict]:
+    """<날짜>.extracted.json 에서 URL → 뽑아 둔 결과. 파일이 없으면 빈 dict (에러 아님)."""
+    path = ARTICLE_DIR / f"{day}.extracted.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {a["url"]: a for a in data["articles"]}
+
+
+def choose_summary(article: dict, extracted: dict[str, dict]) -> tuple[str, bool]:
+    """카드에 보여줄 요약. 돌려주는 것 — (보여줄 글, 모델이 만든 것인가)
+
+    한국어 요약이 있으면 그것을 쓴다. 없거나 비었으면 원래 요약으로 되돌린다 —
+    빈 카드를 만들지 않는다.
+    """
+    summary_ko = (extracted.get(article["url"]) or {}).get("summary_ko")
+    if summary_ko:
+        return summary_ko, True
+    return article["summary"], False
 
 
 def render_thread(related: list[dict]) -> str:
@@ -232,25 +255,36 @@ def day_links(current: str = "") -> str:
     return render_day_links(article_days(), current)
 
 
+def _render_card(a: dict, terms: list[dict], related_map: dict, extracted: dict) -> str:
+    """기사 카드 하나."""
+    summary, by_model = choose_summary(a, extracted)
+    # 뽑아 둔 분류가 있으면 그것을 쓴다 — extract.py 가 모델 답을 코드로 걸러 둔 값이다.
+    category = (extracted.get(a["url"]) or {}).get("category") or a.get("category", UNCLASSIFIED)
+
+    return CARD.format(
+        category=html.escape(category),
+        tier=html.escape(a.get("tier", "")),
+        title=glossary.link_terms(html.escape(a["title"]), terms),
+        summary=glossary.link_terms(html.escape(summary[:300]), terms),
+        # 모델이 쓴 문장이다. 기자가 쓴 것처럼 보이지 않게 밝힌다.
+        made_by=' <span class="by-ai">AI 요약</span>' if by_model else "",
+        thread=render_thread(related_map.get(a["url"], [])),
+        source=html.escape(a["source"]),
+        published=html.escape((a.get("published") or "—")[:16].replace("T", " ")),
+        url=html.escape(a["url"], quote=True),
+    )
+
+
 def render_news(day: str, terms: list[dict]) -> str:
     """하루치 목록 HTML."""
     picked, _, _ = select_day(day)
     ok, total = _status()
     related_map = load_related(day)
+    extracted = load_extracted(day)
 
     if picked:
         body = "".join(
-            CARD.format(
-                category=html.escape(a.get("category", "미분류")),
-                tier=html.escape(a.get("tier", "")),
-                title=glossary.link_terms(html.escape(a["title"]), terms),
-                summary=glossary.link_terms(html.escape(a["summary"][:200]), terms),
-                thread=render_thread(related_map.get(a["url"], [])),
-                source=html.escape(a["source"]),
-                published=html.escape((a.get("published") or "—")[:16].replace("T", " ")),
-                url=html.escape(a["url"], quote=True),
-            )
-            for a in picked
+            _render_card(a, terms, related_map, extracted) for a in picked
         )
     else:
         # '기사 없음' 과 '수집 실패' 는 다르다 (CLAUDE.md).

@@ -96,6 +96,17 @@ def _verify_quote(quote: str, haystack: str) -> bool:
     return bool(quote) and _norm(quote) in _norm(haystack)
 
 
+def resolve_category(model_answer: str | None, keyword_answer: str, categories: list[str]) -> str:
+    """카테고리는 코드가 정한다 (CLAUDE.md).
+
+    모델이 목록에 없는 것을 지어내거나 `미분류` 로 답하면 키워드 분류를 그대로 쓴다.
+    모델을 바꿔도 이 규칙은 안 흔들린다.
+    """
+    if model_answer in categories and model_answer != UNCLASSIFIED:
+        return model_answer
+    return keyword_answer
+
+
 def extract_one(article: dict, categories: list[str], key: str) -> dict:
     """기사 한 건을 모델에 보내고, 결과를 코드로 검산해 돌려준다."""
     haystack = f"{article['title']} {article['summary']}"
@@ -117,7 +128,10 @@ def extract_one(article: dict, categories: list[str], key: str) -> dict:
             "extract_error": "모델 출력을 JSON 으로 못 읽음",
         }
 
-    category = parsed.get("category") if parsed.get("category") in categories else UNCLASSIFIED
+    # filter.py 가 키워드로 매긴 분류를 되돌릴 자리로 쓴다. 모델이 틀려도 정보를 안 잃는다.
+    category = resolve_category(
+        parsed.get("category"), article.get("category", UNCLASSIFIED), categories
+    )
 
     relations = []
     for r in parsed.get("relations", []) or []:
@@ -141,21 +155,43 @@ def extract_one(article: dict, categories: list[str], key: str) -> dict:
     }
 
 
-def extract_day(day: str) -> tuple[list[dict], int]:
-    """선별된 하루치 기사를 전부 처리한다. (결과, 실패 건수)"""
+def load_done(day: str) -> dict[str, dict]:
+    """이미 뽑아 둔 결과. 실패한 것은 다시 하도록 빼고 돌려준다."""
+    path = ARTICLE_DIR / f"{day}.extracted.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        a["url"]: a
+        for a in data["articles"]
+        if not a.get("extract_error") and a.get("summary_ko")
+    }
+
+
+def extract_day(day: str) -> tuple[list[dict], int, int]:
+    """선별된 하루치 기사를 처리한다. (결과, 실패 건수, 건너뛴 건수)
+
+    이미 뽑아 둔 기사는 모델을 다시 부르지 않는다 — 125일치를 돌리면 수백 번이라
+    중간에 끊기면 처음부터 다시 하게 된다.
+    """
     picked, _, _ = select_day(day)
     _, _, categories = read_keywords()
     cat_names = [*categories, UNCLASSIFIED]
     key = _load_key()
+    done = load_done(day)
 
     out: list[dict] = []
-    errors = 0
+    errors = skipped = 0
     for a in picked:
+        if a["url"] in done:
+            out.append(done[a["url"]])
+            skipped += 1
+            continue
         result = extract_one(a, cat_names, key)
         if result.get("extract_error"):
             errors += 1
         out.append(result)
-    return out, errors
+    return out, errors, skipped
 
 
 def save_day(day: str, extracted: list[dict]) -> Path:
@@ -176,11 +212,14 @@ def main(argv: list[str]) -> int:
         return 1
 
     day = argv[0]
-    extracted, errors = extract_day(day)
+    extracted, errors, skipped = extract_day(day)
     save_day(day, extracted)
 
-    n_relations = sum(len(a["relations"]) for a in extracted)
-    print(f"{day} — {len(extracted)}건 처리 · 관계 {n_relations}건 · 실패 {errors}건")
+    n_relations = sum(len(a.get("relations") or []) for a in extracted)
+    print(
+        f"{day} — {len(extracted)}건 처리 · 새로 부름 {len(extracted) - skipped}건"
+        f" · 이미 있어 건너뜀 {skipped}건 · 관계 {n_relations}건 · 실패 {errors}건"
+    )
     if errors:
         print("실패한 기사는 summary_ko 가 비어 있습니다. extract_error 필드를 확인하세요.")
 

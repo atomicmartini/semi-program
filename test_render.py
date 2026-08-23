@@ -5,7 +5,7 @@
 
 import unittest
 
-from render import render_day_links, render_thread
+from render import choose_summary, render_day_links, render_thread
 
 
 class TestRenderThread(unittest.TestCase):
@@ -61,6 +61,38 @@ class TestRenderDayLinks(unittest.TestCase):
 
     def test_empty_days_gives_empty_string(self):
         self.assertEqual(render_day_links([]), "")
+
+
+class TestChooseSummary(unittest.TestCase):
+    """카드에 보여줄 요약 고르기 (슬라이스 05).
+
+    돌려주는 것 — (보여줄 글, 모델이 만든 것인가)
+    """
+
+    def setUp(self):
+        self.article = {"url": "u1", "summary": "The global IC industry is confronting..."}
+
+    def test_prefers_korean_summary(self):
+        text, by_model = choose_summary(self.article, {"u1": {"summary_ko": "한국어 요약이다."}})
+        self.assertEqual(text, "한국어 요약이다.")
+        self.assertTrue(by_model)
+
+    def test_falls_back_when_no_extracted_file(self):
+        text, by_model = choose_summary(self.article, {})
+        self.assertEqual(text, self.article["summary"])
+        self.assertFalse(by_model)
+
+    def test_falls_back_when_summary_ko_is_empty(self):
+        # 빈 카드를 만들지 않는다
+        text, by_model = choose_summary(self.article, {"u1": {"summary_ko": ""}})
+        self.assertEqual(text, self.article["summary"])
+        self.assertFalse(by_model)
+
+    def test_falls_back_when_summary_ko_is_none(self):
+        # extract_error 가 난 기사는 summary_ko 가 None 이다
+        text, by_model = choose_summary(self.article, {"u1": {"summary_ko": None}})
+        self.assertEqual(text, self.article["summary"])
+        self.assertFalse(by_model)
 
 
 if __name__ == "__main__":
