@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>어플라이드머티어리얼즈 — 반도체 뉴스 데일리</title>
+<style>
+  body { margin:0 auto; padding:24px; max-width:900px; background:#fbfbfa; color:#1c1b19;
+    font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif; line-height:1.6;
+    word-break:keep-all; }
+  h1 { font-size:24px; margin:0; }
+  nav { display:flex; gap:20px; margin:14px 0 20px; padding-bottom:8px;
+    border-bottom:1px solid #cfccc4; }
+  nav a { color:#94908a; text-decoration:none; padding-bottom:8px; margin-bottom:-9px; }
+  nav a.on { color:#1c1b19; font-weight:700; border-bottom:2px solid #1c1b19; }
+  .meta { color:#63605a; font-size:14px; margin:6px 0 20px; }
+  .card { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:16px 18px; margin-bottom:12px; }
+  .cat { font-size:12px; color:#94908a; }
+  .tier { font-size:12px; color:#0a7d3c; }
+  .card h2 { font-size:17px; margin:4px 0 6px; }
+  .sum { color:#63605a; font-size:14px; margin:0; }
+  .by-ai { font-size:11px; color:#94908a; border:1px solid #e4e2dd; border-radius:99px;
+    padding:1px 7px; margin-left:6px; white-space:nowrap; vertical-align:1px; }
+  .src { font-size:12px; color:#94908a; margin-top:10px; }
+  .src a { color:#63605a; }
+  .none { color:#94908a; }
+  a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
+  a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
+  .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
+  .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
+  .ehead { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .entry h2 { font-size:19px; margin:0; }
+  .en { font-size:13px; color:#94908a; }
+  .entry .cat { font-size:11px; background:#f2f1ee; padding:2px 8px; border-radius:99px; }
+  .def { color:#63605a; font-size:14px; margin:8px 0 0; }
+  .entry .meta { font-size:12px; color:#94908a; margin:12px 0 0;
+    padding-top:10px; border-top:1px solid #e4e2dd; }
+  .entry .meta a { color:#63605a; }
+  footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
+    font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
+  .days { margin:22px 0 0; font-size:13px; }
+  .days-head { color:#94908a; margin-bottom:6px; }
+  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    padding:4px 0; border-top:1px solid #eeece7; }
+  .days .ym { color:#94908a; font-variant-numeric:tabular-nums; min-width:62px; }
+  .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
+  .days a:hover { text-decoration:underline; }
+  .days b { color:#1c1b19; }
+  .cgroup { margin:0 0 22px; }
+  .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
+    border-bottom:1px solid #e4e2dd; }
+  .cgroup h2 .n { font-size:12px; color:#94908a; margin-left:7px; font-weight:400; }
+  .colist { display:flex; gap:8px; flex-wrap:wrap; }
+  a.co { font-size:14px; padding:7px 13px; border-radius:8px; background:#fff;
+    border:1px solid #e4e2dd; color:#1c1b19; text-decoration:none; }
+  a.co:hover { border-color:#0b5fff; color:#0b5fff; }
+  a.co .n { font-size:12px; color:#94908a; margin-left:6px; }
+  .profile { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:18px 20px; margin-bottom:18px; }
+  .ctags { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 0; }
+  .ctag { font-size:11px; background:#f2f1ee; color:#63605a; padding:2px 9px;
+    border-radius:99px; }
+  .colist-articles { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:6px 18px; }
+  .carow { display:flex; gap:14px; align-items:baseline; padding:9px 0;
+    border-bottom:1px solid #f0eeea; }
+  .carow:last-child { border-bottom:none; }
+  .carow .when { font-size:12px; color:#94908a; font-variant-numeric:tabular-nums;
+    white-space:nowrap; }
+  .carow .what a { color:#1c1b19; text-decoration:none; font-size:14px; }
+  .carow .what a:hover { text-decoration:underline; }
+  .carow .src { font-size:11px; color:#94908a; margin-left:6px; }
+</style>
+</head>
+<body>
+<h1>반도체 뉴스 데일리</h1>
+<nav>
+  <a class="" href="../index.html">뉴스</a>
+  <a class="" href="../concepts.html">개념 5</a>
+  <a class="on" href="../companies.html">기업 38</a>
+</nav>
+<div class="meta">기사 4건</div>
+
+<div class="profile">
+  <div class="ehead"><h2>어플라이드머티어리얼즈</h2> <span class="en">Applied Materials</span>
+    <span class="cat">미국</span></div>
+  <div class="ctags"><span class="ctag">장비</span></div>
+  <p class="none">설명은 아직 출처를 확인하지 못했습니다.</p>
+</div>
+<div class="colist-articles"><div class="carow">
+  <span class="when">2026-08-06</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/conference-report-hybrid-bonding-advances-at-ectc-meeting/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=conference-report-hybrid-bonding-advances-at-ectc-meeting">Conference Report: Hybrid Bonding Advances at ECTC Meeting</a> <span class="src">Semiconductor Digest (패키징)</span></div>
+</div>
+<div class="carow">
+  <span class="when">2026-06-25</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/applied-materials-introduces-new-systems-to-accelerate-dram-and-advanced-packaging-for-ai-chips/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=applied-materials-introduces-new-systems-to-accelerate-dram-and-advanced-packaging-for-ai-chips">Applied Materials Introduces New Systems to Accelerate <a class="term" href="../concepts.html#dram">DRAM</a> and Advanced <a class="term" href="../concepts.html#packaging">Packaging</a> for AI Chips</a> <span class="src">Semiconductor Digest (패키징)</span></div>
+</div>
+<div class="carow">
+  <span class="when">2026-05-05</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/applied-materials-broadens-advanced-packaging-portfolio-with-acquisition-of-nexx/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=applied-materials-broadens-advanced-packaging-portfolio-with-acquisition-of-nexx">Applied Materials Broadens Advanced <a class="term" href="../concepts.html#packaging">Packaging</a> Portfolio with Acquisition of NEXX</a> <span class="src">Semiconductor Digest (패키징)</span></div>
+</div>
+<div class="carow">
+  <span class="when">2025-11-26</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=44416">어플라이드 &quot;통합 하이브리드 본딩 장비 이미 여러 곳 양산 적용&quot;</a> <span class="src">더일렉 반도체</span></div>
+</div>
+</div>
+
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
+</body>
+</html>

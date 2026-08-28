@@ -120,5 +120,42 @@ class TestCompaniesMentioned(unittest.TestCase):
         self.assertEqual(companies_mentioned("삼성이 tsmc 와", cmap), {"삼성전자", "TSMC"})
 
 
+class TestNoFalseMatchInsideWords(unittest.TestCase):
+    """`intel` 이 `intelligent` 안에서 잡히던 버그. 실제로 7건이 거짓이었다.
+
+    ASE·AMD·ARM 처럼 짧은 이름을 더 넣으면 훨씬 심해지므로 여기서 막는다.
+    """
+
+    def test_does_not_match_inside_an_english_word(self):
+        cmap = {"intel": "인텔"}
+        self.assertEqual(companies_mentioned("Intelligent power systems", cmap), set())
+        self.assertEqual(companies_mentioned("artificial intelligence", cmap), set())
+
+    def test_still_matches_the_real_word(self):
+        cmap = {"intel": "인텔"}
+        self.assertEqual(companies_mentioned("Intel announced today", cmap), {"인텔"})
+
+    def test_matches_at_string_edges(self):
+        cmap = {"intel": "인텔"}
+        self.assertEqual(companies_mentioned("Intel", cmap), {"인텔"})
+
+    def test_allows_punctuation_around_the_name(self):
+        cmap = {"amd": "AMD"}
+        self.assertEqual(companies_mentioned("(AMD), 발표", cmap), {"AMD"})
+
+    def test_korean_names_still_match_with_particles(self):
+        # 한국어는 조사가 붙는다 — '삼성전자가' 에서도 찾아야 한다
+        cmap = {"삼성전자": "삼성전자"}
+        self.assertEqual(companies_mentioned("삼성전자가 발표했다", cmap), {"삼성전자"})
+
+    def test_multi_word_english_alias(self):
+        cmap = {"sk hynix": "SK하이닉스"}
+        self.assertEqual(companies_mentioned("SK hynix said", cmap), {"SK하이닉스"})
+
+    def test_does_not_match_ase_inside_release(self):
+        cmap = {"ase technology": "ASE", "ase": "ASE"}
+        self.assertEqual(companies_mentioned("press release database", cmap), set())
+
+
 if __name__ == "__main__":
     unittest.main()

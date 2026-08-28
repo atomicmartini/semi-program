@@ -114,12 +114,28 @@ def read_company_map() -> dict[str, str]:
     return mapping
 
 
+_LATIN = re.compile(r"^[a-z0-9 .,'&-]+$")
+
+
+def _alias_pattern(alias: str) -> re.Pattern:
+    """별칭을 찾을 정규식.
+
+    **영문 별칭은 낱말 경계를 요구한다** — `intel` 이 `intelligent` 안에서 잡혀
+    인텔 기사 23건 중 7건이 거짓이던 버그가 있었다. ASE·AMD 처럼 짧은 이름은 더 위험하다.
+    한국어는 조사가 붙어서(`삼성전자가`) 낱말 경계를 쓰면 못 찾으므로 그냥 포함으로 본다.
+    """
+    escaped = re.escape(alias)
+    if _LATIN.match(alias):
+        return re.compile(rf"(?<![a-z0-9]){escaped}(?![a-z0-9])")
+    return re.compile(escaped)
+
+
 def companies_mentioned(text: str, company_map: dict[str, str]) -> set[str]:
     """글에 등장하는 정식명 집합. 긴 별칭부터 찾아야 짧은 이름이 긴 이름을 잘라먹지 않는다."""
     haystack = text.lower()
     found: set[str] = set()
     for alias in sorted(company_map, key=len, reverse=True):
-        if alias in haystack:
+        if _alias_pattern(alias).search(haystack):
             found.add(company_map[alias])
     return found
 
