@@ -12,47 +12,14 @@ import json
 import sys
 from pathlib import Path
 
+from companies import companies_mentioned, read_company_map
 from filter import filter_articles, read_keywords
 
 HERE = Path(__file__).parent
 ARTICLE_DIR = HERE / "data" / "articles"
-COMPANIES_FILE = HERE / "data" / "companies.md"
 
 MIN_KEYWORDS = 1  # 키워드가 몇 개 겹쳐야 잇는가. 헐거우면 올린다
 MAX_RELATED = 10  # 기사 하나당 최대 몇 건까지 보여주는가
-
-
-def read_company_map() -> dict[str, str]:
-    """별칭·정식명을 소문자로 낮춰 정식명에 매핑한다. 사전에 없는 이름은 다루지 않는다."""
-    mapping: dict[str, str] = {}
-    in_table = False
-    for line in COMPANIES_FILE.read_text(encoding="utf-8").splitlines():
-        s = line.strip()
-        if s.startswith("## "):
-            in_table = s.startswith("## 정식명")
-            continue
-        if not in_table or not s.startswith("|"):
-            continue
-        cells = [c.strip() for c in s.strip("|").split("|")]
-        if len(cells) < 2 or cells[0] in ("정식명", "---"):
-            continue
-        canonical = cells[0]
-        mapping[canonical.lower()] = canonical
-        for alias in cells[1].split(","):
-            alias = alias.strip()
-            if alias:
-                mapping[alias.lower()] = canonical
-    return mapping
-
-
-def companies_mentioned(text: str, company_map: dict[str, str]) -> set[str]:
-    """글에 등장하는 정식명 집합. 긴 별칭부터 찾아야 짧은 이름이 긴 이름을 잘라먹지 않는다."""
-    haystack = text.lower()
-    found: set[str] = set()
-    for alias in sorted(company_map, key=len, reverse=True):
-        if alias in haystack:
-            found.add(company_map[alias])
-    return found
 
 
 def read_topic_keywords() -> list[str]:

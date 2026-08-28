@@ -9,8 +9,9 @@ import json
 import sys
 from pathlib import Path
 
+import companies
 import glossary
-from filter import UNCLASSIFIED, read_keywords
+from filter import UNCLASSIFIED, filter_articles, read_keywords
 from pick import select_day
 
 HERE = Path(__file__).parent
@@ -91,6 +92,30 @@ STYLE = """
   .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
   .days a:hover { text-decoration:underline; }
   .days b { color:#1c1b19; }
+  .cgroup { margin:0 0 22px; }
+  .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
+    border-bottom:1px solid #e4e2dd; }
+  .cgroup h2 .n { font-size:12px; color:#94908a; margin-left:7px; font-weight:400; }
+  .colist { display:flex; gap:8px; flex-wrap:wrap; }
+  a.co { font-size:14px; padding:7px 13px; border-radius:8px; background:#fff;
+    border:1px solid #e4e2dd; color:#1c1b19; text-decoration:none; }
+  a.co:hover { border-color:#0b5fff; color:#0b5fff; }
+  a.co .n { font-size:12px; color:#94908a; margin-left:6px; }
+  .profile { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:18px 20px; margin-bottom:18px; }
+  .ctags { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 0; }
+  .ctag { font-size:11px; background:#f2f1ee; color:#63605a; padding:2px 9px;
+    border-radius:99px; }
+  .colist-articles { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:6px 18px; }
+  .carow { display:flex; gap:14px; align-items:baseline; padding:9px 0;
+    border-bottom:1px solid #f0eeea; }
+  .carow:last-child { border-bottom:none; }
+  .carow .when { font-size:12px; color:#94908a; font-variant-numeric:tabular-nums;
+    white-space:nowrap; }
+  .carow .what a { color:#1c1b19; text-decoration:none; font-size:14px; }
+  .carow .what a:hover { text-decoration:underline; }
+  .carow .src { font-size:11px; color:#94908a; margin-left:6px; }
 """
 
 PAGE = """<!doctype html>
@@ -106,6 +131,7 @@ PAGE = """<!doctype html>
 <nav>
   <a class="{news_on}" href="{prefix}index.html">뉴스</a>
   <a class="{concept_on}" href="{prefix}concepts.html">개념 {term_count}</a>
+  <a class="{company_on}" href="{prefix}companies.html">기업 {company_count}</a>
 </nav>
 <div class="meta">{meta}</div>
 {chips}
@@ -255,6 +281,34 @@ def day_links(current: str = "") -> str:
     return render_day_links(article_days(), current)
 
 
+COMPANY_ROW = """<div class="carow">
+  <span class="when">{date}</span>
+  <div class="what"><a href="{url}">{title}</a> <span class="src">{source}</span></div>
+</div>
+"""
+
+MAX_COMPANY_ARTICLES = 50
+
+
+def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
+          chips: str = "", days: str = "", prefix: str = "", companies_total: int = 0) -> str:
+    """페이지 껍데기. 탭이 늘어도 호출부를 하나씩 안 고치게 기본값을 둔다."""
+    return PAGE.format(
+        title=title,
+        style=STYLE,
+        news_on="on" if tab == "news" else "",
+        concept_on="on" if tab == "concept" else "",
+        company_on="on" if tab == "company" else "",
+        prefix=prefix,
+        term_count=len(terms),
+        company_count=companies_total or len(companies.read_companies()),
+        meta=meta,
+        body=body,
+        chips=chips,
+        days=days,
+    )
+
+
 def _render_card(a: dict, terms: list[dict], related_map: dict, extracted: dict) -> str:
     """기사 카드 하나."""
     summary, by_model = choose_summary(a, extracted)
@@ -290,13 +344,10 @@ def render_news(day: str, terms: list[dict]) -> str:
         # '기사 없음' 과 '수집 실패' 는 다르다 (CLAUDE.md).
         body = '<p class="none">이 날은 반도체 관련 기사가 없습니다. (수집은 정상이었습니다)</p>'
 
-    return PAGE.format(
+    return _page(
         title=f"반도체 뉴스 데일리 — {day}",
-        style=STYLE,
-        news_on="on",
-        concept_on="",
-        prefix="",
-        term_count=len(terms),
+        tab="news",
+        terms=terms,
         meta=f"{day} · {len(picked)}건 · 수집 {ok}곳 중 {total}곳 정상",
         body=body,
         chips=category_chips(picked) if picked else "",
@@ -307,18 +358,83 @@ def render_news(day: str, terms: list[dict]) -> str:
 def render_concepts(terms: list[dict]) -> str:
     """개념 페이지 HTML."""
     body = glossary.render_entries(terms) if terms else '<p class="none">등재된 개념이 없습니다.</p>'
-    return PAGE.format(
+    return _page(
         title="개념 — 반도체 뉴스 데일리",
-        style=STYLE,
-        news_on="",
-        concept_on="on",
-        prefix="",
-        term_count=len(terms),
+        tab="concept",
+        terms=terms,
         meta=f"{len(terms)}개 · 설명마다 출처와 확인일이 붙어 있습니다",
         body=body,
-        chips="",
-        days="",
     )
+
+
+def render_companies(terms: list[dict], rows: list[dict], counts: dict[str, int]) -> str:
+    """기업 목록 페이지. 분류별로 회사를 늘어놓는다."""
+    body = companies.render_groups(companies.by_category(rows), counts)
+    with_desc = sum(1 for c in rows if c["description"])
+    return _page(
+        title="기업 — 반도체 뉴스 데일리",
+        tab="company",
+        terms=terms,
+        companies_total=len(rows),
+        meta=f"{len(rows)}곳 · 설명이 붙은 곳 {with_desc}곳 · 숫자는 그 회사가 나온 기사 수입니다",
+        body=body,
+    )
+
+
+def render_company(terms: list[dict], company: dict, articles: list[dict],
+                   companies_total: int) -> str:
+    """회사 하나의 페이지. 그 회사가 나온 기사만 최신순으로 모은다."""
+    shown = articles[:MAX_COMPANY_ARTICLES]
+    if shown:
+        rows = "".join(
+            COMPANY_ROW.format(
+                date=html.escape((a.get("published") or "")[:10]),
+                title=glossary.link_terms(html.escape(a["title"]), terms, page_prefix="../"),
+                source=html.escape(a["source"]),
+                url=html.escape(a["url"], quote=True),
+            )
+            for a in shown
+        )
+        listing = f'<div class="colist-articles">{rows}</div>'
+    else:
+        listing = '<p class="none">아직 이 회사가 나온 기사가 없습니다.</p>'
+
+    more = (
+        f'<p class="none">기사 {len(articles)}건 중 최근 {len(shown)}건만 보여줍니다.</p>'
+        if len(articles) > len(shown)
+        else ""
+    )
+    return _page(
+        title=f"{company['name']} — 반도체 뉴스 데일리",
+        tab="company",
+        terms=terms,
+        companies_total=companies_total,
+        prefix="../",
+        meta=f"기사 {len(articles)}건",
+        body=companies.render_profile(company) + listing + more,
+    )
+
+
+def collect_company_articles(rows: list[dict]) -> dict[str, list[dict]]:
+    """회사마다 그 회사가 나온 기사를 최신순으로 모은다.
+
+    거른 것(반도체 관련) 기준이다 — 전체 수집분은 채용·가전이 섞이고,
+    하루 10건 선별분만 보면 회사 페이지가 비어 보인다 (슬라이스 07).
+    """
+    company_map = companies.read_company_map()
+    found: dict[str, list[dict]] = {c["name"]: [] for c in rows}
+
+    for day in article_days():
+        raw = json.loads((ARTICLE_DIR / f"{day}.json").read_text(encoding="utf-8"))["articles"]
+        kept, _ = filter_articles(raw)
+        for a in kept:
+            for name in companies.companies_mentioned(f"{a['title']} {a['summary']}", company_map):
+                if name in found:
+                    found[name].append(a)
+
+    for arts in found.values():
+        arts.sort(key=lambda a: a.get("published") or "", reverse=True)
+    return found
 
 
 def latest_day() -> str:
@@ -352,6 +468,22 @@ def main(argv: list[str]) -> int:
 
     (DOCS_DIR / "concepts.html").write_text(render_concepts(terms), encoding="utf-8")
     print("     → docs/concepts.html")
+
+    rows = companies.read_companies()
+    by_company = collect_company_articles(rows)
+    counts = {name: len(arts) for name, arts in by_company.items()}
+
+    (DOCS_DIR / "companies.html").write_text(
+        render_companies(terms, rows, counts), encoding="utf-8"
+    )
+    company_dir = DOCS_DIR / "company"
+    company_dir.mkdir(exist_ok=True)
+    for c in rows:
+        (company_dir / f"{c['slug']}.html").write_text(
+            render_company(terms, c, by_company.get(c["name"], []), len(rows)),
+            encoding="utf-8",
+        )
+    print(f"기업 {len(rows)}곳 → docs/companies.html · docs/company/*.html")
     return 0
 
 

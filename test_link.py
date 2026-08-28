@@ -5,7 +5,8 @@
 
 import unittest
 
-from link import bridged, companies_mentioned, find_related, topic_keywords
+from companies import companies_mentioned
+from link import bridged, find_related, topic_keywords
 
 COMPANIES = {
     "삼성전자": "삼성전자",
