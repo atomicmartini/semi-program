@@ -16,15 +16,15 @@
 | AMD | Advanced Micro Devices | 팹리스 | AMD | 미국 |  |  |  |
 | ASML | ASML Holding, 에이에스엠엘 | 장비 | ASML | 네덜란드 |  |  |  |
 | 마이크론 | Micron, Micron Technology | 메모리 | Micron | 미국 | 메모리와 저장장치를 만드는 회사. D램·낸드플래시·SSD 를 스마트폰부터 데이터센터까지 폭넓은 용도로 공급한다. | [Micron About](https://www.micron.com/about) `[공식]` | 2026-08-24 |
-| 퀄컴 | Qualcomm | 팹리스 | Qualcomm | 미국 |  |  |  |
+| 퀄컴 | Qualcomm | 팹리스 | Qualcomm | 미국 | 무선 통신 기술과 반도체를 만든다. 프로세서·모뎀과 스냅드래곤 같은 플랫폼으로 AI·저전력 연산·연결성을 공급한다. | [Qualcomm Company](https://www.qualcomm.com/company) `[공식]` | 2026-08-24 |
 | DB하이텍 | DB HiTek | 파운드리 | DB HiTek | 한국 |  |  |  |
-| 키오시아 | Kioxia, 도시바메모리 | 메모리 | Kioxia | 일본 |  |  |  |
+| 키오시아 | Kioxia, 도시바메모리 | 메모리 | Kioxia | 일본 | 낸드플래시 메모리를 만드는 최대 업체 중 하나. 1987년 세계 최초로 비휘발성 낸드플래시를 발명했고 스마트폰부터 데이터센터까지 쓰이는 메모리와 SSD 를 만든다. | [KIOXIA About](https://www.kioxia.com/en-jp/about.html) `[공식]` | 2026-08-24 |
 | YMTC | Yangtze Memory, 양쯔메모리 | 메모리 | Yangtze Memory Technologies | 중국 |  |  |  |
 | 브로드컴 | Broadcom | 팹리스 | Broadcom | 미국 |  |  |  |
 | 미디어텍 | MediaTek | 팹리스 | MediaTek | 대만 |  |  |  |
 | UMC | United Microelectronics, 유엠씨 | 파운드리 | United Microelectronics | 대만 |  |  |  |
 | 텍사스인스트루먼트 | Texas Instruments | 종합(IDM) | Texas Instruments | 미국 |  |  |  |
-| 인피니언 | Infineon | 종합(IDM) | Infineon Technologies | 독일 |  |  |  |
+| 인피니언 | Infineon | 종합(IDM) | Infineon Technologies | 독일 | 마이크로컨트롤러, 전력관리 IC, 센서, 메모리, 무선 연결 부품 등을 만든다. 자동차·산업·IoT 용도가 중심이다. | [Infineon About](https://www.infineon.com/cms/en/about-infineon/) `[공식]` | 2026-08-24 |
 | ST마이크로 | STMicroelectronics, ST마이크로일렉트로닉스 | 종합(IDM) | STMicroelectronics | 스위스 |  |  |  |
 | ASE | ASE Technology, 에이에스이 | OSAT·후공정 | ASE Technology Holding | 대만 |  |  |  |
 | 앰코 | Amkor, Amkor Technology, 앰코테크놀로지 | OSAT·후공정 | Amkor Technology | 미국 |  |  |  |
@@ -34,18 +34,18 @@
 | 어플라이드머티어리얼즈 | Applied Materials, 어플라이드 | 장비 | Applied Materials | 미국 |  |  |  |
 | 램리서치 | Lam Research | 장비 | Lam Research | 미국 |  |  |  |
 | KLA | KLA Corporation, 케이엘에이 | 장비 | KLA | 미국 |  |  |  |
-| 도쿄일렉트론 | Tokyo Electron | 장비 | Tokyo Electron | 일본 |  |  |  |
+| 도쿄일렉트론 | Tokyo Electron | 장비 | Tokyo Electron | 일본 | 반도체를 만드는 장비를 개발·제조·판매하고 관련 기술 지원을 한다. 60년 넘게 쌓은 기술을 내세운다. | [Tokyo Electron About](https://www.tel.com/about/) `[공식]` | 2026-08-24 |
 | 한미반도체 | HANMI Semiconductor, Hanmi Semiconductor | 장비 | Hanmi Semiconductor | 한국 |  |  |  |
 | SK실트론 | SK Siltron, 실트론 | 소재·부품 | SK Siltron | 한국 |  |  |  |
 | 동진쎄미켐 | Dongjin Semichem | 소재·부품 | Dongjin Semichem | 한국 |  |  |  |
 | 솔브레인 | Soulbrain | 소재·부품 | Soulbrain | 한국 |  |  |  |
 | 신에츠화학 | Shin-Etsu, 신에츠 | 소재·부품 | Shin-Etsu Chemical | 일본 |  |  |  |
-| 엔트그리스 | Entegris | 소재·부품 | Entegris | 미국 |  |  |  |
-| 시놉시스 | Synopsys | EDA·IP | Synopsys | 미국 |  |  |  |
+| 엔트그리스 | Entegris | 소재·부품 | Entegris | 미국 | 반도체 제조에 쓰는 소재와 공정 솔루션을 만든다. 여과 제품, 액체·가스 공급 장치, 특수 화학, 웨이퍼 캐리어 등을 공급한다. | [Entegris Corporate Overview](http://www.entegris.com/en/home/about-us/corporate-overview.html) `[공식]` | 2026-08-24 |
+| 시놉시스 | Synopsys | EDA·IP | Synopsys | 미국 | 칩 설계 도구(EDA)와 설계자산(IP)을 공급한다. 스스로 EDA 1위, 실리콘 IP 2위, 시뮬레이션·해석 1위라고 밝힌다. | [Synopsys Company](https://www.synopsys.com/company.html) `[공식]` | 2026-08-24 |
 | 케이던스 | Cadence Design Systems, 케이던스 | EDA·IP | Cadence Design Systems | 미국 |  |  |  |
-| Arm | Arm Holdings, ARM 홀딩스 | EDA·IP | Arm Holdings | 영국 |  |  |  |
+| Arm | Arm Holdings, ARM 홀딩스 | EDA·IP | Arm Holdings | 영국 | CPU 아키텍처와 설계자산(IP)을 설계해 반도체 회사에 라이선스한다. 칩을 직접 만들지 않고 기술을 빌려주는 것이 본업이다. | [Arm Company](https://www.arm.com/company) `[공식]` | 2026-08-24 |
 | 지멘스EDA | Siemens EDA, Mentor Graphics | EDA·IP | Siemens EDA | 미국 |  |  |  |
-| 램버스 | Rambus | EDA·IP | Rambus | 미국 |  |  |  |
+| 램버스 | Rambus | EDA·IP | Rambus | 미국 | 반도체와 IP 제품을 만든다. 데이터를 더 빠르고 안전하게 하는 메모리 인터페이스 칩과 보안 IP 가 주력이다. | [Rambus About](https://www.rambus.com/about/) `[공식]` | 2026-08-24 |
 
 > 위 10개는 시작점이다. 기사에 나오는 대로 늘려 간다.
 > 늘릴 때는 **정식명을 바꾸지 말고 별칭만 더한다** — 정식명이 바뀌면 과거 기록과 어긋난다.
