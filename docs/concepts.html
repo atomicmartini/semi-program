@@ -61,6 +61,8 @@
   .entry .meta { font-size:12px; color:#94908a; margin:12px 0 0;
     padding-top:10px; border-top:1px solid #e4e2dd; }
   .entry .meta a { color:#63605a; }
+  /* 출처 꼬리표 — 표준·제조사 공식 페이지에서 온 설명인지 아닌지를 가른다 */
+  .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
   .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
@@ -107,40 +109,118 @@
 <h1>반도체 뉴스 데일리</h1>
 <nav>
   <a class="" href="index.html">뉴스</a>
-  <a class="on" href="concepts.html">개념 5</a>
+  <a class="on" href="concepts.html">개념 18</a>
   <a class="" href="companies.html">기업 38</a>
 </nav>
-<div class="meta">5개 · 설명마다 출처와 확인일이 붙어 있습니다</div>
+<div class="meta">18개 · 설명마다 출처와 확인일이 붙어 있습니다</div>
 
 <div class="entry" id="packaging">
   <div class="ehead"><h2>패키징</h2> <span class="en">Packaging</span>
     <span class="cat">패키징</span></div>
   <p class="def">칩을 외부 환경으로부터 보호하고 단자 간 연결을 위해 전기적으로 포장하는 공정. 반도체 제조의 마지막 단계로 상호배선·전력 공급·방열을 담당한다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/">삼성반도체 용어사전 — 패키징</a> · 확인일 2026-08-23</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-packaging/">삼성반도체 용어사전 — 패키징</a> <span class="stag">공식</span> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="wafer">
   <div class="ehead"><h2>웨이퍼</h2> <span class="en">Wafer</span>
     <span class="cat">장비·소재</span></div>
   <p class="def">실리콘 등의 단결정 기둥을 얇게 자른 원판. 그 위에 전자회로를 새겨 칩을 만든다. 직경이 클수록 버리는 부분이 적어 효율이 높다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/">삼성반도체 용어사전 — 웨이퍼</a> · 확인일 2026-08-23</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-wafer/">삼성반도체 용어사전 — 웨이퍼</a> <span class="stag">공식</span> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="foundry">
   <div class="ehead"><h2>파운드리</h2> <span class="en">Foundry</span>
     <span class="cat">파운드리·공정</span></div>
   <p class="def">반도체 제조 과정만 전담하는 위탁 생산업체. 직접 설계하지 않고 외부 기업의 설계를 받아 생산한다. 설계 전문 기업(팹리스)이 생산시설 투자를 피하려고 활용한다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/">삼성반도체 용어사전 — 파운드리</a> · 확인일 2026-08-23</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-foundry/">삼성반도체 용어사전 — 파운드리</a> <span class="stag">공식</span> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="dram">
   <div class="ehead"><h2>D램</h2> <span class="en">DRAM</span>
     <span class="cat">메모리</span></div>
   <p class="def">용량이 크고 속도가 빨라 컴퓨터의 주력 메모리로 쓰이는 휘발성 메모리. 커패시터의 전하가 새기 때문에 일정 시간마다 데이터를 되살리는 &#x27;리프레시&#x27;가 필요하다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/">삼성반도체 용어사전 — D램</a> · 확인일 2026-08-23</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-dram/">삼성반도체 용어사전 — D램</a> <span class="stag">공식</span> · 확인일 2026-08-23</div>
 </div>
 <div class="entry" id="yield">
   <div class="ehead"><h2>수율</h2> <span class="en">Yield</span>
     <span class="cat">파운드리·공정</span></div>
   <p class="def">웨이퍼 한 장에 설계된 최대 칩 개수 대비 실제로 나온 정상 칩 개수의 백분율. 높을수록 생산성이 좋아 공정장비 정확도·클린룸 청정도 등을 관리해 끌어올린다.</p>
-  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/">삼성반도체 용어사전 — 수율</a> · 확인일 2026-08-23</div>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-yield/">삼성반도체 용어사전 — 수율</a> <span class="stag">공식</span> · 확인일 2026-08-23</div>
+</div>
+<div class="entry" id="nand-flash">
+  <div class="ehead"><h2>낸드플래시</h2> <span class="en">NAND Flash</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">전원이 꺼져도 데이터가 남는 비휘발성 플래시 메모리 가운데 데이터 저장용으로 쓰는 형태. 코드 저장용인 노어(NOR)형과 달리 용량을 늘리기 쉬워 대용량 저장에 쓴다.</p>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-flash-memory/">삼성반도체 용어사전 — 플래시 메모리</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm">
+  <div class="ehead"><h2>HBM</h2> <span class="en">HBM</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">연산 칩 바로 옆에 밀착시켜 쓰는 광폭 인터페이스 D램. 인터페이스를 서로 독립된 채널로 나누고 채널마다 128비트 데이터 버스를 DDR 속도로 돌려 빠르면서도 전력을 덜 쓴다.</p>
+  <div class="meta">출처 <a href="https://www.jedec.org/standards-documents/docs/jesd235a">JEDEC JESD235D — High Bandwidth Memory DRAM</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm2">
+  <div class="ehead"><h2>HBM2</h2> <span class="en">HBM2</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">HBM 의 2세대. SK하이닉스는 HBM 세대를 1세대(HBM)·2세대(HBM2)·3세대(HBM2E)·4세대(HBM3)·5세대(HBM3E)·6세대(HBM4) 순으로 정리한다.</p>
+  <div class="meta">출처 <a href="https://news.skhynix.co.kr/tech-note-series-ep2/">SK하이닉스 뉴스룸 — 하이브리드 본딩 Tech Note</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm2e">
+  <div class="ehead"><h2>HBM2E</h2> <span class="en">HBM2E</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">HBM 의 3세대. 실리콘관통전극(TSV)으로 D램을 수직으로 쌓아 410~460GB/s 대역폭을 내며, 용량 8~16GB 에 4단·8단으로 쌓는다.</p>
+  <div class="meta">출처 <a href="https://product.skhynix.com/products/dram/hbm.go">SK하이닉스 HBM 제품</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm3">
+  <div class="ehead"><h2>HBM3</h2> <span class="en">HBM3</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">HBM 의 4세대. 채널을 서로 독립적으로 두는 광폭 인터페이스 구조는 그대로이고, 채널마다 64비트 데이터 버스를 DDR 속도로 쓴다.</p>
+  <div class="meta">출처 <a href="https://www.jedec.org/standards-documents/docs/jesd238b01">JEDEC JESD238B.01 — High Bandwidth Memory (HBM3) DRAM</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm3e">
+  <div class="ehead"><h2>HBM3E</h2> <span class="en">HBM3E</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">HBM 의 5세대. 용량 24~36GB 에 핀당 9.6Gbps 이상, 스택당 1.23TB/s 이상 대역폭을 내며 8단·12단으로 쌓는다.</p>
+  <div class="meta">출처 <a href="https://product.skhynix.com/products/dram/hbm.go">SK하이닉스 HBM 제품</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hbm4">
+  <div class="ehead"><h2>HBM4</h2> <span class="en">HBM4</span>
+    <span class="cat">메모리</span></div>
+  <p class="def">HBM 의 6세대. 2025년 12월 공개된 JESD270-4A 규격이며, 채널마다 64비트 데이터 버스를 DDR 속도로 쓰는 광폭 인터페이스 구조다.</p>
+  <div class="meta">출처 <a href="https://www.jedec.org/standards-documents/docs/jesd270-4a">JEDEC JESD270-4A — High Bandwidth Memory (HBM4) DRAM</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="chiplet">
+  <div class="ehead"><h2>칩렛</h2> <span class="en">Chiplet</span>
+    <span class="cat">패키징</span></div>
+  <p class="def">기능을 나눠 따로 만든 작은 모듈형 다이. 큰 단일 다이 하나에 전부 담는 대신 여러 개를 한 패키지 안에서 이어 붙여 수율·비용·확장성을 얻는다.</p>
+  <div class="meta">출처 <a href="https://www.synopsys.com/glossary/what-are-chiplets.html">Synopsys — What are Chiplets?</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="hybrid-bonding">
+  <div class="ehead"><h2>하이브리드 본딩</h2> <span class="en">Hybrid Bonding</span>
+    <span class="cat">패키징</span></div>
+  <p class="def">칩을 쌓을 때 범프를 두지 않고 구리와 구리를 직접 붙이는 접합 기술. 칩 사이 피치가 1㎛ 이하까지 좁아져 연결 밀도가 오르고 두께와 발열이 줄어든다.</p>
+  <div class="meta">출처 <a href="https://news.skhynix.co.kr/tech-note-series-ep2/">SK하이닉스 뉴스룸 — 하이브리드 본딩 Tech Note</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="sip">
+  <div class="ehead"><h2>SiP</h2> <span class="en">SiP</span>
+    <span class="cat">패키징</span></div>
+  <p class="def">여러 칩과 부품을 한 패키지 안에 통합하는 방식. 크기는 줄이면서 기능은 늘릴 수 있어 모바일·RF·웨어러블처럼 공간이 좁은 제품에 쓴다.</p>
+  <div class="meta">출처 <a href="https://amkor.com/packaging/system-in-package/">Amkor — System in Package (SiP)</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="soc">
+  <div class="ehead"><h2>SoC</h2> <span class="en">SoC</span>
+    <span class="cat">AI·가속기</span></div>
+  <p class="def">전체 시스템을 칩 하나에 담은 반도체. 연산 소자(CPU), 메모리 소자, 디지털신호처리 소자 등을 한 칩에 모아 크기와 제조비용을 줄인다.</p>
+  <div class="meta">출처 <a href="https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-soc/">삼성반도체 용어사전 — SoC</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="asic">
+  <div class="ehead"><h2>ASIC</h2> <span class="en">ASIC</span>
+    <span class="cat">AI·가속기</span></div>
+  <p class="def">특정 용도에 맞춰 맞춤 제작한 집적회로. 범용 프로세서나 FPGA 와 달리 정해진 기능만 하도록 최적화해 성능과 전력 효율을 끌어올린다.</p>
+  <div class="meta">출처 <a href="https://www.synopsys.com/glossary/what-is-asic-design.html">Synopsys — What is ASIC Design?</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+<div class="entry" id="npu">
+  <div class="ehead"><h2>NPU</h2> <span class="en">NPU</span>
+    <span class="cat">AI·가속기</span></div>
+  <p class="def">AI 추론을 낮은 전력으로 처리하려고 밑바닥부터 새로 설계한 연산 장치. 신경망 계층의 스칼라·벡터·텐서 연산을 맡아 CPU·GPU 와 일을 나눈다.</p>
+  <div class="meta">출처 <a href="https://www.qualcomm.com/news/onq/2024/02/what-is-an-npu-and-why-is-it-key-to-unlocking-on-device-generative-ai">Qualcomm OnQ — What is an NPU?</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
 </div>
 
 

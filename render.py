@@ -76,6 +76,8 @@ STYLE = """
   .entry .meta { font-size:12px; color:#94908a; margin:12px 0 0;
     padding-top:10px; border-top:1px solid #e4e2dd; }
   .entry .meta a { color:#63605a; }
+  /* 출처 꼬리표 — 표준·제조사 공식 페이지에서 온 설명인지 아닌지를 가른다 */
+  .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
   .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
