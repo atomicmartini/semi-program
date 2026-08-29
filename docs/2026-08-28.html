@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반도체 뉴스 데일리 — 2026-08-28</title>
+<style>
+  body { margin:0 auto; padding:24px; max-width:900px; background:#fbfbfa; color:#1c1b19;
+    font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif; line-height:1.6;
+    word-break:keep-all; }
+  h1 { font-size:24px; margin:0; }
+  nav { display:flex; gap:20px; margin:14px 0 20px; padding-bottom:8px;
+    border-bottom:1px solid #cfccc4; }
+  nav a { color:#94908a; text-decoration:none; padding-bottom:8px; margin-bottom:-9px; }
+  nav a.on { color:#1c1b19; font-weight:700; border-bottom:2px solid #1c1b19; }
+  .meta { color:#63605a; font-size:14px; margin:6px 0 20px; }
+  .card { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:16px 18px; margin-bottom:12px; }
+  .cat { font-size:12px; color:#94908a; }
+  .tier { font-size:12px; color:#0a7d3c; }
+  .card h2 { font-size:17px; margin:4px 0 6px; }
+  .sum { color:#63605a; font-size:14px; margin:0; }
+  .by-ai { font-size:11px; color:#94908a; border:1px solid #e4e2dd; border-radius:99px;
+    padding:1px 7px; margin-left:6px; white-space:nowrap; vertical-align:1px; }
+  .src { font-size:12px; color:#94908a; margin-top:10px; }
+  .src a { color:#63605a; }
+  .none { color:#94908a; }
+  a.term { color:#0b5fff; text-decoration:none; border-bottom:1px dashed currentColor; }
+  a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid #e4e2dd; padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:#0b5fff; list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:#94908a; font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid #fff; }
+  .step .what a { font-size:13.5px; color:#63605a; line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  @media (max-width:600px) {
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
+  .entry { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:18px 20px; margin-bottom:12px; scroll-margin-top:16px; }
+  .entry:target { border-color:#0b5fff; box-shadow:0 0 0 3px #eef3ff; }
+  .ehead { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .entry h2 { font-size:19px; margin:0; }
+  .en { font-size:13px; color:#94908a; }
+  .entry .cat { font-size:11px; background:#f2f1ee; padding:2px 8px; border-radius:99px; }
+  .def { color:#63605a; font-size:14px; margin:8px 0 0; }
+  .entry .meta { font-size:12px; color:#94908a; margin:12px 0 0;
+    padding-top:10px; border-top:1px solid #e4e2dd; }
+  .entry .meta a { color:#63605a; }
+  /* 출처 꼬리표 — 표준·제조사 공식 페이지에서 온 설명인지 아닌지를 가른다 */
+  .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
+  footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
+    font-size:12px; color:#94908a; }
+  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
+    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
+  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.55; margin-left:5px; }
+  .days { margin:22px 0 0; font-size:13px; }
+  .days-head { color:#94908a; margin-bottom:6px; }
+  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+    padding:4px 0; border-top:1px solid #eeece7; }
+  .days .ym { color:#94908a; font-variant-numeric:tabular-nums; min-width:62px; }
+  .days a { color:#63605a; white-space:nowrap; text-decoration:none; }
+  .days a:hover { text-decoration:underline; }
+  .days b { color:#1c1b19; }
+  .cgroup { margin:0 0 22px; }
+  .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
+    border-bottom:1px solid #e4e2dd; }
+  .cgroup h2 .n { font-size:12px; color:#94908a; margin-left:7px; font-weight:400; }
+  .colist { display:flex; gap:8px; flex-wrap:wrap; }
+  a.co { font-size:14px; padding:7px 13px; border-radius:8px; background:#fff;
+    border:1px solid #e4e2dd; color:#1c1b19; text-decoration:none; }
+  a.co:hover { border-color:#0b5fff; color:#0b5fff; }
+  a.co .n { font-size:12px; color:#94908a; margin-left:6px; }
+  .profile { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:18px 20px; margin-bottom:18px; }
+  .ctags { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 0; }
+  .ctag { font-size:11px; background:#f2f1ee; color:#63605a; padding:2px 9px;
+    border-radius:99px; }
+  .colist-articles { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
+    padding:6px 18px; }
+  .carow { display:flex; gap:14px; align-items:baseline; padding:9px 0;
+    border-bottom:1px solid #f0eeea; }
+  .carow:last-child { border-bottom:none; }
+  .carow .when { font-size:12px; color:#94908a; font-variant-numeric:tabular-nums;
+    white-space:nowrap; }
+  .carow .what a { color:#1c1b19; text-decoration:none; font-size:14px; }
+  .carow .what a:hover { text-decoration:underline; }
+  .carow .src { font-size:11px; color:#94908a; margin-left:6px; }
+</style>
+</head>
+<body>
+<h1>반도체 뉴스 데일리</h1>
+<nav>
+  <a class="on" href="index.html">뉴스</a>
+  <a class="" href="concepts.html">개념 18</a>
+  <a class="" href="companies.html">기업 38</a>
+</nav>
+<div class="meta">2026-08-28 · 10건 · 수집 8곳 중 8곳 정상</div>
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">10</span></span><span class="chip" data-cat="패키징">패키징<span class="n">1</span></span><span class="chip" data-cat="파운드리·공정">파운드리·공정<span class="n">2</span></span><span class="chip" data-cat="메모리">메모리<span class="n">1</span></span><span class="chip" data-cat="AI·가속기">AI·가속기<span class="n">2</span></span><span class="chip empty" data-cat="장비·소재">장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제">정책·규제<span class="n">0</span></span><span class="chip" data-cat="투자·실적">투자·실적<span class="n">2</span></span><span class="chip" data-cat="미분류">미분류<span class="n">2</span></span></div>
+<div class="card" data-cat="미분류">
+  <span class="cat">미분류</span> <span class="tier">[공식]</span>
+  <h2>삼성전자, ‘디지털고객경험지수’ 종합가전 4년 연속 1위…구매 과정 전반 디지털 경험 강화</h2>
+  <p class="sum">삼성전자가 한국표준협회의 디지털고객경험지수 평가에서 종합가전 부문 최고점을 받아 4년 연속 1위를 차지했다. 이 지수는 제품 탐색부터 구매 및 사용까지의 디지털 채널 전반의 경험 만족도를 종합적으로 측정한다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">삼성전자 뉴스룸 · 발행 2026-08-28 17:00 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%eb%94%94%ec%a7%80%ed%84%b8%ea%b3%a0%ea%b0%9d%ea%b2%bd%ed%97%98%ec%a7%80%ec%88%98-%ec%a2%85%ed%95%a9%ea%b0%80%ec%a0%84-4%eb%85%84-%ec%97%b0%ec%86%8d-1">원문</a></div>
+</div>
+<div class="card" data-cat="메모리">
+  <span class="cat">메모리</span> <span class="tier">[공식]</span>
+  <h2>미국 AI 혁신의 새 거점, SK하이닉스 인디애나 팹 첫 삽 뜨다</h2>
+  <p class="sum">SK하이닉스는 미국 인디애나주 웨스트 라피엣에서 인디애나 팹 기공식을 열고, 미국에 처음 구축하는 AI 메모리 생산 거점 확보를 위한 첫발을 내디뎠다. 이 팹은 퍼듀대학교 할로웨이 체육관에서 열렸으며, 미국 현지 AI 메모리 생산을 위한 기반을 마련한다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 10건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">02-24</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52634">팹리스협회, 3대 회장으로 김경호 전 어보브반도체 대표 선임</a></div>
+</div>
+<div class="step">
+  <span class="when">03-18</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=53696">전영현 삼성전자 부회장 &quot;AI·메모리 공급 부족 긍정적...반도체 주도권 확보&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">03-25</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=54042">SK하이닉스 &quot;순현금 100조 확보 목표...AI 시대 승부수&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">04-23</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=55568">SK하이닉스, 하반기 HBM4E 샘플 공급...1c D램 기반</a></div>
+</div>
+<div class="step">
+  <span class="when">08-20</span>
+  <div class="what"><a href="https://news.skhynix.co.kr/cpo-in-nature-electronics-yb/">AI 전쟁의 무대는 ‘칩’에서 ‘시스템’으로… SK 하이닉스, 네이처 일렉트로닉스 논문으로 ‘랙·포드·시스템’ CPO 상용화 청사진 증명</a></div>
+</div>
+<div class="step">
+  <span class="when">08-20</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61167">SK하이닉스, CPO 청사진 공개…&quot;메모리도 빛으로 연결&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">08-21</span>
+  <div class="what"><a href="https://news.skhynix.co.kr/hyknowledge_3/">[하이널리지 EP3] 생성형 AI 다음 혁명은 ‘몸’이다: 피지컬 AI가 그리는 미래 | 서울대 기계공학부 조규진 교수</a></div>
+</div>
+<div class="step">
+  <span class="when">08-26</span>
+  <div class="what"><a href="https://news.skhynix.co.kr/dtf-2026-5/">SK하이닉스, ‘DTF 2026’서 AI 인프라에 최적화된 메모리 설루션 총망라</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61428">퀄컴 &quot;삼성·SK하이닉스 HBC에 적극적...HBM과 병행 개발&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://news.skhynix.co.kr/indiana-fab-groundbreaking/">[LIVE] SK하이닉스 미국 인디애나 팹(Indiana Fab) 기공식</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">SK하이닉스 뉴스룸 · 발행 2026-08-28 12:29 · <a href="https://news.skhynix.co.kr/indiana-groundbreaking-ceremony-sketch/">원문</a></div>
+</div>
+<div class="card" data-cat="메모리">
+  <span class="cat">메모리</span> <span class="tier">[공식]</span>
+  <h2>SK하이닉스, 美 인디애나 <a class="term" href="concepts.html#hbm">HBM</a> 생산거점 기공식 “한미 AI의 새로운 미래 시작”</h2>
+  <p class="sum">SK하이닉스는 미국 인디애나에 <a class="term" href="concepts.html#hbm">HBM</a> 생산 거점을 설립하기 위한 기공식을 가졌다. 이 행사는 한미 간 AI 협력의 새로운 시작을 알리는 의미가 있다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 8건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">11-03</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=43210">삼성전자, HBM4용 &#x27;1c D램&#x27; 개발팀에 보너스 지급</a></div>
+</div>
+<div class="step">
+  <span class="when">01-02</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=50472">SK하이닉스, 용인 첫 클린룸 두 달 앞당긴다</a></div>
+</div>
+<div class="step">
+  <span class="when">01-26</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=51334">TSV부터 HBM4까지...SK하이닉스 개발 이야기 담은 &#x27;슈퍼 모멘텀&#x27; 출간</a></div>
+</div>
+<div class="step">
+  <span class="when">02-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52440">최태원 회장, 빅테크 5인 연쇄회동 공개</a></div>
+</div>
+<div class="step">
+  <span class="when">04-23</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=55568">SK하이닉스, 하반기 HBM4E 샘플 공급...1c D램 기반</a></div>
+</div>
+<div class="step">
+  <span class="when">06-02</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples">Samsung Electronics Begins Shipment of Industry-First HBM4E Samples</a></div>
+</div>
+<div class="step">
+  <span class="when">06-20</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e">SK hynix Ships Samples of 12-Layer Next-Gen ‘HBM4E’</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61428">퀄컴 &quot;삼성·SK하이닉스 HBC에 적극적...HBM과 병행 개발&quot;</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">SK하이닉스 뉴스룸 · 발행 2026-08-28 11:33 · <a href="https://news.skhynix.co.kr/groundbreaking-ceremony-in-indiana-4/">원문</a></div>
+</div>
+<div class="card" data-cat="미분류">
+  <span class="cat">미분류</span> <span class="tier">[공식]</span>
+  <h2>삼성전자, ‘게임스컴 2026’서 오디세이 게이밍 모니터 신제품 공개</h2>
+  <p class="sum">삼성전자는 독일 쾰른에서 열린 게임스컴 2026에서 세계 최초 360Hz 주사율을 지원하는 49형 오디세이 OLED 게이밍 모니터를 포함한 2027년형 오디세이 게이밍 모니터 4종을 공개했다. 이어 삼성 부스에서 &#x27;#PlaySamsung: 게이밍 디스플레이의 새로운 시대&#x27; 행사를 진행하며 신제품을 시연했다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">삼성전자 뉴스룸 · 발행 2026-08-28 02:30 · <a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ea%b2%8c%ec%9e%84%ec%8a%a4%ec%bb%b4-2026%ec%84%9c-%ec%98%a4%eb%94%94%ec%84%b8%ec%9d%b4-%ea%b2%8c%ec%9d%b4%eb%b0%8d-%eb%aa%a8%eb%8b%88%ed%84%b0-%ec%8b%a0">원문</a></div>
+</div>
+<div class="card" data-cat="장비·소재">
+  <span class="cat">장비·소재</span> <span class="tier">[2차]</span>
+  <h2>&#x27;폴드8 센서 IC 납품&#x27; 해치텍, 상반기 매출 전년비 22%↑</h2>
+  <p class="sum">해치텍은 올해 상반기 매출이 약 92억4100만원으로 전년 동기 대비 22% 증가했다고 공시했다. 스마트폰용 지자기센서 IC를 공급하며, 특히 삼성전자 폴더블 기기에 납품되고 있다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 1건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">01-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=50838">SK하이닉스, 2025년 반도체 매출 3위로 상승...엔비디아·삼성전자, 1·2위</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">더일렉 반도체 · 발행 2026-08-28 17:04 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61499">원문</a></div>
+</div>
+<div class="card" data-cat="AI·가속기">
+  <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
+  <h2>AMD, 성능 최대 3.3배 올린 &#x27;ROCM 10&#x27; 배포</h2>
+  <p class="sum">AMD는 ROCm 7의 후속 버전인 ROCm 10을 공개하며, 이는 엔비디아 CUDA와 유사한 오픈 소스 GPU 소프트웨어 플랫폼이다. ROCm 10은 고성능 컴퓨팅과 AI 모델 학습·추론을 지원하며, 개발자가 소스 코드를 확인·수정하여 다양한 하드웨어에 활용할 수 있다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 4건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">08-19</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61117">AMD, 랙 단위 에너지 효율 4배 향상</a></div>
+</div>
+<div class="step">
+  <span class="when">08-25</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61341">엔비디아, 스페이스XAI에 베라 CPU 등 공급</a></div>
+</div>
+<div class="step">
+  <span class="when">08-25</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61331">엔비디아, AI 추론 특화 랙 &#x27;그록 3 LPX&#x27; 양산</a></div>
+</div>
+<div class="step">
+  <span class="when">08-26</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61346">엔비디아, 성능 2배 높인 &#x27;젯슨 오린 나노 2&#x27; 공개</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">더일렉 반도체 · 발행 2026-08-28 16:10 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61495">원문</a></div>
+</div>
+<div class="card" data-cat="투자·실적">
+  <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
+  <h2>Chip Industry Week in Review</h2>
+  <p class="sum">이번 주 반도체 산업은 AI 하드웨어 동향, <a class="term" href="concepts.html#hbm">HBM</a>과 HBC 비교, 생산 능력 확충, 인피니언의 최신 인수, 고급 <a class="term" href="concepts.html#packaging">패키징</a> 지원 기술 등을 다루었다. 또한 <a class="term" href="concepts.html#foundry">파운드리</a> 보고서, <a class="term" href="concepts.html#asic">ASIC</a> 보안 위협, IC 관세, 임원 변경, 엔비디아와 시놉시스 실적, 대만 의존도, <a class="term" href="concepts.html#wafer">웨이퍼</a> 규모 2D 반도체 개발 등이 언급되었다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 1건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">02-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52440">최태원 회장, 빅테크 5인 연쇄회동 공개</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">Semi Engineering · 발행 2026-08-28 16:01 · <a href="https://semiengineering.com/chip-industry-week-in-review-153/">원문</a></div>
+</div>
+<div class="card" data-cat="장비·소재">
+  <span class="cat">장비·소재</span> <span class="tier">[2차]</span>
+  <h2>Microscale Power Management Starts with Microflow Heat Measurement</h2>
+  <p class="sum">레이저 펄스와 X-ray 영상을 이용해 미세 수준의 재료 결함이 열 방산에 미치는 영향을 밝혔다. 이는 미세 전력 관리의 시작점이 된다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 1건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">05-16</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/micron-redefines-ai-performance-with-sampling-of-256gb-ddr5-server-module/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=micron-redefines-ai-performance-with-sampling-of-256gb-ddr5-server-module">Micron Redefines AI Performance With Sampling of 256GB DDR5 Server Module</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">EE Times · 발행 2026-08-28 16:00 · <a href="https://www.eetimes.com/microscale-power-management-starts-with-microflow-heat-measurement/">원문</a></div>
+</div>
+<div class="card" data-cat="투자·실적">
+  <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
+  <h2>유정준 SK 부회장 &quot;2030년까지 대미 투자·자산 총 62조 넘길 것&quot;</h2>
+  <p class="sum">SK그룹은 미국 첨단 기술 시장에 60조원 이상의 투자를 결정했다. 유정준 부회장은 2030년까지 투자와 자산 규모가 450억달러(약 62조2000억원)를 넘어설 것이라고 밝혔다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 5건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">11-16</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=43924">삼성, 5년간 국내 450조 투자...&quot;반도체 수요 대응 평택 P5 착공&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">03-18</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=53696">전영현 삼성전자 부회장 &quot;AI·메모리 공급 부족 긍정적...반도체 주도권 확보&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">03-25</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=54042">SK하이닉스 &quot;순현금 100조 확보 목표...AI 시대 승부수&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">08-19</span>
+  <div class="what"><a href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ea%b4%91%ec%a3%bc%ec%82%ac%ec%97%85%ec%9e%a5%ec%97%90-%ed%94%8c%eb%9e%99%ed%8a%b8%ea%b7%b8%eb%a3%b9-%ec%8b%a0%ea%b7%9c-hvac-%ec%83%9d%ec%82%b0%eb%9d%bc%ec%9d%b8">삼성전자, 광주사업장에 플랙트그룹 신규 HVAC 생산라인 구축</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61428">퀄컴 &quot;삼성·SK하이닉스 HBC에 적극적...HBM과 병행 개발&quot;</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">더일렉 반도체 · 발행 2026-08-28 07:50 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61458">원문</a></div>
+</div>
+<div class="card" data-cat="메모리">
+  <span class="cat">메모리</span> <span class="tier">[2차]</span>
+  <h2>SK hynix Holds Groundbreaking Ceremony for <a class="term" href="concepts.html#hbm">HBM</a> Production Base in Indiana</h2>
+  <p class="sum">SK하이닉스가 인디애나에 <a class="term" href="concepts.html#hbm">HBM</a> 생산基地의 기공식을 가졌다. 향후 2029년 하반기에 미국 내에서 최초로 &#x27;Made in USA&#x27; 차세대 HBM 대량 생산을 시작하기 위해 40억 달러 이상을 투자할 예정이다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 9건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">11-03</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=43210">삼성전자, HBM4용 &#x27;1c D램&#x27; 개발팀에 보너스 지급</a></div>
+</div>
+<div class="step">
+  <span class="when">01-02</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=50472">SK하이닉스, 용인 첫 클린룸 두 달 앞당긴다</a></div>
+</div>
+<div class="step">
+  <span class="when">01-26</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=51334">TSV부터 HBM4까지...SK하이닉스 개발 이야기 담은 &#x27;슈퍼 모멘텀&#x27; 출간</a></div>
+</div>
+<div class="step">
+  <span class="when">02-13</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=52440">최태원 회장, 빅테크 5인 연쇄회동 공개</a></div>
+</div>
+<div class="step">
+  <span class="when">04-23</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=55568">SK하이닉스, 하반기 HBM4E 샘플 공급...1c D램 기반</a></div>
+</div>
+<div class="step">
+  <span class="when">06-02</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples">Samsung Electronics Begins Shipment of Industry-First HBM4E Samples</a></div>
+</div>
+<div class="step">
+  <span class="when">06-20</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e">SK hynix Ships Samples of 12-Layer Next-Gen ‘HBM4E’</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://www.thelec.kr/news/articleView.html?idxno=61428">퀄컴 &quot;삼성·SK하이닉스 HBC에 적극적...HBM과 병행 개발&quot;</a></div>
+</div>
+<div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://news.skhynix.co.kr/indiana-fab-groundbreaking/">[LIVE] SK하이닉스 미국 인디애나 팹(Indiana Fab) 기공식</a></div>
+</div>
+</div>
+</details>
+
+  <div class="src">Semiconductor Digest (패키징) · 발행 2026-08-28 03:55 · <a href="https://www.semiconductor-digest.com/sk-hynix-holds-groundbreaking-ceremony-for-hbm-production-base-in-indiana/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=sk-hynix-holds-groundbreaking-ceremony-for-hbm-production-base-in-indiana">원문</a></div>
+</div>
+
+<div class="days"><div class="days-head">지난 날짜</div><div class="month"><span class="ym">2026-08</span><a href="2026-08-29.html">29</a><b>28</b><a href="2026-08-27.html">27</a><a href="2026-08-26.html">26</a><a href="2026-08-25.html">25</a><a href="2026-08-24.html">24</a><a href="2026-08-22.html">22</a><a href="2026-08-21.html">21</a><a href="2026-08-20.html">20</a><a href="2026-08-19.html">19</a><a href="2026-08-18.html">18</a><a href="2026-08-17.html">17</a><a href="2026-08-15.html">15</a><a href="2026-08-14.html">14</a><a href="2026-08-13.html">13</a><a href="2026-08-12.html">12</a><a href="2026-08-11.html">11</a><a href="2026-08-10.html">10</a><a href="2026-08-08.html">08</a><a href="2026-08-07.html">07</a><a href="2026-08-06.html">06</a><a href="2026-08-05.html">05</a><a href="2026-08-04.html">04</a></div><div class="month"><span class="ym">2026-07</span><a href="2026-07-31.html">31</a><a href="2026-07-30.html">30</a><a href="2026-07-29.html">29</a><a href="2026-07-25.html">25</a><a href="2026-07-24.html">24</a><a href="2026-07-18.html">18</a><a href="2026-07-16.html">16</a><a href="2026-07-14.html">14</a><a href="2026-07-11.html">11</a><a href="2026-07-08.html">08</a><a href="2026-07-07.html">07</a><a href="2026-07-03.html">03</a><a href="2026-07-02.html">02</a><a href="2026-07-01.html">01</a></div><div class="month"><span class="ym">2026-06</span><a href="2026-06-27.html">27</a><a href="2026-06-25.html">25</a><a href="2026-06-23.html">23</a><a href="2026-06-20.html">20</a><a href="2026-06-17.html">17</a><a href="2026-06-16.html">16</a><a href="2026-06-12.html">12</a><a href="2026-06-11.html">11</a><a href="2026-06-10.html">10</a><a href="2026-06-09.html">09</a><a href="2026-06-05.html">05</a><a href="2026-06-04.html">04</a><a href="2026-06-03.html">03</a><a href="2026-06-02.html">02</a></div><div class="month"><span class="ym">2026-05</span><a href="2026-05-30.html">30</a><a href="2026-05-29.html">29</a><a href="2026-05-28.html">28</a><a href="2026-05-27.html">27</a><a href="2026-05-23.html">23</a><a href="2026-05-22.html">22</a><a href="2026-05-21.html">21</a><a href="2026-05-20.html">20</a><a href="2026-05-19.html">19</a><a href="2026-05-16.html">16</a><a href="2026-05-15.html">15</a><a href="2026-05-14.html">14</a><a href="2026-05-13.html">13</a><a href="2026-05-12.html">12</a><a href="2026-05-09.html">09</a><a href="2026-05-08.html">08</a><a href="2026-05-06.html">06</a><a href="2026-05-05.html">05</a><a href="2026-05-02.html">02</a><a href="2026-05-01.html">01</a></div><div class="month"><span class="ym">2026-04</span><a href="2026-04-30.html">30</a><a href="2026-04-29.html">29</a><a href="2026-04-23.html">23</a><a href="2026-04-22.html">22</a><a href="2026-04-20.html">20</a><a href="2026-04-16.html">16</a><a href="2026-04-13.html">13</a><a href="2026-04-08.html">08</a><a href="2026-04-07.html">07</a><a href="2026-04-03.html">03</a><a href="2026-04-01.html">01</a></div><div class="month"><span class="ym">2026-03</span><a href="2026-03-25.html">25</a><a href="2026-03-23.html">23</a><a href="2026-03-18.html">18</a><a href="2026-03-16.html">16</a><a href="2026-03-13.html">13</a><a href="2026-03-11.html">11</a><a href="2026-03-08.html">08</a><a href="2026-03-04.html">04</a><a href="2026-03-03.html">03</a><a href="2026-03-01.html">01</a></div><div class="month"><span class="ym">2026-02</span><a href="2026-02-24.html">24</a><a href="2026-02-23.html">23</a><a href="2026-02-19.html">19</a><a href="2026-02-17.html">17</a><a href="2026-02-13.html">13</a><a href="2026-02-11.html">11</a><a href="2026-02-10.html">10</a><a href="2026-02-06.html">06</a><a href="2026-02-05.html">05</a><a href="2026-02-04.html">04</a><a href="2026-02-03.html">03</a><a href="2026-02-02.html">02</a></div><div class="month"><span class="ym">2026-01</span><a href="2026-01-26.html">26</a><a href="2026-01-21.html">21</a><a href="2026-01-19.html">19</a><a href="2026-01-13.html">13</a><a href="2026-01-09.html">09</a><a href="2026-01-06.html">06</a><a href="2026-01-05.html">05</a><a href="2026-01-02.html">02</a></div><div class="month"><span class="ym">2025-12</span><a href="2025-12-24.html">24</a><a href="2025-12-18.html">18</a><a href="2025-12-17.html">17</a><a href="2025-12-12.html">12</a><a href="2025-12-11.html">11</a><a href="2025-12-10.html">10</a><a href="2025-12-09.html">09</a><a href="2025-12-08.html">08</a><a href="2025-12-02.html">02</a><a href="2025-12-01.html">01</a></div><div class="month"><span class="ym">2025-11</span><a href="2025-11-26.html">26</a><a href="2025-11-24.html">24</a><a href="2025-11-19.html">19</a><a href="2025-11-17.html">17</a><a href="2025-11-16.html">16</a><a href="2025-11-13.html">13</a><a href="2025-11-10.html">10</a><a href="2025-11-06.html">06</a><a href="2025-11-03.html">03</a></div></div>
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+</script>
+</body>
+</html>
