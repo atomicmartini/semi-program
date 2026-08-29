@@ -25,8 +25,9 @@ STYLE = """
        페이지 배경 토큰은 이름이 겹치지 않게 --page 로 뒀다. */
     --page:#fbfbfa; --surface:#fff;
     --text:#1c1b19; --text-muted:#63605a; --text-faint:#94908a;
-    --border:#e4e2dd; --border-soft:#f0eeea;
-    --accent:#0b2e6b; --link:#0b5fff; --success:#0a7d3c;
+    --border:#e4e2dd; --border-soft:#f0eeea; --chip-bg:#f0eee9;
+    /* 슬라이스 10 — 포인트는 남색 하나. 링크도 같은 색을 쓴다(두 색이면 '단일 포인트'가 아니다) */
+    --accent:#0b2e6b; --link:#0b2e6b; --success:#0a7d3c;
     --radius-sm:8px; --radius-lg:14px;
     --shadow-card:0 1px 2px rgba(28,27,25,.04), 0 4px 12px rgba(28,27,25,.06);
     --shadow-hover:0 2px 4px rgba(28,27,25,.06), 0 8px 20px rgba(28,27,25,.10);
@@ -34,14 +35,30 @@ STYLE = """
   html, body { margin:0; padding:0; background:var(--page); }
   body { color:var(--text); font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
     line-height:1.6; word-break:keep-all; }
-  /* 맨 위 파란 줄 — 여백 없이 바로 시작한다 */
-  .topbar { background:var(--accent); color:#fff; padding:11px 24px; font-size:14px;
-    font-weight:700; letter-spacing:.2px; }
-  .wrap { max-width:900px; margin:0 auto; padding:20px 24px 24px; }
-  nav.tabs { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
-  nav.tabs a { display:inline-block; padding:7px 16px; border-radius:99px; font-size:14px;
-    background:var(--surface); border:1px solid #cfccc4; color:var(--text-muted); text-decoration:none; }
-  nav.tabs a.on { background:var(--text); color:#fff; border-color:var(--text); font-weight:700; }
+  /* 큰 히어로 마스트헤드 — 화면 전체 폭을 원본 회로 일러스트로 채우고, 글자를 그 위 가운데 얹는다.
+     사진을 안 쓴 이유: 출처·라이선스를 매번 확인해야 하는데, 우리가 그린 그림은 그 부담이 없다 */
+  .hero-mast { position:relative; width:100%; min-height:34vh; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--accent); }
+  .hero-mast-bg { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .hero-mast-scrim { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(11,46,107,.25), rgba(11,46,107,.72)); }
+  .hero-mast-text { position:relative; z-index:1; text-align:center; padding:24px; max-width:640px; }
+  .hero-title { font-family:'Gugi','Pretendard Variable',sans-serif; font-size:44px; font-weight:400;
+    line-height:1.25; margin:0 0 14px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); }
+  .hero-tag { font-size:16px; color:rgba(255,255,255,.88); margin:0; }
+  @media (max-width:768px) {
+    .hero-mast { min-height:26vh; }
+    .hero-title { font-size:30px; }
+  }
+
+  .wrap { max-width:900px; margin:0 auto; padding:14px 24px 24px; }
+
+  /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
+  nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
+  nav.tabs a { display:inline-block; padding:9px 20px; border-radius:99px; font-size:16px; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
+  nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
+  nav.tabs a.tab-search { margin-left:auto; }
   .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
   .searchbox { display:flex; gap:8px; margin:0 0 18px; }
   .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
@@ -51,6 +68,24 @@ STYLE = """
   .card { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
     padding:16px 18px; margin-bottom:14px; transition:box-shadow .15s, transform .15s; }
   .card:hover { box-shadow:var(--shadow-hover); transform:translateY(-1px); }
+
+  /* 헤드라인 캐러셀 — 오늘 상위 3건. 나머지 카드와 같은 흰 바탕+그림자, 스크롤로 넘긴다 */
+  .hero-wrap { position:relative; margin:0 0 22px; }
+  .hero-scroll { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:2px 2px 6px; }
+  .hero-scroll::-webkit-scrollbar { display:none; }
+  .hero-card { flex:0 0 78%; max-width:420px; scroll-snap-align:start; border-radius:var(--radius-lg);
+    padding:20px 22px 18px; box-shadow:var(--shadow-card); background:var(--surface); color:var(--text);
+    text-decoration:none; display:block; }
+  .hero-eyebrow { font-size:12px; font-weight:700; color:var(--accent); }
+  .hero-card h2 { font-size:21px; line-height:1.35; margin:10px 0 8px; font-weight:800; }
+  .hero-sum { font-size:13.5px; color:var(--text-muted); margin:0 0 14px; }
+  .hero-foot { font-size:12px; color:var(--text-faint); font-weight:600; }
+  .hero-arrow { position:absolute; top:44%; transform:translateY(-50%); width:34px; height:34px;
+    border-radius:50%; border:1px solid var(--border); background:var(--surface); box-shadow:var(--shadow-hover);
+    color:var(--text); font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .hero-arrow.prev { left:-6px; } .hero-arrow.next { right:-6px; }
+
   .cat { font-size:12px; color:var(--text-faint); }
   .tier { font-size:12px; color:var(--success); }
   .card h2 { font-size:17px; margin:4px 0 6px; overflow-wrap:break-word; }
@@ -94,15 +129,12 @@ STYLE = """
   .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid var(--border);
     font-size:12px; color:var(--text-faint); }
-  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
-  /* 분류마다 --bg·--fg 로 파스텔 색을 준다 (category_chips 가 인라인으로 넣는다).
-     선택됨·0건 상태는 분류 색과 무관하게 항상 이겨야 해서 !important 를 쓴다. */
-  .chip { font-size:13px; padding:5px 12px; border-radius:99px; cursor:pointer;
-    background:var(--bg,#fff); color:var(--fg,var(--text-muted)); border:1px solid var(--bg,#cfccc4); }
-  .chip.on { background:var(--text) !important; color:#fff !important;
-    border-color:var(--text) !important; font-weight:600; }
-  .chip.empty { background:var(--surface) !important; color:#c4c1ba !important;
-    border-color:var(--border) !important; cursor:default; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
+  /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
+  .chip { font-size:16px; padding:9px 20px; border-radius:99px; cursor:pointer; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); }
+  .chip.on { background:var(--accent); color:#fff; font-weight:700; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.6; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days-head { color:var(--text-faint); margin-bottom:6px; }
@@ -140,7 +172,6 @@ STYLE = """
 
   /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
   @media (max-width:600px) {
-    .topbar { padding:10px 16px; }
     .wrap { padding:14px 14px 20px; }
     .card, .entry, .profile { padding:14px; }
     .colist-articles { padding:4px 14px; }
@@ -150,7 +181,95 @@ STYLE = """
     .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
     .step::before { left:1px; top:6px; }
   }
+
+  /* 선(라인)만 있는 흑백 아이콘 — 카테고리마다 색 있는 이모지를 쓰던 자리를 대신한다 */
+  .icon { width:15px; height:15px; vertical-align:-2.5px; margin-right:3px;
+    fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
+  nav.tabs a.tab-search .icon { margin-right:0; }
+  nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
+
+  .meta.alert { border:1px solid #f3d9ad; background:#fff7ea; color:#92650a; font-weight:600;
+    padding:8px 14px; border-radius:10px; }
+
+  /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
+  nav.tabs.bottom { display:none; }
+  @media (max-width:768px) {
+    nav.tabs.top { display:none; }
+    nav.tabs.bottom {
+      display:flex; position:fixed; left:0; right:0; bottom:0; z-index:20;
+      background:var(--surface); box-shadow:0 -2px 16px rgba(28,27,25,.10);
+      padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    }
+    nav.tabs.bottom a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+      padding:6px 4px 4px; font-size:11px; color:var(--text-faint); text-decoration:none;
+      border-radius:0; background:none; font-weight:400; }
+    nav.tabs.bottom a.on { color:var(--accent); font-weight:700; background:none; }
+    body { padding-bottom:64px; }
+    .hero-arrow { display:none; }
+    .hero-card { flex-basis:88%; }
+  }
 """
+
+ICON_SPRITE = """<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="ic-package" viewBox="0 0 20 20"><path d="M10 2 3 6v8l7 4 7-4V6z"/><path d="M3 6l7 4 7-4"/><path d="M10 10v8"/></symbol>
+  <symbol id="ic-factory" viewBox="0 0 20 20"><path d="M3 17V9l4 3V9l4 3V6h6v11z"/></symbol>
+  <symbol id="ic-memory" viewBox="0 0 20 20"><rect x="6" y="6" width="8" height="8" rx="1"/>
+    <path d="M6 3v3M10 3v3M14 3v3M6 14v3M10 14v3M14 14v3M3 6h3M3 10h3M3 14h3M14 6h3M14 10h3M14 14h3"/></symbol>
+  <symbol id="ic-ai" viewBox="0 0 20 20"><path d="M11 2 4 12h5l-1 6 8-11h-5z"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/>
+    <path d="M10 2v2.4M10 15.6V18M18 10h-2.4M4.4 10H2M15.5 4.5l-1.7 1.7M6.2 13.8l-1.7 1.7M15.5 15.5l-1.7-1.7M6.2 6.2 4.5 4.5"/></symbol>
+  <symbol id="ic-policy" viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="14" rx="1"/>
+    <path d="M7 7h6M7 10h6M7 13h3"/></symbol>
+  <symbol id="ic-trend" viewBox="0 0 20 20"><polyline points="3 14 8 9 11 12 17 5"/><polyline points="12.5 5 17 5 17 9.5"/></symbol>
+  <symbol id="ic-dash" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="7" y1="10" x2="13" y2="10"/></symbol>
+  <symbol id="ic-news" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="1"/><path d="M6 8h8M6 11h8M6 14h4"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 20 20"><path d="M2 4.5h6a2 2 0 0 1 2 2v10a2 2 0 0 0-2-1.5H2z"/>
+    <path d="M18 4.5h-6a2 2 0 0 0-2 2v10a2 2 0 0 1 2-1.5h6z"/></symbol>
+  <symbol id="ic-building" viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16"/>
+    <path d="M7 5.3h.01M10 5.3h.01M13 5.3h.01M7 8.6h.01M10 8.6h.01M13 8.6h.01M7 11.9h.01M10 11.9h.01M13 11.9h.01"
+      stroke-width="2"/><path d="M8 18v-4h4v4"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6"/><line x1="13.5" y1="13.5" x2="18" y2="18"/></symbol>
+</defs>
+</svg>"""
+
+HERO_MAST = """<div class="hero-mast">
+  <svg class="hero-mast-bg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice">
+    <rect width="1200" height="420" fill="#0b2e6b"/>
+    <g stroke="#ffffff" stroke-opacity=".14" stroke-width="2">
+      <path d="M0 90h260v-60h500v90h300"/>
+      <path d="M0 220h140v110h700"/>
+      <path d="M0 340h360v70"/>
+      <path d="M1200 130h-160v90h-120v160"/>
+      <path d="M1200 300h-260"/>
+      <path d="M760 0v100"/>
+      <path d="M980 0v60h140"/>
+      <path d="M60 420v-70h240"/>
+    </g>
+    <g fill="#ffffff" fill-opacity=".16">
+      <circle cx="260" cy="30" r="5"/><circle cx="260" cy="90" r="5"/>
+      <circle cx="140" cy="220" r="5"/><circle cx="360" cy="340" r="5"/>
+      <circle cx="360" cy="410" r="5"/><circle cx="920" cy="130" r="5"/>
+      <circle cx="800" cy="220" r="5"/><circle cx="800" cy="360" r="5"/>
+      <circle cx="980" cy="60" r="5"/><circle cx="760" cy="0" r="5"/>
+      <circle cx="300" cy="420" r="5"/>
+    </g>
+    <rect x="530" y="140" width="140" height="140" rx="14" fill="#0b2e6b" stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5"/>
+    <g stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5">
+      <path d="M560 140v-20M590 140v-20M620 140v-20M650 140v-20"/>
+      <path d="M560 280v20M590 280v20M620 280v20M650 280v20"/>
+      <path d="M530 170h-20M530 195h-20M530 220h-20M530 245h-20"/>
+      <path d="M670 170h20M670 195h20M670 220h20M670 245h20"/>
+    </g>
+    <rect x="558" y="168" width="84" height="84" rx="6" fill="none" stroke="#ffffff" stroke-opacity=".65" stroke-width="2.5"/>
+  </svg>
+  <div class="hero-mast-scrim"></div>
+  <div class="hero-mast-text">
+    <h1 class="hero-title">반도체 뉴스 데일리</h1>
+    <p class="hero-tag">매일 아침, 반도체 업계 핵심 뉴스와 지난 흐름을 한 화면에 잇습니다</p>
+  </div>
+</div>"""
 
 PAGE = """<!doctype html>
 <html lang="ko">
@@ -158,33 +277,49 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gugi&display=swap">
 <style>{style}</style>
 </head>
 <body>
-<div class="topbar"><h1 style="margin:0;font-size:inherit;font-weight:inherit">반도체 뉴스 데일리</h1></div>
+""" + ICON_SPRITE + HERO_MAST + """
 <div class="wrap">
-<nav class="tabs">
+<nav class="tabs top">
   <a class="{news_on}" href="{prefix}index.html">뉴스</a>
   <a class="{concept_on}" href="{prefix}concepts.html">개념 {term_count}</a>
   <a class="{company_on}" href="{prefix}companies.html">기업 {company_count}</a>
-  <a class="{search_on}" href="{prefix}search.html">검색</a>
+  <a class="tab-search {search_on}" href="{prefix}search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
 </nav>
-<div class="meta">{meta}</div>
+<div class="{meta_class}">{meta}</div>
 {chips}
 {body}
 {days}
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 </div>
+<nav class="tabs bottom">
+  <a class="{news_on}" href="{prefix}index.html"><svg class="icon"><use href="#ic-news"/></svg>뉴스</a>
+  <a class="{concept_on}" href="{prefix}concepts.html"><svg class="icon"><use href="#ic-book"/></svg>개념</a>
+  <a class="{company_on}" href="{prefix}companies.html"><svg class="icon"><use href="#ic-building"/></svg>기업</a>
+  <a class="{search_on}" href="{prefix}search.html"><svg class="icon"><use href="#ic-search"/></svg>검색</a>
+</nav>
 <script>
 document.addEventListener('click', function (e) {{
+  var arrow = e.target.closest('.hero-arrow');
+  if (arrow) {{
+    var scroller = arrow.closest('.hero-wrap').querySelector('.hero-scroll');
+    var dir = arrow.classList.contains('next') ? 1 : -1;
+    scroller.scrollBy({{left: dir * scroller.clientWidth * 0.86, behavior: 'smooth'}});
+    return;
+  }}
   var chip = e.target.closest('.chip:not(.empty)');
   if (!chip) return;
   var want = chip.dataset.cat;
   document.querySelectorAll('.chip').forEach(function (c) {{
     c.classList.toggle('on', c === chip);
   }});
-  document.querySelectorAll('.card').forEach(function (card) {{
+  document.querySelectorAll('.card, .hero-card').forEach(function (card) {{
     card.hidden = want !== '' && card.dataset.cat !== want;
   }});
 }});
@@ -213,6 +348,23 @@ STEP = """<div class="step">
   <div class="what"><a href="{url}">{title}</a></div>
 </div>
 """
+
+HERO_CARD = """<a class="hero-card" data-cat="{category}" href="{url}">
+  <span class="hero-eyebrow">{icon}{category}</span>
+  <h2>{title}</h2>
+  <p class="hero-sum">{summary}</p>
+  <div class="hero-foot">{tier}{source} · {published}</div>
+</a>
+"""
+
+HERO_WRAP = """<div class="hero-wrap">
+  <div class="hero-scroll">{cards}</div>
+  {arrows}
+</div>
+"""
+
+HERO_ARROWS = """<button type="button" class="hero-arrow prev" aria-label="이전">‹</button>
+<button type="button" class="hero-arrow next" aria-label="다음">›</button>"""
 
 
 def load_related(day: str) -> dict[str, list[dict]]:
@@ -293,18 +445,24 @@ def _status() -> tuple[int, int]:
     return data.get("ok", 0), data.get("total", 0)
 
 
-# 분류마다 이모지·파스텔 색 하나. 코드가 고정 배정한다 — 뜻을 매기는 게 아니라 화면 구분용이라
-# 모델이 즉석에서 정할 일이 아니다 (CLAUDE.md). keywords.md 에 분류가 늘면 여기도 늘려야 한다.
-CATEGORY_STYLE: dict[str, tuple[str, str, str]] = {  # 이름: (이모지, 배경, 글자색)
-    "패키징": ("📦", "#fbe9d0", "#8a5a12"),
-    "파운드리·공정": ("🏭", "#dce8fb", "#1d4ed8"),
-    "메모리": ("💾", "#dcf3e4", "#15803d"),
-    "AI·가속기": ("🤖", "#ece3fb", "#6d28d9"),
-    "장비·소재": ("⚙️", "#d8f3ef", "#0f766e"),
-    "정책·규제": ("📜", "#fbe0e6", "#be123c"),
-    "투자·실적": ("📈", "#fbf3d0", "#92650a"),
-    UNCLASSIFIED: ("➖", "#eeece7", "#6b6862"),
+# 분류마다 라인 아이콘 하나(ICON_SPRITE 의 symbol id). 코드가 고정 배정한다 — 뜻을 매기는 게
+# 아니라 화면 구분용이라 모델이 즉석에서 정할 일이 아니다 (CLAUDE.md).
+# keywords.md 에 분류가 늘면 여기도 늘려야 한다.
+CATEGORY_ICON: dict[str, str] = {
+    "패키징": "package",
+    "파운드리·공정": "factory",
+    "메모리": "memory",
+    "AI·가속기": "ai",
+    "장비·소재": "gear",
+    "정책·규제": "policy",
+    "투자·실적": "trend",
+    UNCLASSIFIED: "dash",
 }
+
+
+def _chip_icon(name: str) -> str:
+    icon = CATEGORY_ICON.get(name, "dash")
+    return f'<svg class="icon"><use href="#ic-{icon}"/></svg>'
 
 
 def category_chips(picked: list[dict]) -> str:
@@ -318,11 +476,9 @@ def category_chips(picked: list[dict]) -> str:
     for name in names:
         n = counts.get(name, 0)
         empty = "" if n else " empty"
-        emoji, bg, fg = CATEGORY_STYLE.get(name, ("", "#f2f1ee", "#63605a"))
         chips.append(
-            f'<span class="chip{empty}" data-cat="{html.escape(name, quote=True)}" '
-            f'style="--bg:{bg};--fg:{fg}">'
-            f'{emoji} {html.escape(name)}<span class="n">{n}</span></span>'
+            f'<span class="chip{empty}" data-cat="{html.escape(name, quote=True)}">'
+            f'{_chip_icon(name)}{html.escape(name)}<span class="n">{n}</span></span>'
         )
     return f'<div class="chips">{"".join(chips)}</div>'
 
@@ -369,7 +525,8 @@ MAX_COMPANY_ARTICLES = 50
 
 
 def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
-          chips: str = "", days: str = "", prefix: str = "", companies_total: int = 0) -> str:
+          chips: str = "", days: str = "", prefix: str = "", companies_total: int = 0,
+          meta_class: str = "meta") -> str:
     """페이지 껍데기. 탭이 늘어도 호출부를 하나씩 안 고치게 기본값을 둔다."""
     return PAGE.format(
         title=title,
@@ -382,6 +539,7 @@ def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
         term_count=len(terms),
         company_count=companies_total or len(companies.read_companies()),
         meta=meta,
+        meta_class=meta_class,
         body=body,
         chips=chips,
         days=days,
@@ -408,6 +566,39 @@ def _render_card(a: dict, terms: list[dict], related_map: dict, extracted: dict)
     )
 
 
+MAX_HERO = 3  # 헤드라인 캐러셀에 넣는 오늘 상위 기사 수. select_top() 이 이미 점수 내림차순으로 준다.
+
+
+def _render_hero_card(a: dict, extracted: dict) -> str:
+    """헤드라인 캐러셀 카드 하나 — 오늘 상위권 기사를 크게 보여준다.
+
+    카드 전체가 <a> 라 제목·요약에는 용어 링크(glossary.link_terms)를 걸지 않는다.
+    <a> 안에 <a> 를 중첩하면 브라우저가 바깥 링크를 멋대로 끊어 레이아웃이 깨진다.
+    """
+    summary, _ = choose_summary(a, extracted)
+    category = (extracted.get(a["url"]) or {}).get("category") or a.get("category", UNCLASSIFIED)
+    tier = a.get("tier", "")
+
+    return HERO_CARD.format(
+        category=html.escape(category),
+        icon=_chip_icon(category),
+        title=html.escape(a["title"]),
+        summary=html.escape(summary[:140]),
+        tier=f"{html.escape(tier)} · " if tier else "",
+        source=html.escape(a["source"]),
+        published=html.escape((a.get("published") or "—")[:16].replace("T", " ")),
+        url=html.escape(a["url"], quote=True),
+    )
+
+
+def render_hero(items: list[dict], extracted: dict) -> str:
+    """헤드라인 캐러셀. 기사가 2건 이하면 화살표를 안 낸다(넘길 게 없다)."""
+    if not items:
+        return ""
+    cards = "".join(_render_hero_card(a, extracted) for a in items)
+    return HERO_WRAP.format(cards=cards, arrows=HERO_ARROWS if len(items) > 1 else "")
+
+
 def render_news(day: str, terms: list[dict]) -> str:
     """하루치 목록 HTML."""
     picked, _, _ = select_day(day)
@@ -416,18 +607,26 @@ def render_news(day: str, terms: list[dict]) -> str:
     extracted = load_extracted(day)
 
     if picked:
-        body = "".join(
-            _render_card(a, terms, related_map, extracted) for a in picked
+        hero_items, rest = picked[:MAX_HERO], picked[MAX_HERO:]
+        body = render_hero(hero_items, extracted) + "".join(
+            _render_card(a, terms, related_map, extracted) for a in rest
         )
     else:
         # '기사 없음' 과 '수집 실패' 는 다르다 (CLAUDE.md).
         body = '<p class="none">이 날은 반도체 관련 기사가 없습니다. (수집은 정상이었습니다)</p>'
 
+    # 다 정상이면 조용히 넘어간다. 실패가 있을 때만 도드라지게 보여준다 (CLAUDE.md — 실패를 숨기지 않는다).
+    if total and ok < total:
+        meta, meta_class = f"{day} · {len(picked)}건 · 수집 {ok}곳 중 {total}곳 정상 — {total - ok}곳 실패", "meta alert"
+    else:
+        meta, meta_class = f"{day} · {len(picked)}건", "meta"
+
     return _page(
         title=f"반도체 뉴스 데일리 — {day}",
         tab="news",
         terms=terms,
-        meta=f"{day} · {len(picked)}건 · 수집 {ok}곳 중 {total}곳 정상",
+        meta=meta,
+        meta_class=meta_class,
         body=body,
         chips=category_chips(picked) if picked else "",
         days=day_links(day),

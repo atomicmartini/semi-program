@@ -4,14 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>반도체 뉴스 데일리 — 2026-05-19</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gugi&display=swap">
 <style>
   :root {
     /* docs/slices/09-디자인시스템.md 참조. --bg·--fg 는 카테고리 칩 전용(인라인)이라
        페이지 배경 토큰은 이름이 겹치지 않게 --page 로 뒀다. */
     --page:#fbfbfa; --surface:#fff;
     --text:#1c1b19; --text-muted:#63605a; --text-faint:#94908a;
-    --border:#e4e2dd; --border-soft:#f0eeea;
-    --accent:#0b2e6b; --link:#0b5fff; --success:#0a7d3c;
+    --border:#e4e2dd; --border-soft:#f0eeea; --chip-bg:#f0eee9;
+    /* 슬라이스 10 — 포인트는 남색 하나. 링크도 같은 색을 쓴다(두 색이면 '단일 포인트'가 아니다) */
+    --accent:#0b2e6b; --link:#0b2e6b; --success:#0a7d3c;
     --radius-sm:8px; --radius-lg:14px;
     --shadow-card:0 1px 2px rgba(28,27,25,.04), 0 4px 12px rgba(28,27,25,.06);
     --shadow-hover:0 2px 4px rgba(28,27,25,.06), 0 8px 20px rgba(28,27,25,.10);
@@ -19,14 +23,30 @@
   html, body { margin:0; padding:0; background:var(--page); }
   body { color:var(--text); font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
     line-height:1.6; word-break:keep-all; }
-  /* 맨 위 파란 줄 — 여백 없이 바로 시작한다 */
-  .topbar { background:var(--accent); color:#fff; padding:11px 24px; font-size:14px;
-    font-weight:700; letter-spacing:.2px; }
-  .wrap { max-width:900px; margin:0 auto; padding:20px 24px 24px; }
-  nav.tabs { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
-  nav.tabs a { display:inline-block; padding:7px 16px; border-radius:99px; font-size:14px;
-    background:var(--surface); border:1px solid #cfccc4; color:var(--text-muted); text-decoration:none; }
-  nav.tabs a.on { background:var(--text); color:#fff; border-color:var(--text); font-weight:700; }
+  /* 큰 히어로 마스트헤드 — 화면 전체 폭을 원본 회로 일러스트로 채우고, 글자를 그 위 가운데 얹는다.
+     사진을 안 쓴 이유: 출처·라이선스를 매번 확인해야 하는데, 우리가 그린 그림은 그 부담이 없다 */
+  .hero-mast { position:relative; width:100%; min-height:34vh; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--accent); }
+  .hero-mast-bg { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .hero-mast-scrim { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(11,46,107,.25), rgba(11,46,107,.72)); }
+  .hero-mast-text { position:relative; z-index:1; text-align:center; padding:24px; max-width:640px; }
+  .hero-title { font-family:'Gugi','Pretendard Variable',sans-serif; font-size:44px; font-weight:400;
+    line-height:1.25; margin:0 0 14px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); }
+  .hero-tag { font-size:16px; color:rgba(255,255,255,.88); margin:0; }
+  @media (max-width:768px) {
+    .hero-mast { min-height:26vh; }
+    .hero-title { font-size:30px; }
+  }
+
+  .wrap { max-width:900px; margin:0 auto; padding:14px 24px 24px; }
+
+  /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
+  nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
+  nav.tabs a { display:inline-block; padding:9px 20px; border-radius:99px; font-size:16px; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
+  nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
+  nav.tabs a.tab-search { margin-left:auto; }
   .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
   .searchbox { display:flex; gap:8px; margin:0 0 18px; }
   .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
@@ -36,6 +56,24 @@
   .card { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
     padding:16px 18px; margin-bottom:14px; transition:box-shadow .15s, transform .15s; }
   .card:hover { box-shadow:var(--shadow-hover); transform:translateY(-1px); }
+
+  /* 헤드라인 캐러셀 — 오늘 상위 3건. 나머지 카드와 같은 흰 바탕+그림자, 스크롤로 넘긴다 */
+  .hero-wrap { position:relative; margin:0 0 22px; }
+  .hero-scroll { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:2px 2px 6px; }
+  .hero-scroll::-webkit-scrollbar { display:none; }
+  .hero-card { flex:0 0 78%; max-width:420px; scroll-snap-align:start; border-radius:var(--radius-lg);
+    padding:20px 22px 18px; box-shadow:var(--shadow-card); background:var(--surface); color:var(--text);
+    text-decoration:none; display:block; }
+  .hero-eyebrow { font-size:12px; font-weight:700; color:var(--accent); }
+  .hero-card h2 { font-size:21px; line-height:1.35; margin:10px 0 8px; font-weight:800; }
+  .hero-sum { font-size:13.5px; color:var(--text-muted); margin:0 0 14px; }
+  .hero-foot { font-size:12px; color:var(--text-faint); font-weight:600; }
+  .hero-arrow { position:absolute; top:44%; transform:translateY(-50%); width:34px; height:34px;
+    border-radius:50%; border:1px solid var(--border); background:var(--surface); box-shadow:var(--shadow-hover);
+    color:var(--text); font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .hero-arrow.prev { left:-6px; } .hero-arrow.next { right:-6px; }
+
   .cat { font-size:12px; color:var(--text-faint); }
   .tier { font-size:12px; color:var(--success); }
   .card h2 { font-size:17px; margin:4px 0 6px; overflow-wrap:break-word; }
@@ -79,15 +117,12 @@
   .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid var(--border);
     font-size:12px; color:var(--text-faint); }
-  .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
-  /* 분류마다 --bg·--fg 로 파스텔 색을 준다 (category_chips 가 인라인으로 넣는다).
-     선택됨·0건 상태는 분류 색과 무관하게 항상 이겨야 해서 !important 를 쓴다. */
-  .chip { font-size:13px; padding:5px 12px; border-radius:99px; cursor:pointer;
-    background:var(--bg,#fff); color:var(--fg,var(--text-muted)); border:1px solid var(--bg,#cfccc4); }
-  .chip.on { background:var(--text) !important; color:#fff !important;
-    border-color:var(--text) !important; font-weight:600; }
-  .chip.empty { background:var(--surface) !important; color:#c4c1ba !important;
-    border-color:var(--border) !important; cursor:default; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
+  /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
+  .chip { font-size:16px; padding:9px 20px; border-radius:99px; cursor:pointer; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); }
+  .chip.on { background:var(--accent); color:#fff; font-weight:700; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.6; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days-head { color:var(--text-faint); margin-bottom:6px; }
@@ -125,7 +160,6 @@
 
   /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
   @media (max-width:600px) {
-    .topbar { padding:10px 16px; }
     .wrap { padding:14px 14px 20px; }
     .card, .entry, .profile { padding:14px; }
     .colist-articles { padding:4px 14px; }
@@ -135,40 +169,140 @@
     .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
     .step::before { left:1px; top:6px; }
   }
+
+  /* 선(라인)만 있는 흑백 아이콘 — 카테고리마다 색 있는 이모지를 쓰던 자리를 대신한다 */
+  .icon { width:15px; height:15px; vertical-align:-2.5px; margin-right:3px;
+    fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
+  nav.tabs a.tab-search .icon { margin-right:0; }
+  nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
+
+  .meta.alert { border:1px solid #f3d9ad; background:#fff7ea; color:#92650a; font-weight:600;
+    padding:8px 14px; border-radius:10px; }
+
+  /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
+  nav.tabs.bottom { display:none; }
+  @media (max-width:768px) {
+    nav.tabs.top { display:none; }
+    nav.tabs.bottom {
+      display:flex; position:fixed; left:0; right:0; bottom:0; z-index:20;
+      background:var(--surface); box-shadow:0 -2px 16px rgba(28,27,25,.10);
+      padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    }
+    nav.tabs.bottom a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+      padding:6px 4px 4px; font-size:11px; color:var(--text-faint); text-decoration:none;
+      border-radius:0; background:none; font-weight:400; }
+    nav.tabs.bottom a.on { color:var(--accent); font-weight:700; background:none; }
+    body { padding-bottom:64px; }
+    .hero-arrow { display:none; }
+    .hero-card { flex-basis:88%; }
+  }
 </style>
 </head>
 <body>
-<div class="topbar"><h1 style="margin:0;font-size:inherit;font-weight:inherit">반도체 뉴스 데일리</h1></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="ic-package" viewBox="0 0 20 20"><path d="M10 2 3 6v8l7 4 7-4V6z"/><path d="M3 6l7 4 7-4"/><path d="M10 10v8"/></symbol>
+  <symbol id="ic-factory" viewBox="0 0 20 20"><path d="M3 17V9l4 3V9l4 3V6h6v11z"/></symbol>
+  <symbol id="ic-memory" viewBox="0 0 20 20"><rect x="6" y="6" width="8" height="8" rx="1"/>
+    <path d="M6 3v3M10 3v3M14 3v3M6 14v3M10 14v3M14 14v3M3 6h3M3 10h3M3 14h3M14 6h3M14 10h3M14 14h3"/></symbol>
+  <symbol id="ic-ai" viewBox="0 0 20 20"><path d="M11 2 4 12h5l-1 6 8-11h-5z"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/>
+    <path d="M10 2v2.4M10 15.6V18M18 10h-2.4M4.4 10H2M15.5 4.5l-1.7 1.7M6.2 13.8l-1.7 1.7M15.5 15.5l-1.7-1.7M6.2 6.2 4.5 4.5"/></symbol>
+  <symbol id="ic-policy" viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="14" rx="1"/>
+    <path d="M7 7h6M7 10h6M7 13h3"/></symbol>
+  <symbol id="ic-trend" viewBox="0 0 20 20"><polyline points="3 14 8 9 11 12 17 5"/><polyline points="12.5 5 17 5 17 9.5"/></symbol>
+  <symbol id="ic-dash" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="7" y1="10" x2="13" y2="10"/></symbol>
+  <symbol id="ic-news" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="1"/><path d="M6 8h8M6 11h8M6 14h4"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 20 20"><path d="M2 4.5h6a2 2 0 0 1 2 2v10a2 2 0 0 0-2-1.5H2z"/>
+    <path d="M18 4.5h-6a2 2 0 0 0-2 2v10a2 2 0 0 1 2-1.5h6z"/></symbol>
+  <symbol id="ic-building" viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16"/>
+    <path d="M7 5.3h.01M10 5.3h.01M13 5.3h.01M7 8.6h.01M10 8.6h.01M13 8.6h.01M7 11.9h.01M10 11.9h.01M13 11.9h.01"
+      stroke-width="2"/><path d="M8 18v-4h4v4"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6"/><line x1="13.5" y1="13.5" x2="18" y2="18"/></symbol>
+</defs>
+</svg><div class="hero-mast">
+  <svg class="hero-mast-bg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice">
+    <rect width="1200" height="420" fill="#0b2e6b"/>
+    <g stroke="#ffffff" stroke-opacity=".14" stroke-width="2">
+      <path d="M0 90h260v-60h500v90h300"/>
+      <path d="M0 220h140v110h700"/>
+      <path d="M0 340h360v70"/>
+      <path d="M1200 130h-160v90h-120v160"/>
+      <path d="M1200 300h-260"/>
+      <path d="M760 0v100"/>
+      <path d="M980 0v60h140"/>
+      <path d="M60 420v-70h240"/>
+    </g>
+    <g fill="#ffffff" fill-opacity=".16">
+      <circle cx="260" cy="30" r="5"/><circle cx="260" cy="90" r="5"/>
+      <circle cx="140" cy="220" r="5"/><circle cx="360" cy="340" r="5"/>
+      <circle cx="360" cy="410" r="5"/><circle cx="920" cy="130" r="5"/>
+      <circle cx="800" cy="220" r="5"/><circle cx="800" cy="360" r="5"/>
+      <circle cx="980" cy="60" r="5"/><circle cx="760" cy="0" r="5"/>
+      <circle cx="300" cy="420" r="5"/>
+    </g>
+    <rect x="530" y="140" width="140" height="140" rx="14" fill="#0b2e6b" stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5"/>
+    <g stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5">
+      <path d="M560 140v-20M590 140v-20M620 140v-20M650 140v-20"/>
+      <path d="M560 280v20M590 280v20M620 280v20M650 280v20"/>
+      <path d="M530 170h-20M530 195h-20M530 220h-20M530 245h-20"/>
+      <path d="M670 170h20M670 195h20M670 220h20M670 245h20"/>
+    </g>
+    <rect x="558" y="168" width="84" height="84" rx="6" fill="none" stroke="#ffffff" stroke-opacity=".65" stroke-width="2.5"/>
+  </svg>
+  <div class="hero-mast-scrim"></div>
+  <div class="hero-mast-text">
+    <h1 class="hero-title">반도체 뉴스 데일리</h1>
+    <p class="hero-tag">매일 아침, 반도체 업계 핵심 뉴스와 지난 흐름을 한 화면에 잇습니다</p>
+  </div>
+</div>
 <div class="wrap">
-<nav class="tabs">
+<nav class="tabs top">
   <a class="on" href="index.html">뉴스</a>
   <a class="" href="concepts.html">개념 18</a>
   <a class="" href="companies.html">기업 38</a>
-  <a class="" href="search.html">검색</a>
+  <a class="tab-search " href="search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
 </nav>
-<div class="meta">2026-05-19 · 1건 · 수집 8곳 중 8곳 정상</div>
-<div class="chips"><span class="chip on" data-cat="">전체<span class="n">1</span></span><span class="chip empty" data-cat="패키징" style="--bg:#fbe9d0;--fg:#8a5a12">📦 패키징<span class="n">0</span></span><span class="chip" data-cat="파운드리·공정" style="--bg:#dce8fb;--fg:#1d4ed8">🏭 파운드리·공정<span class="n">1</span></span><span class="chip empty" data-cat="메모리" style="--bg:#dcf3e4;--fg:#15803d">💾 메모리<span class="n">0</span></span><span class="chip empty" data-cat="AI·가속기" style="--bg:#ece3fb;--fg:#6d28d9">🤖 AI·가속기<span class="n">0</span></span><span class="chip empty" data-cat="장비·소재" style="--bg:#d8f3ef;--fg:#0f766e">⚙️ 장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제" style="--bg:#fbe0e6;--fg:#be123c">📜 정책·규제<span class="n">0</span></span><span class="chip empty" data-cat="투자·실적" style="--bg:#fbf3d0;--fg:#92650a">📈 투자·실적<span class="n">0</span></span><span class="chip empty" data-cat="미분류" style="--bg:#eeece7;--fg:#6b6862">➖ 미분류<span class="n">0</span></span></div>
-<div class="card" data-cat="파운드리·공정">
-  <span class="cat">파운드리·공정</span> <span class="tier">[2차]</span>
+<div class="meta">2026-05-19 · 1건</div>
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">1</span></span><span class="chip empty" data-cat="패키징"><svg class="icon"><use href="#ic-package"/></svg>패키징<span class="n">0</span></span><span class="chip" data-cat="파운드리·공정"><svg class="icon"><use href="#ic-factory"/></svg>파운드리·공정<span class="n">1</span></span><span class="chip empty" data-cat="메모리"><svg class="icon"><use href="#ic-memory"/></svg>메모리<span class="n">0</span></span><span class="chip empty" data-cat="AI·가속기"><svg class="icon"><use href="#ic-ai"/></svg>AI·가속기<span class="n">0</span></span><span class="chip empty" data-cat="장비·소재"><svg class="icon"><use href="#ic-gear"/></svg>장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제"><svg class="icon"><use href="#ic-policy"/></svg>정책·규제<span class="n">0</span></span><span class="chip empty" data-cat="투자·실적"><svg class="icon"><use href="#ic-trend"/></svg>투자·실적<span class="n">0</span></span><span class="chip empty" data-cat="미분류"><svg class="icon"><use href="#ic-dash"/></svg>미분류<span class="n">0</span></span></div>
+<div class="hero-wrap">
+  <div class="hero-scroll"><a class="hero-card" data-cat="파운드리·공정" href="https://www.semiconductor-digest.com/tsmc-board-approves-us31-3-billion-capital-appropriation-greenlights-additional-us20-billion-injection-into-arizona/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=tsmc-board-approves-us31-3-billion-capital-appropriation-greenlights-additional-us20-billion-injection-into-arizona">
+  <span class="hero-eyebrow"><svg class="icon"><use href="#ic-factory"/></svg>파운드리·공정</span>
   <h2>TSMC Board Approves US$31.3 Billion Capital Appropriation</h2>
-  <p class="sum">TSMC said its Board of Directors has approved capital appropriations of approximately US$31.28 billion to fund advanced technology capacity, fab construction, and fab facility systems, in one of the largest single-meeting capital authorizations in the <a class="term" href="concepts.html#foundry">foundry</a>&#x27;s history.</p>
+  <p class="hero-sum">TSMC said its Board of Directors has approved capital appropriations of approximately US$31.28 billion to fund advanced technology capacity,</p>
+  <div class="hero-foot">[2차] · Semiconductor Digest (패키징) · 2026-05-19 23:46</div>
+</a>
+</div>
   
-  <div class="src">Semiconductor Digest (패키징) · 발행 2026-05-19 23:46 · <a href="https://www.semiconductor-digest.com/tsmc-board-approves-us31-3-billion-capital-appropriation-greenlights-additional-us20-billion-injection-into-arizona/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=tsmc-board-approves-us31-3-billion-capital-appropriation-greenlights-additional-us20-billion-injection-into-arizona">원문</a></div>
 </div>
 
 <div class="days"><div class="days-head">지난 날짜</div><div class="month"><span class="ym">2026-08</span><a href="2026-08-29.html">29</a><a href="2026-08-28.html">28</a><a href="2026-08-27.html">27</a><a href="2026-08-26.html">26</a><a href="2026-08-25.html">25</a><a href="2026-08-24.html">24</a><a href="2026-08-22.html">22</a><a href="2026-08-21.html">21</a><a href="2026-08-20.html">20</a><a href="2026-08-19.html">19</a><a href="2026-08-18.html">18</a><a href="2026-08-17.html">17</a><a href="2026-08-15.html">15</a><a href="2026-08-14.html">14</a><a href="2026-08-13.html">13</a><a href="2026-08-12.html">12</a><a href="2026-08-11.html">11</a><a href="2026-08-10.html">10</a><a href="2026-08-08.html">08</a><a href="2026-08-07.html">07</a><a href="2026-08-06.html">06</a><a href="2026-08-05.html">05</a><a href="2026-08-04.html">04</a></div><div class="month"><span class="ym">2026-07</span><a href="2026-07-31.html">31</a><a href="2026-07-30.html">30</a><a href="2026-07-29.html">29</a><a href="2026-07-25.html">25</a><a href="2026-07-24.html">24</a><a href="2026-07-18.html">18</a><a href="2026-07-16.html">16</a><a href="2026-07-14.html">14</a><a href="2026-07-11.html">11</a><a href="2026-07-08.html">08</a><a href="2026-07-07.html">07</a><a href="2026-07-03.html">03</a><a href="2026-07-02.html">02</a><a href="2026-07-01.html">01</a></div><div class="month"><span class="ym">2026-06</span><a href="2026-06-27.html">27</a><a href="2026-06-25.html">25</a><a href="2026-06-23.html">23</a><a href="2026-06-20.html">20</a><a href="2026-06-17.html">17</a><a href="2026-06-16.html">16</a><a href="2026-06-12.html">12</a><a href="2026-06-11.html">11</a><a href="2026-06-10.html">10</a><a href="2026-06-09.html">09</a><a href="2026-06-05.html">05</a><a href="2026-06-04.html">04</a><a href="2026-06-03.html">03</a><a href="2026-06-02.html">02</a></div><div class="month"><span class="ym">2026-05</span><a href="2026-05-30.html">30</a><a href="2026-05-29.html">29</a><a href="2026-05-28.html">28</a><a href="2026-05-27.html">27</a><a href="2026-05-23.html">23</a><a href="2026-05-22.html">22</a><a href="2026-05-21.html">21</a><a href="2026-05-20.html">20</a><b>19</b><a href="2026-05-16.html">16</a><a href="2026-05-15.html">15</a><a href="2026-05-14.html">14</a><a href="2026-05-13.html">13</a><a href="2026-05-12.html">12</a><a href="2026-05-09.html">09</a><a href="2026-05-08.html">08</a><a href="2026-05-06.html">06</a><a href="2026-05-05.html">05</a><a href="2026-05-02.html">02</a><a href="2026-05-01.html">01</a></div><div class="month"><span class="ym">2026-04</span><a href="2026-04-30.html">30</a><a href="2026-04-29.html">29</a><a href="2026-04-23.html">23</a><a href="2026-04-22.html">22</a><a href="2026-04-20.html">20</a><a href="2026-04-16.html">16</a><a href="2026-04-13.html">13</a><a href="2026-04-08.html">08</a><a href="2026-04-07.html">07</a><a href="2026-04-03.html">03</a><a href="2026-04-01.html">01</a></div><div class="month"><span class="ym">2026-03</span><a href="2026-03-25.html">25</a><a href="2026-03-23.html">23</a><a href="2026-03-18.html">18</a><a href="2026-03-16.html">16</a><a href="2026-03-13.html">13</a><a href="2026-03-11.html">11</a><a href="2026-03-08.html">08</a><a href="2026-03-04.html">04</a><a href="2026-03-03.html">03</a><a href="2026-03-01.html">01</a></div><div class="month"><span class="ym">2026-02</span><a href="2026-02-24.html">24</a><a href="2026-02-23.html">23</a><a href="2026-02-19.html">19</a><a href="2026-02-17.html">17</a><a href="2026-02-13.html">13</a><a href="2026-02-11.html">11</a><a href="2026-02-10.html">10</a><a href="2026-02-06.html">06</a><a href="2026-02-05.html">05</a><a href="2026-02-04.html">04</a><a href="2026-02-03.html">03</a><a href="2026-02-02.html">02</a></div><div class="month"><span class="ym">2026-01</span><a href="2026-01-26.html">26</a><a href="2026-01-21.html">21</a><a href="2026-01-19.html">19</a><a href="2026-01-13.html">13</a><a href="2026-01-09.html">09</a><a href="2026-01-06.html">06</a><a href="2026-01-05.html">05</a><a href="2026-01-02.html">02</a></div><div class="month"><span class="ym">2025-12</span><a href="2025-12-24.html">24</a><a href="2025-12-18.html">18</a><a href="2025-12-17.html">17</a><a href="2025-12-12.html">12</a><a href="2025-12-11.html">11</a><a href="2025-12-10.html">10</a><a href="2025-12-09.html">09</a><a href="2025-12-08.html">08</a><a href="2025-12-02.html">02</a><a href="2025-12-01.html">01</a></div><div class="month"><span class="ym">2025-11</span><a href="2025-11-26.html">26</a><a href="2025-11-24.html">24</a><a href="2025-11-19.html">19</a><a href="2025-11-17.html">17</a><a href="2025-11-16.html">16</a><a href="2025-11-13.html">13</a><a href="2025-11-10.html">10</a><a href="2025-11-06.html">06</a><a href="2025-11-03.html">03</a></div></div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 </div>
+<nav class="tabs bottom">
+  <a class="on" href="index.html"><svg class="icon"><use href="#ic-news"/></svg>뉴스</a>
+  <a class="" href="concepts.html"><svg class="icon"><use href="#ic-book"/></svg>개념</a>
+  <a class="" href="companies.html"><svg class="icon"><use href="#ic-building"/></svg>기업</a>
+  <a class="" href="search.html"><svg class="icon"><use href="#ic-search"/></svg>검색</a>
+</nav>
 <script>
 document.addEventListener('click', function (e) {
+  var arrow = e.target.closest('.hero-arrow');
+  if (arrow) {
+    var scroller = arrow.closest('.hero-wrap').querySelector('.hero-scroll');
+    var dir = arrow.classList.contains('next') ? 1 : -1;
+    scroller.scrollBy({left: dir * scroller.clientWidth * 0.86, behavior: 'smooth'});
+    return;
+  }
   var chip = e.target.closest('.chip:not(.empty)');
   if (!chip) return;
   var want = chip.dataset.cat;
   document.querySelectorAll('.chip').forEach(function (c) {
     c.classList.toggle('on', c === chip);
   });
-  document.querySelectorAll('.card').forEach(function (card) {
+  document.querySelectorAll('.card, .hero-card').forEach(function (card) {
     card.hidden = want !== '' && card.dataset.cat !== want;
   });
 });
