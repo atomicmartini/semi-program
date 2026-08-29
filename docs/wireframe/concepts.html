@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>와이어프레임 · 개념</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="notewire">와이어프레임 — 회색조 목업, 데이터는 전부 가짜입니다. 화면 2(개념) · 정상 + 없는 앵커 에러 데모.
+  <a href="concepts.html#hbm5">없는 용어(#hbm5)로 들어가보기</a> ·
+  <a href="concepts-empty.html">등재 0개 상태 보기</a></div>
+<div class="topbar">반도체 뉴스 데일리</div>
+<div class="wrap">
+<nav class="tabs">
+  <a href="news.html">뉴스</a>
+  <a class="on" href="concepts.html">개념 6</a>
+  <a href="companies.html">기업 7</a>
+  <a href="search.html">검색</a>
+</nav>
+<div class="meta">6개 · 설명마다 출처와 확인일이 붙어 있습니다</div>
+
+<div class="notice" id="missing-banner" hidden>찾는 용어가 없습니다: <span id="missing-term"></span></div>
+
+<div class="entry" id="hbm">
+  <div class="ehead"><h2>HBM</h2> <span class="en">HBM</span><span class="cat">메모리</span></div>
+  <p class="def">여러 D램 칩을 수직으로 쌓아 넓은 대역폭을 내는 메모리. AI 가속기의 메모리 병목을 줄이는 데 쓰인다.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/hbm">JEDEC (예시)</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+
+<div class="entry" id="chiplet">
+  <div class="ehead"><h2>칩렛</h2> <span class="en">Chiplet</span><span class="cat">패키징</span></div>
+  <p class="def">하나의 큰 칩을 여러 개의 작은 다이로 나눠 만들고, 패키징 단계에서 다시 연결하는 방식.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/chiplet">업계 해설 (예시)</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+
+<div class="entry" id="soc">
+  <div class="ehead"><h2>SoC</h2> <span class="en">System on Chip</span><span class="cat">설계</span></div>
+  <p class="def">여러 기능을 하나의 칩에 통합한 것. CPU·GPU·통신 모듈 등이 한 칩에 들어간다.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/soc">제조사 용어집 (예시)</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+
+<div class="entry" id="euv">
+  <div class="ehead"><h2>EUV</h2> <span class="en">Extreme Ultraviolet</span><span class="cat">파운드리·공정</span></div>
+  <p class="def">극자외선을 이용한 노광 공정. 미세 공정으로 갈수록 필요해진다.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/euv">업계 해설 (예시)</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+
+<div class="entry" id="osat">
+  <div class="ehead"><h2>OSAT</h2> <span class="en">Outsourced Assembly and Test</span><span class="cat">후공정</span></div>
+  <p class="def">칩 제조사로부터 조립·테스트 공정을 위탁받아 수행하는 업체.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/osat">표준 기구 (예시)</a> <span class="stag">공식</span> · 확인일 2026-08-29</div>
+</div>
+
+<div class="entry" id="npu">
+  <div class="ehead"><h2>NPU</h2> <span class="en">Neural Processing Unit</span><span class="cat">AI·가속기</span></div>
+  <p class="def">신경망 연산에 특화된 처리장치. 추론·학습 속도를 높이려고 별도로 둔다.</p>
+  <div class="meta">출처 <a href="https://example.com/glossary/npu">업계 해설 (예시)</a> <span class="stag">2차</span> · 확인일 2026-08-29</div>
+</div>
+
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
+<script>
+(function () {
+  var KNOWN = ['hbm', 'chiplet', 'soc', 'euv', 'osat', 'npu'];
+  var hash = decodeURIComponent(location.hash.replace('#', ''));
+  if (hash && KNOWN.indexOf(hash) === -1) {
+    document.getElementById('missing-term').textContent = hash;
+    document.getElementById('missing-banner').hidden = false;
+  }
+})();
+</script>
+</body>
+</html>

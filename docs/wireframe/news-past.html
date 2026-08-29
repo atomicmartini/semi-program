@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>와이어프레임 · 뉴스 — 지난 날짜 이동 목적지</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="notewire">와이어프레임 — 회색조 목업, 데이터는 전부 가짜입니다. 화면 1(뉴스) · "지난 날짜" 링크를 눌러 도착하는 예시 날짜 페이지</div>
+<div class="topbar">반도체 뉴스 데일리</div>
+<div class="wrap">
+<nav class="tabs">
+  <a class="on" href="news.html">뉴스</a>
+  <a href="concepts.html">개념 6</a>
+  <a href="companies.html">기업 7</a>
+  <a href="search.html">검색</a>
+</nav>
+<div class="meta">2026-08-20 · 2건 · 수집 8곳 중 8곳 정상</div>
+
+<div class="chips">
+  <span class="chip on" data-cat="">전체<span class="n">2</span></span>
+  <span class="chip" data-cat="메모리">메모리<span class="n">1</span></span>
+  <span class="chip" data-cat="파운드리·공정">파운드리·공정<span class="n">1</span></span>
+  <span class="chip empty" data-cat="패키징">패키징<span class="n">0</span></span>
+  <span class="chip empty" data-cat="AI·가속기">AI·가속기<span class="n">0</span></span>
+  <span class="chip empty" data-cat="장비·소재">장비·소재<span class="n">0</span></span>
+  <span class="chip empty" data-cat="정책·규제">정책·규제<span class="n">0</span></span>
+  <span class="chip empty" data-cat="투자·실적">투자·실적<span class="n">0</span></span>
+  <span class="chip empty" data-cat="미분류">미분류<span class="n">0</span></span>
+</div>
+
+<div id="cards">
+<div class="card" data-cat="메모리">
+  <span class="cat">메모리</span><span class="tier">보도됨 [2차]</span>
+  <h2>HBM 수율 관련 보도</h2>
+  <p class="sum">HBM 수율이 개선됐다는 보도가 나왔다.</p>
+  <div class="src">Semi Engineering (예시) · 발행 2026-08-20 10:00 · <a href="https://example.com/news/hbm-yield">원문</a></div>
+</div>
+<div class="card" data-cat="파운드리·공정">
+  <span class="cat">파운드리·공정</span><span class="tier">확정</span>
+  <h2>2나노 공정 로드맵 보도</h2>
+  <p class="sum">2나노 공정 양산 로드맵을 공개했다.</p>
+  <div class="src">DigiTimes (예시) · 발행 2026-08-20 09:30 · <a href="https://example.com/news/2nm-plan">원문</a></div>
+</div>
+</div>
+
+<div class="days">
+  <div class="days-head">지난 날짜</div>
+  <div class="month"><span class="ym">2026-08</span><a href="news.html">29</a><a href="news-past.html">25</a><b>20</b></div>
+</div>
+
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
+<script>
+document.addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) { c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.card').forEach(function (card) { card.hidden = want !== '' && card.dataset.cat !== want; });
+});
+</script>
+</body>
+</html>

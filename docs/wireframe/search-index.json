@@ -1,0 +1,12 @@
+[
+  {"date":"2026-08-29","title":"HBM4 양산 일정 관련 보도","summary":"국내외 매체가 HBM4 양산 시점을 두고 서로 다른 시점을 보도했다.","category":"메모리","source":"EE Times (예시)","url":"https://example.com/news/1"},
+  {"date":"2026-08-29","title":"국내 D램 업체, 신규 라인 투자 검토","summary":"이사회 승인을 거쳐 신규 라인 투자를 확정했다고 공시했다.","category":"메모리","source":"Semi Engineering (예시)","url":"https://example.com/news/2"},
+  {"date":"2026-08-29","title":"2나노 공정 수율 관련 소식","summary":"2나노 공정 수율이 목표치에 근접했다는 보도가 나왔다.","category":"파운드리·공정","source":"DigiTimes (예시)","url":"https://example.com/news/8"},
+  {"date":"2026-08-29","title":"위탁생산 업체 실적 발표","summary":"지난 분기 매출이 전년 대비 늘었다고 밝혔다.","category":"파운드리·공정","source":"Reuters (예시)","url":"https://example.com/news/7"},
+  {"date":"2026-08-29","title":"칩렛 패키징 표준화 논의","summary":"업계 단체가 칩렛 간 연결 표준을 논의 중이라고 전했다.","category":"패키징","source":"Semi Engineering (예시)","url":"https://example.com/news/chiplet-standard"},
+  {"date":"2026-08-29","title":"AI 가속기 수요 전망 기사","summary":"내년 AI 가속기 수요가 올해 대비 늘어날 것이라는 전망 기사가 나왔다.","category":"AI·가속기","source":"The Register (예시)","url":"https://example.com/news/ai-accel-demand"},
+  {"date":"2026-08-20","title":"HBM 수율 관련 보도","summary":"HBM 수율이 개선됐다는 보도가 나왔다.","category":"메모리","source":"Semi Engineering (예시)","url":"https://example.com/news/hbm-yield"},
+  {"date":"2026-08-20","title":"2나노 공정 로드맵 보도","summary":"2나노 공정 양산 로드맵을 공개했다.","category":"파운드리·공정","source":"DigiTimes (예시)","url":"https://example.com/news/2nm-plan"},
+  {"date":"2026-08-12","title":"장비 업체 신규 고객사 확보 보도","summary":"신형 노광 장비의 신규 고객사 확보 소식이 전해졌다.","category":"장비·소재","source":"EE Times (예시)","url":"https://example.com/news/15"},
+  {"date":"2026-08-02","title":"공급망 다변화 검토 보도","summary":"주요 장비 업체가 공급망 다변화를 검토 중이라고 밝혔다.","category":"장비·소재","source":"The Register (예시)","url":"https://example.com/news/20"}
+]

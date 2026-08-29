@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>와이어프레임 · 검색</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="notewire">와이어프레임 — 회색조 목업, 데이터는 전부 가짜입니다(search-index.json 10건). 화면 5(검색) · 정상 + 로딩 + 빈 상태.
+  <button type="button" id="demoFail" style="font:inherit;border:1px solid #999;background:#fff;cursor:pointer;padding:2px 8px;">실패 상태 데모 보기</button></div>
+<div class="topbar">반도체 뉴스 데일리</div>
+<div class="wrap">
+<nav class="tabs">
+  <a href="news.html">뉴스</a>
+  <a href="concepts.html">개념 6</a>
+  <a href="companies.html">기업 7</a>
+  <a class="on" href="search.html">검색</a>
+</nav>
+<div class="meta" id="meta">제목·요약을 훑어 찾습니다. 화면에 실제로 나온 기사만 대상입니다.</div>
+
+<div class="searchbox">
+  <input id="q" type="search" placeholder="제목·요약으로 검색 (예: HBM, 파운드리)" autocomplete="off">
+</div>
+<p class="shint" id="shint">전체 10건에서 찾습니다.</p>
+<div id="results"></div>
+
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
+<script>
+(function () {
+  var DATA = null;
+  var FAILED = false;
+  var box = document.getElementById('q');
+  var results = document.getElementById('results');
+  var hint = document.getElementById('shint');
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function showFetchError() {
+    FAILED = true;
+    box.disabled = true;
+    hint.textContent = '';
+    results.innerHTML = '<div class="notice">색인을 불러오지 못했습니다. 검색을 쓸 수 없습니다.' +
+      '<div class="btnrow">' +
+      '<button class="btn" type="button" onclick="location.reload()">다시 시도</button>' +
+      '<a class="btn" href="news.html">뉴스로 돌아가기</a>' +
+      '</div></div>';
+  }
+
+  // 실제 색인 fetch. 로딩 상태를 눈으로 보게 일부러 살짝 늦춘다 (와이어프레임 데모용).
+  fetch('search-index.json')
+    .then(function (r) { if (!r.ok) throw new Error('bad status'); return r.json(); })
+    .then(function (data) {
+      setTimeout(function () {
+        DATA = data;
+        if (box.value.trim()) render();
+      }, 600);
+    })
+    .catch(showFetchError);
+
+  document.getElementById('demoFail').addEventListener('click', showFetchError);
+
+  function render() {
+    if (FAILED) return;
+    var q = box.value.trim().toLowerCase();
+    if (!q) {
+      results.innerHTML = '';
+      hint.textContent = '전체 10건에서 찾습니다.';
+      return;
+    }
+    if (!DATA) {
+      results.innerHTML = '<p class="none">색인을 불러오는 중…</p>';
+      return;
+    }
+    var hits = DATA.filter(function (e) {
+      return (e.title + ' ' + e.summary).toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 50);
+    hint.textContent = hits.length + '건 찾음 (최대 50건, 최신순)';
+    results.innerHTML = hits.length ? hits.map(function (e) {
+      var u = esc(e.url);
+      return '<div class="card"><span class="cat">' + esc(e.category) + '</span>' +
+        '<h2><a href="' + u + '" style="color:inherit;text-decoration:none">' + esc(e.title) + '</a></h2>' +
+        '<p class="sum">' + esc(e.summary) + '</p>' +
+        '<div class="src">' + esc(e.source) + ' · 발행 ' + esc(e.date) + ' · <a href="' + u + '">원문</a></div>' +
+        '</div>';
+    }).join('') : '<p class="none">일치하는 기사가 없습니다.</p>';
+  }
+
+  box.addEventListener('input', render);
+})();
+</script>
+</body>
+</html>
