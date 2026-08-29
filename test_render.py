@@ -5,7 +5,7 @@
 
 import unittest
 
-from render import choose_summary, render_day_links, render_thread
+from render import choose_summary, render_day_links, render_thread, search_entry
 
 
 class TestRenderThread(unittest.TestCase):
@@ -93,6 +93,43 @@ class TestChooseSummary(unittest.TestCase):
         text, by_model = choose_summary(self.article, {"u1": {"summary_ko": None}})
         self.assertEqual(text, self.article["summary"])
         self.assertFalse(by_model)
+
+
+class TestSearchEntry(unittest.TestCase):
+    """검색 인덱스 한 줄. choose_summary 와 같은 우선순위로 요약·분류를 고른다."""
+
+    def setUp(self):
+        self.article = {
+            "title": "T",
+            "summary": "원래 영문 요약",
+            "category": "패키징",
+            "source": "EE Times",
+            "url": "https://example.com/a",
+        }
+
+    def test_prefers_korean_summary(self):
+        entry = search_entry(self.article, "2026-08-24", {"https://example.com/a": {"summary_ko": "한국어 요약"}})
+        self.assertEqual(entry["summary"], "한국어 요약")
+
+    def test_falls_back_to_original_summary(self):
+        entry = search_entry(self.article, "2026-08-24", {})
+        self.assertEqual(entry["summary"], "원래 영문 요약")
+
+    def test_prefers_extracted_category_over_keyword_category(self):
+        extracted = {"https://example.com/a": {"category": "메모리", "summary_ko": "요약"}}
+        entry = search_entry(self.article, "2026-08-24", extracted)
+        self.assertEqual(entry["category"], "메모리")
+
+    def test_includes_date_source_url(self):
+        entry = search_entry(self.article, "2026-08-24", {})
+        self.assertEqual(entry["date"], "2026-08-24")
+        self.assertEqual(entry["source"], "EE Times")
+        self.assertEqual(entry["url"], "https://example.com/a")
+
+    def test_truncates_long_summary(self):
+        long_article = {**self.article, "summary": "가" * 500}
+        entry = search_entry(long_article, "2026-08-24", {})
+        self.assertLessEqual(len(entry["summary"]), 200)
 
 
 if __name__ == "__main__":

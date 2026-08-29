@@ -20,15 +20,23 @@ DOCS_DIR = HERE / "docs"
 STATUS_FILE = HERE / "data" / "fetch_status.json"
 
 STYLE = """
-  body { margin:0 auto; padding:24px; max-width:900px; background:#fbfbfa; color:#1c1b19;
-    font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif; line-height:1.6;
-    word-break:keep-all; }
-  h1 { font-size:24px; margin:0; }
-  nav { display:flex; gap:20px; margin:14px 0 20px; padding-bottom:8px;
-    border-bottom:1px solid #cfccc4; }
-  nav a { color:#94908a; text-decoration:none; padding-bottom:8px; margin-bottom:-9px; }
-  nav a.on { color:#1c1b19; font-weight:700; border-bottom:2px solid #1c1b19; }
+  html, body { margin:0; padding:0; background:#fbfbfa; }
+  body { color:#1c1b19; font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+    line-height:1.6; word-break:keep-all; }
+  /* 맨 위 파란 줄 — 여백 없이 바로 시작한다 */
+  .topbar { background:#0b2e6b; color:#fff; padding:11px 24px; font-size:14px;
+    font-weight:700; letter-spacing:.2px; }
+  .wrap { max-width:900px; margin:0 auto; padding:20px 24px 24px; }
+  nav.tabs { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
+  nav.tabs a { display:inline-block; padding:7px 16px; border-radius:99px; font-size:14px;
+    background:#fff; border:1px solid #cfccc4; color:#63605a; text-decoration:none; }
+  nav.tabs a.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:700; }
   .meta { color:#63605a; font-size:14px; margin:6px 0 20px; }
+  .searchbox { display:flex; gap:8px; margin:0 0 18px; }
+  .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
+    border:1px solid #cfccc4; font-family:inherit; }
+  .searchbox input:focus { outline:2px solid #0b5fff; outline-offset:1px; }
+  .shint { color:#94908a; font-size:13px; margin:0 0 16px; }
   .card { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:16px 18px; margin-bottom:12px; }
   .cat { font-size:12px; color:#94908a; }
@@ -81,11 +89,15 @@ STYLE = """
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
   .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
-  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
-    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
-  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
-  .chip.empty { color:#c4c1ba; cursor:default; }
-  .chip .n { opacity:.55; margin-left:5px; }
+  /* 분류마다 --bg·--fg 로 파스텔 색을 준다 (category_chips 가 인라인으로 넣는다).
+     선택됨·0건 상태는 분류 색과 무관하게 항상 이겨야 해서 !important 를 쓴다. */
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; cursor:pointer;
+    background:var(--bg,#fff); color:var(--fg,#63605a); border:1px solid var(--bg,#cfccc4); }
+  .chip.on { background:#1c1b19 !important; color:#fff !important;
+    border-color:#1c1b19 !important; font-weight:600; }
+  .chip.empty { background:#fff !important; color:#c4c1ba !important;
+    border-color:#e4e2dd !important; cursor:default; }
+  .chip .n { opacity:.6; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days-head { color:#94908a; margin-bottom:6px; }
   .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
@@ -129,11 +141,13 @@ PAGE = """<!doctype html>
 <style>{style}</style>
 </head>
 <body>
-<h1>반도체 뉴스 데일리</h1>
-<nav>
+<div class="topbar"><h1 style="margin:0;font-size:inherit;font-weight:inherit">반도체 뉴스 데일리</h1></div>
+<div class="wrap">
+<nav class="tabs">
   <a class="{news_on}" href="{prefix}index.html">뉴스</a>
   <a class="{concept_on}" href="{prefix}concepts.html">개념 {term_count}</a>
   <a class="{company_on}" href="{prefix}companies.html">기업 {company_count}</a>
+  <a class="{search_on}" href="{prefix}search.html">검색</a>
 </nav>
 <div class="meta">{meta}</div>
 {chips}
@@ -141,6 +155,7 @@ PAGE = """<!doctype html>
 {days}
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
 <script>
 document.addEventListener('click', function (e) {{
   var chip = e.target.closest('.chip:not(.empty)');
@@ -226,11 +241,50 @@ def render_thread(related: list[dict]) -> str:
     return THREAD.format(n=len(related), steps=steps)
 
 
+def search_entry(a: dict, day: str, extracted: dict[str, dict]) -> dict:
+    """검색 인덱스 한 줄. 카드가 실제로 보여주는 것과 같은 요약·분류를 쓴다."""
+    summary, _ = choose_summary(a, extracted)
+    category = (extracted.get(a["url"]) or {}).get("category") or a.get("category", UNCLASSIFIED)
+    return {
+        "date": day,
+        "title": a["title"],
+        "summary": summary[:200],
+        "category": category,
+        "source": a["source"],
+        "url": a["url"],
+    }
+
+
+def build_search_index(days: list[str]) -> list[dict]:
+    """전체 기간 검색 색인. 화면에 실제로 뜨는 기사(선별된 것)만 담는다 — 전체 수집분이 아니다."""
+    entries: list[dict] = []
+    for day in days:
+        picked, _, _ = select_day(day)
+        extracted = load_extracted(day)
+        entries.extend(search_entry(a, day, extracted) for a in picked)
+    entries.sort(key=lambda e: e["date"], reverse=True)
+    return entries
+
+
 def _status() -> tuple[int, int]:
     if not STATUS_FILE.exists():
         return 0, 0
     data = json.loads(STATUS_FILE.read_text(encoding="utf-8"))
     return data.get("ok", 0), data.get("total", 0)
+
+
+# 분류마다 이모지·파스텔 색 하나. 코드가 고정 배정한다 — 뜻을 매기는 게 아니라 화면 구분용이라
+# 모델이 즉석에서 정할 일이 아니다 (CLAUDE.md). keywords.md 에 분류가 늘면 여기도 늘려야 한다.
+CATEGORY_STYLE: dict[str, tuple[str, str, str]] = {  # 이름: (이모지, 배경, 글자색)
+    "패키징": ("📦", "#fbe9d0", "#8a5a12"),
+    "파운드리·공정": ("🏭", "#dce8fb", "#1d4ed8"),
+    "메모리": ("💾", "#dcf3e4", "#15803d"),
+    "AI·가속기": ("🤖", "#ece3fb", "#6d28d9"),
+    "장비·소재": ("⚙️", "#d8f3ef", "#0f766e"),
+    "정책·규제": ("📜", "#fbe0e6", "#be123c"),
+    "투자·실적": ("📈", "#fbf3d0", "#92650a"),
+    UNCLASSIFIED: ("➖", "#eeece7", "#6b6862"),
+}
 
 
 def category_chips(picked: list[dict]) -> str:
@@ -244,9 +298,11 @@ def category_chips(picked: list[dict]) -> str:
     for name in names:
         n = counts.get(name, 0)
         empty = "" if n else " empty"
+        emoji, bg, fg = CATEGORY_STYLE.get(name, ("", "#f2f1ee", "#63605a"))
         chips.append(
-            f'<span class="chip{empty}" data-cat="{html.escape(name, quote=True)}">'
-            f'{html.escape(name)}<span class="n">{n}</span></span>'
+            f'<span class="chip{empty}" data-cat="{html.escape(name, quote=True)}" '
+            f'style="--bg:{bg};--fg:{fg}">'
+            f'{emoji} {html.escape(name)}<span class="n">{n}</span></span>'
         )
     return f'<div class="chips">{"".join(chips)}</div>'
 
@@ -301,6 +357,7 @@ def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
         news_on="on" if tab == "news" else "",
         concept_on="on" if tab == "concept" else "",
         company_on="on" if tab == "company" else "",
+        search_on="on" if tab == "search" else "",
         prefix=prefix,
         term_count=len(terms),
         company_count=companies_total or len(companies.read_companies()),
@@ -366,6 +423,63 @@ def render_concepts(terms: list[dict]) -> str:
         terms=terms,
         meta=f"{len(terms)}개 · 설명마다 출처와 확인일이 붙어 있습니다",
         body=body,
+    )
+
+
+SEARCH_BODY = """<div class="searchbox">
+  <input id="q" type="search" placeholder="제목·요약으로 검색 (예: HBM, 인텔, 파운드리)" autocomplete="off">
+</div>
+<p class="shint" id="shint">전체 {count}건에서 찾습니다.</p>
+<div id="results"></div>
+<script>
+(function () {{
+  var DATA = null;
+  var box = document.getElementById('q');
+  var results = document.getElementById('results');
+  var hint = document.getElementById('shint');
+
+  fetch('search-index.json').then(function (r) {{ return r.json(); }}).then(function (data) {{
+    DATA = data;
+    if (box.value.trim()) render();
+  }});
+
+  function esc(s) {{
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }}
+
+  function render() {{
+    var q = box.value.trim().toLowerCase();
+    if (!q) {{ results.innerHTML = ''; hint.textContent = '전체 {count}건에서 찾습니다.'; return; }}
+    if (!DATA) {{ results.innerHTML = '<p class="none">색인을 불러오는 중…</p>'; return; }}
+    var hits = DATA.filter(function (e) {{
+      return (e.title + ' ' + e.summary).toLowerCase().indexOf(q) !== -1;
+    }}).slice(0, 50);
+    hint.textContent = hits.length + '건 찾음 (최대 50건, 최신순)';
+    results.innerHTML = hits.length ? hits.map(function (e) {{
+      var u = esc(e.url);
+      return '<div class="card"><span class="cat">' + esc(e.category) + '</span>' +
+        '<h2><a href="' + u + '" style="color:inherit;text-decoration:none">' + esc(e.title) + '</a></h2>' +
+        '<p class="sum">' + esc(e.summary) + '</p>' +
+        '<div class="src">' + esc(e.source) + ' · 발행 ' + esc(e.date) + ' · <a href="' + u + '">원문</a></div>' +
+        '</div>';
+    }}).join('') : '<p class="none">일치하는 기사가 없습니다.</p>';
+  }}
+
+  box.addEventListener('input', render);
+}})();
+</script>
+"""
+
+
+def render_search(terms: list[dict], entry_count: int) -> str:
+    """검색 페이지. 색인은 search-index.json 에서 자바스크립트로 불러온다."""
+    return _page(
+        title="검색 — 반도체 뉴스 데일리",
+        tab="search",
+        terms=terms,
+        meta="제목·요약을 훑어 찾습니다. 화면에 실제로 나온 기사만 대상입니다(전체 수집분 아님).",
+        body=SEARCH_BODY.format(count=entry_count),
     )
 
 
@@ -470,6 +584,13 @@ def main(argv: list[str]) -> int:
 
     (DOCS_DIR / "concepts.html").write_text(render_concepts(terms), encoding="utf-8")
     print("     → docs/concepts.html")
+
+    entries = build_search_index(article_days())
+    (DOCS_DIR / "search-index.json").write_text(
+        json.dumps(entries, ensure_ascii=False), encoding="utf-8"
+    )
+    (DOCS_DIR / "search.html").write_text(render_search(terms, len(entries)), encoding="utf-8")
+    print(f"검색 색인 {len(entries)}건 → docs/search.html · docs/search-index.json")
 
     rows = companies.read_companies()
     by_company = collect_company_articles(rows)

@@ -5,15 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>케이던스 — 반도체 뉴스 데일리</title>
 <style>
-  body { margin:0 auto; padding:24px; max-width:900px; background:#fbfbfa; color:#1c1b19;
-    font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif; line-height:1.6;
-    word-break:keep-all; }
-  h1 { font-size:24px; margin:0; }
-  nav { display:flex; gap:20px; margin:14px 0 20px; padding-bottom:8px;
-    border-bottom:1px solid #cfccc4; }
-  nav a { color:#94908a; text-decoration:none; padding-bottom:8px; margin-bottom:-9px; }
-  nav a.on { color:#1c1b19; font-weight:700; border-bottom:2px solid #1c1b19; }
+  html, body { margin:0; padding:0; background:#fbfbfa; }
+  body { color:#1c1b19; font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+    line-height:1.6; word-break:keep-all; }
+  /* 맨 위 파란 줄 — 여백 없이 바로 시작한다 */
+  .topbar { background:#0b2e6b; color:#fff; padding:11px 24px; font-size:14px;
+    font-weight:700; letter-spacing:.2px; }
+  .wrap { max-width:900px; margin:0 auto; padding:20px 24px 24px; }
+  nav.tabs { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
+  nav.tabs a { display:inline-block; padding:7px 16px; border-radius:99px; font-size:14px;
+    background:#fff; border:1px solid #cfccc4; color:#63605a; text-decoration:none; }
+  nav.tabs a.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:700; }
   .meta { color:#63605a; font-size:14px; margin:6px 0 20px; }
+  .searchbox { display:flex; gap:8px; margin:0 0 18px; }
+  .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
+    border:1px solid #cfccc4; font-family:inherit; }
+  .searchbox input:focus { outline:2px solid #0b5fff; outline-offset:1px; }
+  .shint { color:#94908a; font-size:13px; margin:0 0 16px; }
   .card { background:#fff; border:1px solid #e4e2dd; border-radius:8px;
     padding:16px 18px; margin-bottom:12px; }
   .cat { font-size:12px; color:#94908a; }
@@ -66,11 +74,15 @@
   footer { margin-top:32px; padding-top:14px; border-top:1px solid #e4e2dd;
     font-size:12px; color:#94908a; }
   .chips { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 18px; }
-  .chip { font-size:13px; padding:5px 12px; border-radius:99px; background:#fff;
-    border:1px solid #cfccc4; color:#63605a; cursor:pointer; }
-  .chip.on { background:#1c1b19; color:#fff; border-color:#1c1b19; font-weight:600; }
-  .chip.empty { color:#c4c1ba; cursor:default; }
-  .chip .n { opacity:.55; margin-left:5px; }
+  /* 분류마다 --bg·--fg 로 파스텔 색을 준다 (category_chips 가 인라인으로 넣는다).
+     선택됨·0건 상태는 분류 색과 무관하게 항상 이겨야 해서 !important 를 쓴다. */
+  .chip { font-size:13px; padding:5px 12px; border-radius:99px; cursor:pointer;
+    background:var(--bg,#fff); color:var(--fg,#63605a); border:1px solid var(--bg,#cfccc4); }
+  .chip.on { background:#1c1b19 !important; color:#fff !important;
+    border-color:#1c1b19 !important; font-weight:600; }
+  .chip.empty { background:#fff !important; color:#c4c1ba !important;
+    border-color:#e4e2dd !important; cursor:default; }
+  .chip .n { opacity:.6; margin-left:5px; }
   .days { margin:22px 0 0; font-size:13px; }
   .days-head { color:#94908a; margin-bottom:6px; }
   .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
@@ -106,11 +118,13 @@
 </style>
 </head>
 <body>
-<h1>반도체 뉴스 데일리</h1>
-<nav>
+<div class="topbar"><h1 style="margin:0;font-size:inherit;font-weight:inherit">반도체 뉴스 데일리</h1></div>
+<div class="wrap">
+<nav class="tabs">
   <a class="" href="../index.html">뉴스</a>
   <a class="" href="../concepts.html">개념 18</a>
   <a class="on" href="../companies.html">기업 38</a>
+  <a class="" href="../search.html">검색</a>
 </nav>
 <div class="meta">기사 0건</div>
 
@@ -126,6 +140,7 @@
 
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
 <script>
 document.addEventListener('click', function (e) {
   var chip = e.target.closest('.chip:not(.empty)');
