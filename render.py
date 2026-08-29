@@ -43,7 +43,7 @@ STYLE = """
   .hero-mast-scrim { position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(11,46,107,.25), rgba(11,46,107,.72)); }
   .hero-mast-text { position:relative; z-index:1; text-align:center; padding:24px; max-width:640px; }
-  .hero-title { font-family:'Gugi','Pretendard Variable',sans-serif; font-size:44px; font-weight:400;
+  .hero-title { font-size:44px; font-weight:800;
     line-height:1.25; margin:0 0 14px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); }
   .hero-tag { font-size:16px; color:rgba(255,255,255,.88); margin:0; }
   @media (max-width:768px) {
@@ -279,7 +279,6 @@ PAGE = """<!doctype html>
 <title>{title}</title>
 <link rel="stylesheet" as="style" crossorigin
   href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gugi&display=swap">
 <style>{style}</style>
 </head>
 <body>
