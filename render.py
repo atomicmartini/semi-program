@@ -4,6 +4,7 @@
 카테고리 칩을 누르면 그 분야만 남는다.
 """
 
+import calendar
 import html
 import json
 import sys
@@ -17,7 +18,6 @@ from pick import select_day
 HERE = Path(__file__).parent
 ARTICLE_DIR = HERE / "data" / "articles"
 DOCS_DIR = HERE / "docs"
-STATUS_FILE = HERE / "data" / "fetch_status.json"
 
 STYLE = """
   :root {
@@ -51,14 +51,15 @@ STYLE = """
     .hero-title { font-size:30px; }
   }
 
-  .wrap { max-width:900px; margin:0 auto; padding:14px 24px 24px; }
+  .wrap { max-width:1060px; margin:0 auto; padding:14px 24px 24px; }
 
   /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
   nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
-  nav.tabs a { display:inline-block; padding:9px 20px; border-radius:99px; font-size:16px; font-weight:600;
+  nav.tabs a { display:inline-block; padding:7px 15px; border-radius:99px; font-size:14px; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
   nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
-  nav.tabs a.tab-search { margin-left:auto; }
+  /* 검색만 알약을 길게 — 아이콘 하나뿐이라 좌우 여백으로 길이를 준다 */
+  nav.tabs a.tab-search { margin-left:auto; padding-left:26px; padding-right:26px; }
   .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
   .searchbox { display:flex; gap:8px; margin:0 0 18px; }
   .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
@@ -131,19 +132,36 @@ STYLE = """
     font-size:12px; color:var(--text-faint); }
   .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
   /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
-  .chip { font-size:16px; padding:9px 20px; border-radius:99px; cursor:pointer; font-weight:600;
+  .chip { font-size:14px; padding:7px 15px; border-radius:99px; cursor:pointer; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); }
   .chip.on { background:var(--accent); color:#fff; font-weight:700; }
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.6; margin-left:5px; }
-  .days { margin:22px 0 0; font-size:13px; }
-  .days-head { color:var(--text-faint); margin-bottom:6px; }
-  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
-    padding:4px 0; border-top:1px solid var(--border-soft); }
-  .days .ym { color:var(--text-faint); font-variant-numeric:tabular-nums; min-width:62px; }
-  .days a { color:var(--text-muted); white-space:nowrap; text-decoration:none; }
-  .days a:hover { text-decoration:underline; }
-  .days b { color:var(--text); }
+  /* 본문 두 칸 — 왼쪽 위에 달력, 오른쪽에 기사. 달력이 없는 페이지는 .solo 로 한 칸이 된다 */
+  .cols { display:grid; grid-template-columns:214px minmax(0,1fr); gap:26px; align-items:start; }
+  .cols.solo { grid-template-columns:minmax(0,1fr); }
+
+  /* 달력 — 기사가 있는 날만 누를 수 있다. 없는 날은 흐리게 두고 링크를 안 건다 */
+  .cal { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:12px 12px 10px; position:sticky; top:14px; }
+  .cal-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .cal-label { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .cal-step { display:flex; gap:4px; }
+  .cal-step button { width:22px; height:22px; border:none; border-radius:99px; cursor:pointer;
+    background:var(--chip-bg); color:var(--text-muted); font-size:11px; line-height:1;
+    font-family:inherit; padding:0; }
+  .cal-step button:hover:not(:disabled) { background:var(--accent); color:#fff; }
+  .cal-step button:disabled { opacity:.35; cursor:default; }
+  .cal-month { display:none; }
+  .cal-month.on { display:block; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-grid span, .cal-grid a, .cal-grid b { display:flex; align-items:center; justify-content:center;
+    height:26px; font-size:12px; border-radius:7px; font-variant-numeric:tabular-nums; }
+  .cal-dow { color:var(--text-faint); font-size:11px; }
+  .cal-grid span.off { color:#c4c1ba; }
+  .cal-grid a { color:var(--text); font-weight:600; text-decoration:none; background:var(--chip-bg); }
+  .cal-grid a:hover { background:var(--accent); color:#fff; }
+  .cal-grid b { background:var(--accent); color:#fff; }
   .cgroup { margin:0 0 22px; }
   .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
     border-bottom:1px solid var(--border); }
@@ -170,6 +188,13 @@ STYLE = """
   .carow .what a:hover { text-decoration:underline; }
   .carow .src { font-size:11px; color:var(--text-faint); margin-left:6px; }
 
+  /* 좁은 화면엔 왼쪽 칸을 놓을 자리가 없다. 한 칸으로 접고 달력은 기사 아래로 내린다 */
+  @media (max-width:900px) {
+    .cols { grid-template-columns:minmax(0,1fr); }
+    .side { order:2; }
+    .cal { position:static; }
+  }
+
   /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
   @media (max-width:600px) {
     .wrap { padding:14px 14px 20px; }
@@ -188,9 +213,6 @@ STYLE = """
   nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
   nav.tabs a.tab-search .icon { margin-right:0; }
   nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
-
-  .meta.alert { border:1px solid #f3d9ad; background:#fff7ea; color:#92650a; font-weight:600;
-    padding:8px 14px; border-radius:10px; }
 
   /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
   nav.tabs.bottom { display:none; }
@@ -290,10 +312,14 @@ PAGE = """<!doctype html>
   <a class="{company_on}" href="{prefix}companies.html">기업 {company_count}</a>
   <a class="tab-search {search_on}" href="{prefix}search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
 </nav>
-<div class="{meta_class}">{meta}</div>
+<div class="{cols_class}">
+<aside class="side">{days}</aside>
+<main>
+<div class="meta">{meta}</div>
 {chips}
 {body}
-{days}
+</main>
+</div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 </div>
@@ -322,6 +348,31 @@ document.addEventListener('click', function (e) {{
     card.hidden = want !== '' && card.dataset.cat !== want;
   }});
 }});
+
+/* 달력 — 달마다 한 판을 미리 그려 두고 한 판만 보여준다. 화살표로 앞뒤 달을 넘긴다 */
+(function () {{
+  var cal = document.querySelector('.cal');
+  if (!cal) return;
+  var months = cal.dataset.months.split(',');   /* 최신 달이 앞 */
+  var at = months.indexOf(cal.dataset.start);
+  var label = cal.querySelector('.cal-label');
+  var prev = cal.querySelector('.cal-prev');
+  var next = cal.querySelector('.cal-next');
+
+  function show() {{
+    var month = months[at];
+    cal.querySelectorAll('.cal-month').forEach(function (m) {{
+      m.classList.toggle('on', m.dataset.month === month);
+    }});
+    label.textContent = month.slice(0, 4) + '년 ' + Number(month.slice(5)) + '월';
+    prev.disabled = at >= months.length - 1;   /* 더 과거가 없다 */
+    next.disabled = at <= 0;                   /* 더 최근이 없다 */
+  }}
+
+  prev.addEventListener('click', function () {{ if (at < months.length - 1) {{ at++; show(); }} }});
+  next.addEventListener('click', function () {{ if (at > 0) {{ at--; show(); }} }});
+  show();
+}})();
 </script>
 </body>
 </html>
@@ -437,13 +488,6 @@ def build_search_index(days: list[str]) -> list[dict]:
     return entries
 
 
-def _status() -> tuple[int, int]:
-    if not STATUS_FILE.exists():
-        return 0, 0
-    data = json.loads(STATUS_FILE.read_text(encoding="utf-8"))
-    return data.get("ok", 0), data.get("total", 0)
-
-
 # 분류마다 라인 아이콘 하나(ICON_SPRITE 의 symbol id). 코드가 고정 배정한다 — 뜻을 매기는 게
 # 아니라 화면 구분용이라 모델이 즉석에서 정할 일이 아니다 (CLAUDE.md).
 # keywords.md 에 분류가 늘면 여기도 늘려야 한다.
@@ -490,24 +534,54 @@ def article_days() -> list[str]:
     return sorted(p.stem for p in ARTICLE_DIR.glob("*.json") if "." not in p.stem)
 
 
+DOW = ("일", "월", "화", "수", "목", "금", "토")
+
+
+def _month_grid(month: str, have: set[str], current: str) -> str:
+    """한 달치 칸. 기사가 있는 날만 링크가 되고, 없는 날은 흐린 숫자로 남는다."""
+    year, mon = int(month[:4]), int(month[5:7])
+    # calendar 는 월요일이 0. 일요일 시작으로 맞추려면 한 칸 밀어야 한다.
+    first_dow = (calendar.monthrange(year, mon)[0] + 1) % 7
+    last_day = calendar.monthrange(year, mon)[1]
+
+    cells = [f'<span class="cal-dow">{d}</span>' for d in DOW]
+    cells += ['<span class="off"></span>'] * first_dow
+    for day in range(1, last_day + 1):
+        date = f"{month}-{day:02d}"
+        if date == current:
+            cells.append(f"<b>{day}</b>")
+        elif date in have:
+            cells.append(f'<a href="{date}.html">{day}</a>')
+        else:
+            cells.append(f'<span class="off">{day}</span>')
+
+    return (
+        f'<div class="cal-month" data-month="{month}">'
+        f'<div class="cal-grid">{"".join(cells)}</div></div>'
+    )
+
+
 def render_day_links(days: list[str], current: str = "") -> str:
-    """지난 날짜 줄. 달별로 묶는다 — 125개를 한 줄에 늘어놓으면 못 읽는다."""
+    """왼쪽 달력. 달마다 한 판을 만들어 두고 화살표로 넘긴다 — 136일을 한 번에 못 보여준다."""
     if not days:
         return ""
 
-    by_month: dict[str, list[str]] = {}
-    for d in sorted(days, reverse=True):
-        by_month.setdefault(d[:7], []).append(d)
+    have = set(days)
+    months = sorted({d[:7] for d in days}, reverse=True)
+    start = current[:7] if current[:7] in months else months[0]
 
-    rows = []
-    for month in sorted(by_month, reverse=True):
-        items = "".join(
-            f"<b>{d[8:]}</b>" if d == current else f'<a href="{d}.html">{d[8:]}</a>'
-            for d in by_month[month]
-        )
-        rows.append(f'<div class="month"><span class="ym">{month}</span>{items}</div>')
+    grids = "".join(_month_grid(m, have, current) for m in months)
 
-    return f'<div class="days"><div class="days-head">지난 날짜</div>{"".join(rows)}</div>'
+    return (
+        f'<div class="cal" data-months="{",".join(months)}" data-start="{start}">'
+        '<div class="cal-bar"><span class="cal-label"></span>'
+        '<span class="cal-step">'
+        '<button type="button" class="cal-prev" aria-label="이전 달">◀</button>'
+        '<button type="button" class="cal-next" aria-label="다음 달">▶</button>'
+        "</span></div>"
+        f"{grids}"
+        "</div>"
+    )
 
 
 def day_links(current: str = "") -> str:
@@ -524,8 +598,7 @@ MAX_COMPANY_ARTICLES = 50
 
 
 def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
-          chips: str = "", days: str = "", prefix: str = "", companies_total: int = 0,
-          meta_class: str = "meta") -> str:
+          chips: str = "", days: str = "", prefix: str = "", companies_total: int = 0) -> str:
     """페이지 껍데기. 탭이 늘어도 호출부를 하나씩 안 고치게 기본값을 둔다."""
     return PAGE.format(
         title=title,
@@ -538,10 +611,11 @@ def _page(*, title: str, tab: str, terms: list[dict], meta: str, body: str,
         term_count=len(terms),
         company_count=companies_total or len(companies.read_companies()),
         meta=meta,
-        meta_class=meta_class,
         body=body,
         chips=chips,
         days=days,
+        # 달력이 없는 페이지(개념·기업·검색)는 왼쪽 칸을 비워 두지 않고 한 칸으로 쓴다.
+        cols_class="cols" if days else "cols solo",
     )
 
 
@@ -601,7 +675,6 @@ def render_hero(items: list[dict], extracted: dict) -> str:
 def render_news(day: str, terms: list[dict]) -> str:
     """하루치 목록 HTML."""
     picked, _, _ = select_day(day)
-    ok, total = _status()
     related_map = load_related(day)
     extracted = load_extracted(day)
 
@@ -611,21 +684,13 @@ def render_news(day: str, terms: list[dict]) -> str:
             _render_card(a, terms, related_map, extracted) for a in rest
         )
     else:
-        # '기사 없음' 과 '수집 실패' 는 다르다 (CLAUDE.md).
-        body = '<p class="none">이 날은 반도체 관련 기사가 없습니다. (수집은 정상이었습니다)</p>'
-
-    # 다 정상이면 조용히 넘어간다. 실패가 있을 때만 도드라지게 보여준다 (CLAUDE.md — 실패를 숨기지 않는다).
-    if total and ok < total:
-        meta, meta_class = f"{day} · {len(picked)}건 · 수집 {ok}곳 중 {total}곳 정상 — {total - ok}곳 실패", "meta alert"
-    else:
-        meta, meta_class = f"{day} · {len(picked)}건", "meta"
+        body = '<p class="none">이 날은 반도체 관련 기사가 없습니다.</p>'
 
     return _page(
         title=f"반도체 뉴스 데일리 — {day}",
         tab="news",
         terms=terms,
-        meta=meta,
-        meta_class=meta_class,
+        meta=f"{day} · {len(picked)}건",
         body=body,
         chips=category_chips(picked) if picked else "",
         days=day_links(day),
