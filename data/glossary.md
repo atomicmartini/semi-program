@@ -38,6 +38,7 @@
 | SoC | SoC | System on Chip, SoCs, SoC, 시스템 온 칩 | AI·가속기 | 전체 시스템을 칩 하나에 담은 반도체. 연산 소자(CPU), 메모리 소자, 디지털신호처리 소자 등을 한 칩에 모아 크기와 제조비용을 줄인다. | [삼성반도체 용어사전 — SoC](https://semiconductor.samsung.com/kr/support/tools-resources/dictionary/semiconductor-glossary-soc/) `[공식]` | 2026-08-29 |
 | ASIC | ASIC | Application-Specific Integrated Circuit, ASICs, ASIC | AI·가속기 | 특정 용도에 맞춰 맞춤 제작한 집적회로. 범용 프로세서나 FPGA 와 달리 정해진 기능만 하도록 최적화해 성능과 전력 효율을 끌어올린다. | [Synopsys — What is ASIC Design?](https://www.synopsys.com/glossary/what-is-asic-design.html) `[2차]` | 2026-08-29 |
 | NPU | NPU | Neural Processing Unit, NPUs, NPU, 신경망처리장치 | AI·가속기 | AI 추론을 낮은 전력으로 처리하려고 밑바닥부터 새로 설계한 연산 장치. 신경망 계층의 스칼라·벡터·텐서 연산을 맡아 CPU·GPU 와 일을 나눈다. | [Qualcomm OnQ — What is an NPU?](https://www.qualcomm.com/news/onq/2024/02/what-is-an-npu-and-why-is-it-key-to-unlocking-on-device-generative-ai) `[2차]` | 2026-08-29 |
+| CPO | Co-Packaged Optics | Co-Packaged Optics, CPO, 광 동시 패키징 | 패키징 | 광학 엔진을 프로세서 가까이 붙여 같은 패키지 안에 담는 방식. 전기 신호가 지나는 거리가 짧아지는 만큼 대역폭과 에너지 효율이 함께 올라간다. | [SK하이닉스 뉴스룸 — CPO 로드맵이 'Nature Electronics' 에 실리다](https://news.skhynix.com/en/cpo-in-nature-electronics-2/) `[2차]` | 2026-09-03 |
 
 > **별칭**은 기사 본문에서 이 용어를 찾을 때 쓴다. 영문 기사가 많아 영어 표기가 필요하다.
 > **영문 별칭은 낱말 경계를 요구한다** — 안 그러면 `ASIC` 이 `basic`, `SoC` 가 `association`,
@@ -75,6 +76,17 @@
 
 **뺀 것** — `첨단 패키징`(24건)은 너무 포괄적이라 개념으로 세우면 아무 기사나 다 걸린다.
 `데이터센터`(11건)는 반도체 개념이 아니다. `리소그래피`·`팹리스`는 이번엔 넣지 않았다.
+
+### CPO 하나 (세션 9) — 282건에서 셈
+
+| 용어 | 등장 | 출처 |
+| --- | --- | --- |
+| CPO | 9건 | SK하이닉스 뉴스룸 `[2차]` |
+
+사용자가 넣어 달라고 해서 셈해 봤더니 9건이었다 — `칩렛`(8건)·`하이브리드 본딩`(6건)과
+비슷한 수준이라 기준에 맞다. **표준화 기구(OIF) 문서가 `[공식]` 으로 더 맞지만
+PDF 라 본문을 확인하지 못했다.** 실제로 읽고 확인한 SK하이닉스 뉴스룸 글로 `[2차]` 를 달았다.
+OIF 문서를 읽게 되면 그때 `[공식]` 으로 올린다.
 
 **HBM2·HBM2E·HBM3·HBM3E 는 기사에 0건이다.** 그래도 넣었다 —
 계보의 중간이 비면 개념 탭에서 오히려 이상해 보인다. 대신 **기사 본문 링크는 안 걸린다.**
