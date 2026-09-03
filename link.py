@@ -1,111 +1,77 @@
-"""오늘 기사와 정말 이어지는 과거 기사를 잇는다. 모델을 부르지 않는다.
+"""오늘 기사와 정말 이어지는 과거 기사를 잇는다.
 
-    이어짐 = (기업이 직접 겹침 OR 관계로 이어진 기업) AND 키워드가 겹침
+    후보 = TF-IDF 상위 15건        (코드 · 놓치지 않는 일만 한다)
+    이어짐 = 모델이 고른 것 AND 근거 인용구가 원문에 실제로 있다
 
-기업 하나만으로는 잇지 않는다 — 삼성전자는 거의 모든 한국어 기사에 나와서 증거가 못 된다
-(docs/slices/06-연결고리-기준.md). 회사가 달라도 extract.py 가 뽑은 관계로 이어져 있으면 잇는다.
-억지로 잇지 않는다 — 조건을 못 채우면 '이어지는 흐름 없음'.
-과거 범위는 제한 없음(있는 전체)이고, 정규화는 companies.md 사전에 있는 것만 한다.
+후보 추리기와 판정을 나눈 이유는 docs/slices/11-이어지는흐름-모델판정.md 에 있다 —
+유사도 지표는 '놓치지 않기'는 잘하고 '가려내기'는 못한다. 네 번 재보고 확인했다.
+억지로 잇지 않는다 — 모델이 하나도 안 고르면 '이어지는 흐름 없음'.
 """
 
 import json
+import math
+import re
 import sys
+import time
+from collections import Counter
 from pathlib import Path
 
-from companies import companies_mentioned, read_company_map
-from filter import filter_articles, read_keywords
+from filter import filter_articles
 
 HERE = Path(__file__).parent
 ARTICLE_DIR = HERE / "data" / "articles"
 
-MIN_KEYWORDS = 1  # 키워드가 몇 개 겹쳐야 잇는가. 헐거우면 올린다
-MAX_RELATED = 10  # 기사 하나당 최대 몇 건까지 보여주는가
+MAX_RELATED = 10      # 기사 하나당 화면에 보여줄 최대 건수. 사용자가 정한 값
+SHORTLIST = 15        # 모델에게 넘길 후보 수. 늘리면 프롬프트가 길어진다
+SUMMARY_CHARS = 300   # 프롬프트에 넣는 요약 길이. 더 자르면 판정 근거가 얇아진다
+
+# 한글은 2글자 이상 덩어리, 영문·숫자는 낱말 단위. 한 글자는 증거가 못 된다.
+_TOKEN = re.compile(r"[가-힣]{2,}|[a-zA-Z][a-zA-Z0-9\-]{1,}")
 
 
-def read_topic_keywords() -> list[str]:
-    """무엇에 관한 기사인지 가릴 말들. `### 카테고리` 아래 것만 쓴다.
+def tokens(text: str) -> list[str]:
+    """TF-IDF 로 셀 말들. 한국어는 조사가 붙어('광연결로') 앞 2~3글자도 함께 본다."""
+    out: list[str] = []
+    for t in _TOKEN.findall(text.lower()):
+        out.append(t)
+        if not t.isascii() and len(t) > 2:
+            out.extend(t[:n] for n in (2, 3) if len(t) > n)
+    return out
 
-    `포함` 목록(`반도체` 등)은 거의 모든 기사에 걸려서 증거가 못 된다 —
-    삼성전자가 증거가 못 되는 것과 같은 이유다.
+
+def _vector(toks: list[str], idf: dict[str, float], default_idf: float) -> dict[str, float]:
+    tf = Counter(toks)
+    vec = {w: (1 + math.log(c)) * idf.get(w, default_idf) for w, c in tf.items()}
+    norm = math.sqrt(sum(x * x for x in vec.values())) or 1.0
+    return {w: x / norm for w, x in vec.items()}
+
+
+def shortlist(article: dict, past: list[dict], limit: int = SHORTLIST) -> list[dict]:
+    """모델에게 넘길 후보를 고른다. 판정이 아니라 '놓치지 않기' 다.
+
+    흔한 말(`메모리`)은 문서빈도가 높아 가중치가 저절로 낮아진다 — 옛 기준이
+    `메모리` 하나로 이어 버리던 문제를 수식이 대신 막는다.
     """
-    _, _, categories = read_keywords()
-    return sorted({w for words in categories.values() for w in words}, key=len, reverse=True)
-
-
-def topic_keywords(text: str, vocab: list[str]) -> set[str]:
-    """글에 등장하는 카테고리 키워드."""
-    haystack = text.lower()
-    return {w for w in vocab if w in haystack}
-
-
-def read_relation_pairs() -> set[frozenset[str]]:
-    """extract.py 가 뽑아 둔 기업 짝. 회사가 달라도 이어 주는 다리가 된다.
-
-    사용자 요청 — "엔비디아가 개발한 걸 삼성이 만들기로 했다" 같은 것.
-    아직 뽑은 게 없으면 빈 집합. 그러면 직접 겹침만으로 판정한다.
-    """
-    pairs: set[frozenset[str]] = set()
-    for path in ARTICLE_DIR.glob("*.extracted.json"):
-        data = json.loads(path.read_text(encoding="utf-8"))
-        for a in data["articles"]:
-            for r in a.get("relations") or []:
-                names = [c for c in (r.get("companies") or []) if c]
-                for i, one in enumerate(names):
-                    for other in names[i + 1 :]:
-                        pairs.add(frozenset({one, other}))
-    return pairs
-
-
-def bridged(today: set[str], past: set[str], pairs: set[frozenset[str]]) -> bool:
-    """회사가 달라도 관계로 이어져 있는가."""
-    return any(frozenset({a, b}) in pairs for a in today for b in past if a != b)
-
-
-def find_related(
-    article: dict,
-    past_articles: list[dict],
-    company_map: dict[str, str],
-    vocab: list[str],
-    relation_pairs: set[frozenset[str]],
-    min_keywords: int = MIN_KEYWORDS,
-) -> list[dict]:
-    """정말 이어지는 과거 기사를, 최신순 최대 MAX_RELATED 건 돌려준다.
-
-        이어짐 = (기업이 직접 겹침 OR 관계로 이어진 기업) AND 키워드가 겹침
-
-    기업 하나만으로는 잇지 않는다 — 삼성전자는 거의 모든 기사에 나와서 증거가 못 된다.
-    """
-    today_text = f"{article['title']} {article['summary']}"
-    today_companies = companies_mentioned(today_text, company_map)
-    today_keywords = topic_keywords(today_text, vocab)
-    if not today_companies or not today_keywords:
+    if not past:
         return []
 
-    candidates = []
-    for past in past_articles:
-        past_text = f"{past['title']} {past['summary']}"
-        past_companies = companies_mentioned(past_text, company_map)
+    docs = [tokens(f"{a['title']} {a['summary']}") for a in past]
+    n = len(docs)
+    df: Counter[str] = Counter()
+    for d in docs:
+        df.update(set(d))
+    idf = {w: math.log(n / (1 + c)) for w, c in df.items()}
+    default_idf = math.log(n) if n else 0.0
 
-        shared_companies = today_companies & past_companies
-        if not shared_companies and not bridged(today_companies, past_companies, relation_pairs):
-            continue
-
-        shared_keywords = today_keywords & topic_keywords(past_text, vocab)
-        if len(shared_keywords) < min_keywords:
-            continue
-
-        candidates.append(
-            {
-                "date": (past.get("published") or "")[:10],
-                "title": past["title"],
-                "url": past["url"],
-                "shared_companies": sorted(shared_companies),
-                "shared_keywords": sorted(shared_keywords),
-            }
-        )
-
-    candidates.sort(key=lambda c: c["date"], reverse=True)
-    return candidates[:MAX_RELATED]
+    today_vec = _vector(tokens(f"{article['title']} {article['summary']}"), idf, default_idf)
+    scored = []
+    for a, d in zip(past, docs):
+        vec = _vector(d, idf, default_idf)
+        score = sum(today_vec[w] * vec[w] for w in today_vec.keys() & vec.keys())
+        if score > 0:
+            scored.append((score, a))
+    scored.sort(key=lambda x: -x[0])
+    return [a for _, a in scored[:limit]]
 
 
 def _load_all_past(before_day: str) -> list[dict]:
