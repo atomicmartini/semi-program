@@ -16,6 +16,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
+from extract import _parse_json, _verify_quote
 from filter import filter_articles
 
 HERE = Path(__file__).parent
@@ -72,6 +73,38 @@ def shortlist(article: dict, past: list[dict], limit: int = SHORTLIST) -> list[d
             scored.append((score, a))
     scored.sort(key=lambda x: -x[0])
     return [a for _, a in scored[:limit]]
+
+
+def verify_links(parsed: dict | None, candidates: list[dict], limit: int = MAX_RELATED) -> list[dict]:
+    """모델이 고른 연결 중 근거가 진짜인 것만 남긴다.
+
+    인용구가 그 과거 기사 원문에 실제로 있는지 코드가 대조한다.
+    없으면 그 연결만 버린다 — 지어낸 연결을 화면에 내지 않는다 (CLAUDE.md).
+    """
+    if not parsed:
+        return []
+
+    by_url = {c["url"]: c for c in candidates}
+    out: list[dict] = []
+    for item in parsed.get("links") or []:
+        past = by_url.get((item.get("url") or "").strip())
+        if past is None:
+            continue  # 후보에 없던 주소를 지어낸 경우
+        quote = (item.get("quote") or "").strip()
+        if not _verify_quote(quote, f"{past['title']} {past['summary']}"):
+            continue
+        out.append(
+            {
+                "date": (past.get("published") or "")[:10],
+                "title": past["title"],
+                "url": past["url"],
+                "reason": (item.get("reason") or "").strip(),
+                "quote": quote,
+            }
+        )
+
+    out.sort(key=lambda r: r["date"], reverse=True)
+    return out[:limit]
 
 
 def _load_all_past(before_day: str) -> list[dict]:

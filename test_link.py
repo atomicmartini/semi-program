@@ -6,7 +6,7 @@
 import unittest
 
 from companies import companies_mentioned
-from link import shortlist, tokens
+from link import shortlist, tokens, verify_links
 
 COMPANIES = {
     "삼성전자": "삼성전자",
@@ -61,6 +61,38 @@ class TestShortlist(unittest.TestCase):
 
     def test_empty_past_gives_empty_list(self):
         self.assertEqual(shortlist(self._article("제목", "요약"), [], limit=15), [])
+
+
+class TestVerifyLinks(unittest.TestCase):
+    """지어낸 연결을 막는 방어선. 인용구가 원문에 없으면 그 연결은 버린다 (CLAUDE.md)."""
+
+    def _candidate(self, url, summary, published="2026-05-05"):
+        return {"url": url, "title": f"제목 {url}", "summary": summary, "published": published}
+
+    def test_keeps_link_whose_quote_is_in_the_source(self):
+        cands = [self._candidate("a", "GlobalFoundries 가 co-packaged optics 채택을 가속한다")]
+        parsed = {"links": [{"url": "a", "reason": "같은 CPO 채택 흐름", "quote": "co-packaged optics 채택을 가속"}]}
+        got = verify_links(parsed, cands)
+        self.assertEqual(len(got), 1)
+        self.assertEqual(got[0]["reason"], "같은 CPO 채택 흐름")
+
+    def test_drops_link_whose_quote_is_invented(self):
+        cands = [self._candidate("a", "GlobalFoundries 가 co-packaged optics 채택을 가속한다")]
+        parsed = {"links": [{"url": "a", "reason": "그럴듯한 이유", "quote": "원문에 없는 문장이다"}]}
+        self.assertEqual(verify_links(parsed, cands), [])
+
+    def test_drops_link_to_url_not_in_candidates(self):
+        cands = [self._candidate("a", "본문")]
+        parsed = {"links": [{"url": "없는주소", "reason": "이유", "quote": "본문"}]}
+        self.assertEqual(verify_links(parsed, cands), [])
+
+    def test_broken_answer_gives_empty_list(self):
+        self.assertEqual(verify_links(None, [self._candidate("a", "본문")]), [])
+
+    def test_respects_limit(self):
+        cands = [self._candidate(str(i), "같은 본문 문장") for i in range(15)]
+        parsed = {"links": [{"url": str(i), "reason": "이유", "quote": "같은 본문"} for i in range(15)]}
+        self.assertEqual(len(verify_links(parsed, cands, limit=10)), 10)
 
 
 if __name__ == "__main__":
