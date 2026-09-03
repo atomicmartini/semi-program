@@ -38,14 +38,15 @@
     .hero-title { font-size:30px; }
   }
 
-  .wrap { max-width:900px; margin:0 auto; padding:14px 24px 24px; }
+  .wrap { max-width:1060px; margin:0 auto; padding:14px 24px 24px; }
 
   /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
   nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
-  nav.tabs a { display:inline-block; padding:9px 20px; border-radius:99px; font-size:16px; font-weight:600;
+  nav.tabs a { display:inline-block; padding:7px 15px; border-radius:99px; font-size:14px; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
   nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
-  nav.tabs a.tab-search { margin-left:auto; }
+  /* 검색만 알약을 길게 — 아이콘 하나뿐이라 좌우 여백으로 길이를 준다 */
+  nav.tabs a.tab-search { margin-left:auto; padding-left:26px; padding-right:26px; }
   .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
   .searchbox { display:flex; gap:8px; margin:0 0 18px; }
   .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
@@ -118,19 +119,36 @@
     font-size:12px; color:var(--text-faint); }
   .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
   /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
-  .chip { font-size:16px; padding:9px 20px; border-radius:99px; cursor:pointer; font-weight:600;
+  .chip { font-size:14px; padding:7px 15px; border-radius:99px; cursor:pointer; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); }
   .chip.on { background:var(--accent); color:#fff; font-weight:700; }
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.6; margin-left:5px; }
-  .days { margin:22px 0 0; font-size:13px; }
-  .days-head { color:var(--text-faint); margin-bottom:6px; }
-  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
-    padding:4px 0; border-top:1px solid var(--border-soft); }
-  .days .ym { color:var(--text-faint); font-variant-numeric:tabular-nums; min-width:62px; }
-  .days a { color:var(--text-muted); white-space:nowrap; text-decoration:none; }
-  .days a:hover { text-decoration:underline; }
-  .days b { color:var(--text); }
+  /* 본문 두 칸 — 왼쪽 위에 달력, 오른쪽에 기사. 달력이 없는 페이지는 .solo 로 한 칸이 된다 */
+  .cols { display:grid; grid-template-columns:214px minmax(0,1fr); gap:26px; align-items:start; }
+  .cols.solo { grid-template-columns:minmax(0,1fr); }
+
+  /* 달력 — 기사가 있는 날만 누를 수 있다. 없는 날은 흐리게 두고 링크를 안 건다 */
+  .cal { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:12px 12px 10px; position:sticky; top:14px; }
+  .cal-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .cal-label { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .cal-step { display:flex; gap:4px; }
+  .cal-step button { width:22px; height:22px; border:none; border-radius:99px; cursor:pointer;
+    background:var(--chip-bg); color:var(--text-muted); font-size:11px; line-height:1;
+    font-family:inherit; padding:0; }
+  .cal-step button:hover:not(:disabled) { background:var(--accent); color:#fff; }
+  .cal-step button:disabled { opacity:.35; cursor:default; }
+  .cal-month { display:none; }
+  .cal-month.on { display:block; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-grid span, .cal-grid a, .cal-grid b { display:flex; align-items:center; justify-content:center;
+    height:26px; font-size:12px; border-radius:7px; font-variant-numeric:tabular-nums; }
+  .cal-dow { color:var(--text-faint); font-size:11px; }
+  .cal-grid span.off { color:#c4c1ba; }
+  .cal-grid a { color:var(--text); font-weight:600; text-decoration:none; background:var(--chip-bg); }
+  .cal-grid a:hover { background:var(--accent); color:#fff; }
+  .cal-grid b { background:var(--accent); color:#fff; }
   .cgroup { margin:0 0 22px; }
   .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
     border-bottom:1px solid var(--border); }
@@ -157,6 +175,13 @@
   .carow .what a:hover { text-decoration:underline; }
   .carow .src { font-size:11px; color:var(--text-faint); margin-left:6px; }
 
+  /* 좁은 화면엔 왼쪽 칸을 놓을 자리가 없다. 한 칸으로 접고 달력은 기사 아래로 내린다 */
+  @media (max-width:900px) {
+    .cols { grid-template-columns:minmax(0,1fr); }
+    .side { order:2; }
+    .cal { position:static; }
+  }
+
   /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
   @media (max-width:600px) {
     .wrap { padding:14px 14px 20px; }
@@ -175,9 +200,6 @@
   nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
   nav.tabs a.tab-search .icon { margin-right:0; }
   nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
-
-  .meta.alert { border:1px solid #f3d9ad; background:#fff7ea; color:#92650a; font-weight:600;
-    padding:8px 14px; border-radius:10px; }
 
   /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
   nav.tabs.bottom { display:none; }
@@ -259,10 +281,13 @@
 <div class="wrap">
 <nav class="tabs top">
   <a class="on" href="index.html">뉴스</a>
-  <a class="" href="concepts.html">개념 18</a>
+  <a class="" href="concepts.html">개념 19</a>
   <a class="" href="companies.html">기업 38</a>
   <a class="tab-search " href="search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
 </nav>
+<div class="cols">
+<aside class="side"><div class="cal" data-months="2026-09,2026-08,2026-07,2026-06,2026-05,2026-04,2026-03,2026-02,2026-01,2025-12,2025-11" data-start="2026-08"><div class="cal-bar"><span class="cal-label"></span><span class="cal-step"><button type="button" class="cal-prev" aria-label="이전 달">◀</button><button type="button" class="cal-next" aria-label="다음 달">▶</button></span></div><div class="cal-month" data-month="2026-09"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><a href="2026-09-01.html">1</a><a href="2026-09-02.html">2</a><a href="2026-09-03.html">3</a><span class="off">4</span><span class="off">5</span><span class="off">6</span><span class="off">7</span><span class="off">8</span><span class="off">9</span><span class="off">10</span><span class="off">11</span><span class="off">12</span><span class="off">13</span><span class="off">14</span><span class="off">15</span><span class="off">16</span><span class="off">17</span><span class="off">18</span><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><span class="off">24</span><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div><div class="cal-month" data-month="2026-08"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><span class="off">2</span><span class="off">3</span><a href="2026-08-04.html">4</a><a href="2026-08-05.html">5</a><a href="2026-08-06.html">6</a><a href="2026-08-07.html">7</a><a href="2026-08-08.html">8</a><span class="off">9</span><a href="2026-08-10.html">10</a><a href="2026-08-11.html">11</a><a href="2026-08-12.html">12</a><a href="2026-08-13.html">13</a><a href="2026-08-14.html">14</a><a href="2026-08-15.html">15</a><span class="off">16</span><a href="2026-08-17.html">17</a><a href="2026-08-18.html">18</a><a href="2026-08-19.html">19</a><a href="2026-08-20.html">20</a><b>21</b><a href="2026-08-22.html">22</a><span class="off">23</span><a href="2026-08-24.html">24</a><a href="2026-08-25.html">25</a><a href="2026-08-26.html">26</a><a href="2026-08-27.html">27</a><a href="2026-08-28.html">28</a><a href="2026-08-29.html">29</a><a href="2026-08-30.html">30</a><a href="2026-08-31.html">31</a></div></div><div class="cal-month" data-month="2026-07"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-07-01.html">1</a><a href="2026-07-02.html">2</a><a href="2026-07-03.html">3</a><span class="off">4</span><span class="off">5</span><span class="off">6</span><a href="2026-07-07.html">7</a><a href="2026-07-08.html">8</a><span class="off">9</span><span class="off">10</span><a href="2026-07-11.html">11</a><span class="off">12</span><span class="off">13</span><a href="2026-07-14.html">14</a><span class="off">15</span><a href="2026-07-16.html">16</a><span class="off">17</span><a href="2026-07-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2026-07-24.html">24</a><a href="2026-07-25.html">25</a><span class="off">26</span><span class="off">27</span><span class="off">28</span><a href="2026-07-29.html">29</a><a href="2026-07-30.html">30</a><a href="2026-07-31.html">31</a></div></div><div class="cal-month" data-month="2026-06"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off">1</span><a href="2026-06-02.html">2</a><a href="2026-06-03.html">3</a><a href="2026-06-04.html">4</a><a href="2026-06-05.html">5</a><span class="off">6</span><span class="off">7</span><span class="off">8</span><a href="2026-06-09.html">9</a><a href="2026-06-10.html">10</a><a href="2026-06-11.html">11</a><a href="2026-06-12.html">12</a><span class="off">13</span><span class="off">14</span><span class="off">15</span><a href="2026-06-16.html">16</a><a href="2026-06-17.html">17</a><span class="off">18</span><span class="off">19</span><a href="2026-06-20.html">20</a><span class="off">21</span><span class="off">22</span><a href="2026-06-23.html">23</a><span class="off">24</span><a href="2026-06-25.html">25</a><span class="off">26</span><a href="2026-06-27.html">27</a><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div><div class="cal-month" data-month="2026-05"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-05-01.html">1</a><a href="2026-05-02.html">2</a><span class="off">3</span><span class="off">4</span><a href="2026-05-05.html">5</a><a href="2026-05-06.html">6</a><span class="off">7</span><a href="2026-05-08.html">8</a><a href="2026-05-09.html">9</a><span class="off">10</span><span class="off">11</span><a href="2026-05-12.html">12</a><a href="2026-05-13.html">13</a><a href="2026-05-14.html">14</a><a href="2026-05-15.html">15</a><a href="2026-05-16.html">16</a><span class="off">17</span><span class="off">18</span><a href="2026-05-19.html">19</a><a href="2026-05-20.html">20</a><a href="2026-05-21.html">21</a><a href="2026-05-22.html">22</a><a href="2026-05-23.html">23</a><span class="off">24</span><span class="off">25</span><span class="off">26</span><a href="2026-05-27.html">27</a><a href="2026-05-28.html">28</a><a href="2026-05-29.html">29</a><a href="2026-05-30.html">30</a><span class="off">31</span></div></div><div class="cal-month" data-month="2026-04"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-04-01.html">1</a><span class="off">2</span><a href="2026-04-03.html">3</a><span class="off">4</span><span class="off">5</span><span class="off">6</span><a href="2026-04-07.html">7</a><a href="2026-04-08.html">8</a><span class="off">9</span><span class="off">10</span><span class="off">11</span><span class="off">12</span><a href="2026-04-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2026-04-16.html">16</a><span class="off">17</span><span class="off">18</span><span class="off">19</span><a href="2026-04-20.html">20</a><span class="off">21</span><a href="2026-04-22.html">22</a><a href="2026-04-23.html">23</a><span class="off">24</span><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><a href="2026-04-29.html">29</a><a href="2026-04-30.html">30</a></div></div><div class="cal-month" data-month="2026-03"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><a href="2026-03-01.html">1</a><span class="off">2</span><a href="2026-03-03.html">3</a><a href="2026-03-04.html">4</a><span class="off">5</span><span class="off">6</span><span class="off">7</span><a href="2026-03-08.html">8</a><span class="off">9</span><span class="off">10</span><a href="2026-03-11.html">11</a><span class="off">12</span><a href="2026-03-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2026-03-16.html">16</a><span class="off">17</span><a href="2026-03-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><a href="2026-03-23.html">23</a><span class="off">24</span><a href="2026-03-25.html">25</a><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2026-02"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off">1</span><a href="2026-02-02.html">2</a><a href="2026-02-03.html">3</a><a href="2026-02-04.html">4</a><a href="2026-02-05.html">5</a><a href="2026-02-06.html">6</a><span class="off">7</span><span class="off">8</span><span class="off">9</span><a href="2026-02-10.html">10</a><a href="2026-02-11.html">11</a><span class="off">12</span><a href="2026-02-13.html">13</a><span class="off">14</span><span class="off">15</span><span class="off">16</span><a href="2026-02-17.html">17</a><span class="off">18</span><a href="2026-02-19.html">19</a><span class="off">20</span><span class="off">21</span><span class="off">22</span><a href="2026-02-23.html">23</a><a href="2026-02-24.html">24</a><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span></div></div><div class="cal-month" data-month="2026-01"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><a href="2026-01-02.html">2</a><span class="off">3</span><span class="off">4</span><a href="2026-01-05.html">5</a><a href="2026-01-06.html">6</a><span class="off">7</span><span class="off">8</span><a href="2026-01-09.html">9</a><span class="off">10</span><span class="off">11</span><span class="off">12</span><a href="2026-01-13.html">13</a><span class="off">14</span><span class="off">15</span><span class="off">16</span><span class="off">17</span><span class="off">18</span><a href="2026-01-19.html">19</a><span class="off">20</span><a href="2026-01-21.html">21</a><span class="off">22</span><span class="off">23</span><span class="off">24</span><span class="off">25</span><a href="2026-01-26.html">26</a><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2025-12"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><a href="2025-12-01.html">1</a><a href="2025-12-02.html">2</a><span class="off">3</span><span class="off">4</span><span class="off">5</span><span class="off">6</span><span class="off">7</span><a href="2025-12-08.html">8</a><a href="2025-12-09.html">9</a><a href="2025-12-10.html">10</a><a href="2025-12-11.html">11</a><a href="2025-12-12.html">12</a><span class="off">13</span><span class="off">14</span><span class="off">15</span><span class="off">16</span><a href="2025-12-17.html">17</a><a href="2025-12-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2025-12-24.html">24</a><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2025-11"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><span class="off">2</span><a href="2025-11-03.html">3</a><span class="off">4</span><span class="off">5</span><a href="2025-11-06.html">6</a><span class="off">7</span><span class="off">8</span><span class="off">9</span><a href="2025-11-10.html">10</a><span class="off">11</span><span class="off">12</span><a href="2025-11-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2025-11-16.html">16</a><a href="2025-11-17.html">17</a><span class="off">18</span><a href="2025-11-19.html">19</a><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2025-11-24.html">24</a><span class="off">25</span><a href="2025-11-26.html">26</a><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div></div></aside>
+<main>
 <div class="meta">2026-08-21 · 9건</div>
 <div class="chips"><span class="chip on" data-cat="">전체<span class="n">9</span></span><span class="chip empty" data-cat="패키징"><svg class="icon"><use href="#ic-package"/></svg>패키징<span class="n">0</span></span><span class="chip" data-cat="파운드리·공정"><svg class="icon"><use href="#ic-factory"/></svg>파운드리·공정<span class="n">2</span></span><span class="chip" data-cat="메모리"><svg class="icon"><use href="#ic-memory"/></svg>메모리<span class="n">2</span></span><span class="chip" data-cat="AI·가속기"><svg class="icon"><use href="#ic-ai"/></svg>AI·가속기<span class="n">2</span></span><span class="chip empty" data-cat="장비·소재"><svg class="icon"><use href="#ic-gear"/></svg>장비·소재<span class="n">0</span></span><span class="chip empty" data-cat="정책·규제"><svg class="icon"><use href="#ic-policy"/></svg>정책·규제<span class="n">0</span></span><span class="chip" data-cat="투자·실적"><svg class="icon"><use href="#ic-trend"/></svg>투자·실적<span class="n">3</span></span><span class="chip empty" data-cat="미분류"><svg class="icon"><use href="#ic-dash"/></svg>미분류<span class="n">0</span></span></div>
 <div class="hero-wrap">
@@ -363,7 +388,8 @@
   <div class="src">더일렉 반도체 · 발행 2026-08-21 17:03 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61214">원문</a></div>
 </div>
 
-<div class="days"><div class="days-head">지난 날짜</div><div class="month"><span class="ym">2026-08</span><a href="2026-08-29.html">29</a><a href="2026-08-28.html">28</a><a href="2026-08-27.html">27</a><a href="2026-08-26.html">26</a><a href="2026-08-25.html">25</a><a href="2026-08-24.html">24</a><a href="2026-08-22.html">22</a><b>21</b><a href="2026-08-20.html">20</a><a href="2026-08-19.html">19</a><a href="2026-08-18.html">18</a><a href="2026-08-17.html">17</a><a href="2026-08-15.html">15</a><a href="2026-08-14.html">14</a><a href="2026-08-13.html">13</a><a href="2026-08-12.html">12</a><a href="2026-08-11.html">11</a><a href="2026-08-10.html">10</a><a href="2026-08-08.html">08</a><a href="2026-08-07.html">07</a><a href="2026-08-06.html">06</a><a href="2026-08-05.html">05</a><a href="2026-08-04.html">04</a></div><div class="month"><span class="ym">2026-07</span><a href="2026-07-31.html">31</a><a href="2026-07-30.html">30</a><a href="2026-07-29.html">29</a><a href="2026-07-25.html">25</a><a href="2026-07-24.html">24</a><a href="2026-07-18.html">18</a><a href="2026-07-16.html">16</a><a href="2026-07-14.html">14</a><a href="2026-07-11.html">11</a><a href="2026-07-08.html">08</a><a href="2026-07-07.html">07</a><a href="2026-07-03.html">03</a><a href="2026-07-02.html">02</a><a href="2026-07-01.html">01</a></div><div class="month"><span class="ym">2026-06</span><a href="2026-06-27.html">27</a><a href="2026-06-25.html">25</a><a href="2026-06-23.html">23</a><a href="2026-06-20.html">20</a><a href="2026-06-17.html">17</a><a href="2026-06-16.html">16</a><a href="2026-06-12.html">12</a><a href="2026-06-11.html">11</a><a href="2026-06-10.html">10</a><a href="2026-06-09.html">09</a><a href="2026-06-05.html">05</a><a href="2026-06-04.html">04</a><a href="2026-06-03.html">03</a><a href="2026-06-02.html">02</a></div><div class="month"><span class="ym">2026-05</span><a href="2026-05-30.html">30</a><a href="2026-05-29.html">29</a><a href="2026-05-28.html">28</a><a href="2026-05-27.html">27</a><a href="2026-05-23.html">23</a><a href="2026-05-22.html">22</a><a href="2026-05-21.html">21</a><a href="2026-05-20.html">20</a><a href="2026-05-19.html">19</a><a href="2026-05-16.html">16</a><a href="2026-05-15.html">15</a><a href="2026-05-14.html">14</a><a href="2026-05-13.html">13</a><a href="2026-05-12.html">12</a><a href="2026-05-09.html">09</a><a href="2026-05-08.html">08</a><a href="2026-05-06.html">06</a><a href="2026-05-05.html">05</a><a href="2026-05-02.html">02</a><a href="2026-05-01.html">01</a></div><div class="month"><span class="ym">2026-04</span><a href="2026-04-30.html">30</a><a href="2026-04-29.html">29</a><a href="2026-04-23.html">23</a><a href="2026-04-22.html">22</a><a href="2026-04-20.html">20</a><a href="2026-04-16.html">16</a><a href="2026-04-13.html">13</a><a href="2026-04-08.html">08</a><a href="2026-04-07.html">07</a><a href="2026-04-03.html">03</a><a href="2026-04-01.html">01</a></div><div class="month"><span class="ym">2026-03</span><a href="2026-03-25.html">25</a><a href="2026-03-23.html">23</a><a href="2026-03-18.html">18</a><a href="2026-03-16.html">16</a><a href="2026-03-13.html">13</a><a href="2026-03-11.html">11</a><a href="2026-03-08.html">08</a><a href="2026-03-04.html">04</a><a href="2026-03-03.html">03</a><a href="2026-03-01.html">01</a></div><div class="month"><span class="ym">2026-02</span><a href="2026-02-24.html">24</a><a href="2026-02-23.html">23</a><a href="2026-02-19.html">19</a><a href="2026-02-17.html">17</a><a href="2026-02-13.html">13</a><a href="2026-02-11.html">11</a><a href="2026-02-10.html">10</a><a href="2026-02-06.html">06</a><a href="2026-02-05.html">05</a><a href="2026-02-04.html">04</a><a href="2026-02-03.html">03</a><a href="2026-02-02.html">02</a></div><div class="month"><span class="ym">2026-01</span><a href="2026-01-26.html">26</a><a href="2026-01-21.html">21</a><a href="2026-01-19.html">19</a><a href="2026-01-13.html">13</a><a href="2026-01-09.html">09</a><a href="2026-01-06.html">06</a><a href="2026-01-05.html">05</a><a href="2026-01-02.html">02</a></div><div class="month"><span class="ym">2025-12</span><a href="2025-12-24.html">24</a><a href="2025-12-18.html">18</a><a href="2025-12-17.html">17</a><a href="2025-12-12.html">12</a><a href="2025-12-11.html">11</a><a href="2025-12-10.html">10</a><a href="2025-12-09.html">09</a><a href="2025-12-08.html">08</a><a href="2025-12-02.html">02</a><a href="2025-12-01.html">01</a></div><div class="month"><span class="ym">2025-11</span><a href="2025-11-26.html">26</a><a href="2025-11-24.html">24</a><a href="2025-11-19.html">19</a><a href="2025-11-17.html">17</a><a href="2025-11-16.html">16</a><a href="2025-11-13.html">13</a><a href="2025-11-10.html">10</a><a href="2025-11-06.html">06</a><a href="2025-11-03.html">03</a></div></div>
+</main>
+</div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 </div>
@@ -392,6 +418,31 @@ document.addEventListener('click', function (e) {
     card.hidden = want !== '' && card.dataset.cat !== want;
   });
 });
+
+/* 달력 — 달마다 한 판을 미리 그려 두고 한 판만 보여준다. 화살표로 앞뒤 달을 넘긴다 */
+(function () {
+  var cal = document.querySelector('.cal');
+  if (!cal) return;
+  var months = cal.dataset.months.split(',');   /* 최신 달이 앞 */
+  var at = months.indexOf(cal.dataset.start);
+  var label = cal.querySelector('.cal-label');
+  var prev = cal.querySelector('.cal-prev');
+  var next = cal.querySelector('.cal-next');
+
+  function show() {
+    var month = months[at];
+    cal.querySelectorAll('.cal-month').forEach(function (m) {
+      m.classList.toggle('on', m.dataset.month === month);
+    });
+    label.textContent = month.slice(0, 4) + '년 ' + Number(month.slice(5)) + '월';
+    prev.disabled = at >= months.length - 1;   /* 더 과거가 없다 */
+    next.disabled = at <= 0;                   /* 더 최근이 없다 */
+  }
+
+  prev.addEventListener('click', function () { if (at < months.length - 1) { at++; show(); } });
+  next.addEventListener('click', function () { if (at > 0) { at--; show(); } });
+  show();
+})();
 </script>
 </body>
 </html>

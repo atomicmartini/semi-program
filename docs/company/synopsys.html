@@ -38,14 +38,15 @@
     .hero-title { font-size:30px; }
   }
 
-  .wrap { max-width:900px; margin:0 auto; padding:14px 24px 24px; }
+  .wrap { max-width:1060px; margin:0 auto; padding:14px 24px 24px; }
 
   /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
   nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
-  nav.tabs a { display:inline-block; padding:9px 20px; border-radius:99px; font-size:16px; font-weight:600;
+  nav.tabs a { display:inline-block; padding:7px 15px; border-radius:99px; font-size:14px; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
   nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
-  nav.tabs a.tab-search { margin-left:auto; }
+  /* 검색만 알약을 길게 — 아이콘 하나뿐이라 좌우 여백으로 길이를 준다 */
+  nav.tabs a.tab-search { margin-left:auto; padding-left:26px; padding-right:26px; }
   .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
   .searchbox { display:flex; gap:8px; margin:0 0 18px; }
   .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
@@ -118,19 +119,36 @@
     font-size:12px; color:var(--text-faint); }
   .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
   /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
-  .chip { font-size:16px; padding:9px 20px; border-radius:99px; cursor:pointer; font-weight:600;
+  .chip { font-size:14px; padding:7px 15px; border-radius:99px; cursor:pointer; font-weight:600;
     background:var(--chip-bg); color:var(--text-muted); }
   .chip.on { background:var(--accent); color:#fff; font-weight:700; }
   .chip.empty { color:#c4c1ba; cursor:default; }
   .chip .n { opacity:.6; margin-left:5px; }
-  .days { margin:22px 0 0; font-size:13px; }
-  .days-head { color:var(--text-faint); margin-bottom:6px; }
-  .days .month { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
-    padding:4px 0; border-top:1px solid var(--border-soft); }
-  .days .ym { color:var(--text-faint); font-variant-numeric:tabular-nums; min-width:62px; }
-  .days a { color:var(--text-muted); white-space:nowrap; text-decoration:none; }
-  .days a:hover { text-decoration:underline; }
-  .days b { color:var(--text); }
+  /* 본문 두 칸 — 왼쪽 위에 달력, 오른쪽에 기사. 달력이 없는 페이지는 .solo 로 한 칸이 된다 */
+  .cols { display:grid; grid-template-columns:214px minmax(0,1fr); gap:26px; align-items:start; }
+  .cols.solo { grid-template-columns:minmax(0,1fr); }
+
+  /* 달력 — 기사가 있는 날만 누를 수 있다. 없는 날은 흐리게 두고 링크를 안 건다 */
+  .cal { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:12px 12px 10px; position:sticky; top:14px; }
+  .cal-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .cal-label { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .cal-step { display:flex; gap:4px; }
+  .cal-step button { width:22px; height:22px; border:none; border-radius:99px; cursor:pointer;
+    background:var(--chip-bg); color:var(--text-muted); font-size:11px; line-height:1;
+    font-family:inherit; padding:0; }
+  .cal-step button:hover:not(:disabled) { background:var(--accent); color:#fff; }
+  .cal-step button:disabled { opacity:.35; cursor:default; }
+  .cal-month { display:none; }
+  .cal-month.on { display:block; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-grid span, .cal-grid a, .cal-grid b { display:flex; align-items:center; justify-content:center;
+    height:26px; font-size:12px; border-radius:7px; font-variant-numeric:tabular-nums; }
+  .cal-dow { color:var(--text-faint); font-size:11px; }
+  .cal-grid span.off { color:#c4c1ba; }
+  .cal-grid a { color:var(--text); font-weight:600; text-decoration:none; background:var(--chip-bg); }
+  .cal-grid a:hover { background:var(--accent); color:#fff; }
+  .cal-grid b { background:var(--accent); color:#fff; }
   .cgroup { margin:0 0 22px; }
   .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
     border-bottom:1px solid var(--border); }
@@ -157,6 +175,13 @@
   .carow .what a:hover { text-decoration:underline; }
   .carow .src { font-size:11px; color:var(--text-faint); margin-left:6px; }
 
+  /* 좁은 화면엔 왼쪽 칸을 놓을 자리가 없다. 한 칸으로 접고 달력은 기사 아래로 내린다 */
+  @media (max-width:900px) {
+    .cols { grid-template-columns:minmax(0,1fr); }
+    .side { order:2; }
+    .cal { position:static; }
+  }
+
   /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
   @media (max-width:600px) {
     .wrap { padding:14px 14px 20px; }
@@ -175,9 +200,6 @@
   nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
   nav.tabs a.tab-search .icon { margin-right:0; }
   nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
-
-  .meta.alert { border:1px solid #f3d9ad; background:#fff7ea; color:#92650a; font-weight:600;
-    padding:8px 14px; border-radius:10px; }
 
   /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
   nav.tabs.bottom { display:none; }
@@ -259,10 +281,13 @@
 <div class="wrap">
 <nav class="tabs top">
   <a class="" href="../index.html">뉴스</a>
-  <a class="" href="../concepts.html">개념 18</a>
+  <a class="" href="../concepts.html">개념 19</a>
   <a class="on" href="../companies.html">기업 38</a>
   <a class="tab-search " href="../search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
 </nav>
+<div class="cols solo">
+<aside class="side"></aside>
+<main>
 <div class="meta">기사 2건</div>
 
 <div class="profile">
@@ -282,7 +307,8 @@
   <div class="what"><a href="https://www.eetimes.com/synopsys-updates-cxl-ip-portfolio-for-ai-era-infrastructure/">Synopsys Updates CXL IP Portfolio for AI-Era Infrastructure</a> <span class="src">EE Times</span></div>
 </div>
 </div>
-
+</main>
+</div>
 <footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
 이 페이지는 투자 조언이 아닙니다.</footer>
 </div>
@@ -311,6 +337,31 @@ document.addEventListener('click', function (e) {
     card.hidden = want !== '' && card.dataset.cat !== want;
   });
 });
+
+/* 달력 — 달마다 한 판을 미리 그려 두고 한 판만 보여준다. 화살표로 앞뒤 달을 넘긴다 */
+(function () {
+  var cal = document.querySelector('.cal');
+  if (!cal) return;
+  var months = cal.dataset.months.split(',');   /* 최신 달이 앞 */
+  var at = months.indexOf(cal.dataset.start);
+  var label = cal.querySelector('.cal-label');
+  var prev = cal.querySelector('.cal-prev');
+  var next = cal.querySelector('.cal-next');
+
+  function show() {
+    var month = months[at];
+    cal.querySelectorAll('.cal-month').forEach(function (m) {
+      m.classList.toggle('on', m.dataset.month === month);
+    });
+    label.textContent = month.slice(0, 4) + '년 ' + Number(month.slice(5)) + '월';
+    prev.disabled = at >= months.length - 1;   /* 더 과거가 없다 */
+    next.disabled = at <= 0;                   /* 더 최근이 없다 */
+  }
+
+  prev.addEventListener('click', function () { if (at < months.length - 1) { at++; show(); } });
+  next.addEventListener('click', function () { if (at > 0) { at--; show(); } });
+  show();
+})();
 </script>
 </body>
 </html>
