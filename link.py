@@ -147,8 +147,12 @@ def judge(article: dict, candidates: list[dict], key: str, call=None) -> tuple[l
         return [], None
 
     call = call or _call_model
-    prompt = build_prompt(article, candidates)
+    try:
+        prompt = build_prompt(article, candidates)
+    except Exception as e:  # noqa: BLE001 — 프롬프트를 못 만들면 재시도해도 소용없다. 그 기사만 비운다
+        return [], f"{type(e).__name__} {e}"
 
+    raw = None
     for attempt in range(RETRIES):
         try:
             raw = call(prompt, key)

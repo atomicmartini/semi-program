@@ -135,6 +135,16 @@ class TestJudge(unittest.TestCase):
         links, err = judge(self.today, [], "열쇠", call=lambda p, k: called.append(1) or "{}")
         self.assertEqual((links, err, called), ([], None, []))
 
+    def test_candidate_missing_key_is_an_error_not_a_crash(self):
+        # 중간에 끊긴 이전 실행이 남긴 레코드처럼, 후보에 summary 가 빠진 경우 —
+        # build_prompt 가 KeyError 를 내도 그 기사만 비우고 넘어가야 한다 (CLAUDE.md).
+        broken = [{"url": "a", "title": "과거"}]  # summary 없음
+        called = []
+        links, err = judge(self.today, broken, "열쇠", call=lambda p, k: called.append(1) or "{}")
+        self.assertEqual(links, [])
+        self.assertIsNotNone(err)
+        self.assertEqual(called, [])  # 프롬프트를 못 만들었으니 모델을 부르지 않는다
+
 
 if __name__ == "__main__":
     unittest.main()
