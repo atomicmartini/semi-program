@@ -35,6 +35,29 @@ class TestRenderThread(unittest.TestCase):
         self.assertIn("2건", html)
 
 
+class TestRenderThreadEvidence(unittest.TestCase):
+    """왜 이어지는지를 화면에 드러낸다 — 저장만 하고 안 보여주면 가른 의미가 없다."""
+
+    def _related(self, **kw):
+        base = {"date": "2026-05-05", "title": "과거 기사", "url": "http://a",
+                "reason": "같은 CPO 채택 흐름", "quote": "co-packaged optics 채택을 가속"}
+        return [{**base, **kw}]
+
+    def test_shows_reason_and_quote(self):
+        html = render_thread(self._related())
+        self.assertIn("같은 CPO 채택 흐름", html)
+        self.assertIn("co-packaged optics 채택을 가속", html)
+
+    def test_survives_old_data_without_reason(self):
+        # 옛 .linked.json 에는 reason·quote 가 없다. 깨지지 않아야 한다
+        html = render_thread([{"date": "2026-05-05", "title": "과거", "url": "http://a"}])
+        self.assertIn("과거", html)
+
+    def test_escapes_html_in_quote(self):
+        html = render_thread(self._related(quote="<script>x</script>"))
+        self.assertNotIn("<script>", html)
+
+
 class TestRenderDayLinks(unittest.TestCase):
     """날짜 줄. 14일로 자르면 과거 기사에 갈 길이 아예 없다 (슬라이스 04)."""
 

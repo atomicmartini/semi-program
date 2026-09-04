@@ -111,6 +111,9 @@ STYLE = """
   .step:last-child { margin-bottom:0; }
   .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
     font-size:12px; color:var(--text-faint); font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step .why { font-size:12px; color:var(--text-muted); margin-top:3px; }
+  .step .q { margin:4px 0 0; padding-left:9px; border-left:2px solid var(--border);
+    font-size:12px; color:var(--text-faint); }
   .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
     border-radius:50%; background:#b8b4ac; border:2px solid var(--surface); }
   .step .what a { font-size:13.5px; color:var(--text-muted); line-height:1.5; text-decoration:none; }
@@ -395,9 +398,11 @@ THREAD = """<details class="thread" open>
 
 STEP = """<div class="step">
   <span class="when">{when}</span>
-  <div class="what"><a href="{url}">{title}</a></div>
+  <div class="what"><a href="{url}">{title}</a>{why}</div>
 </div>
 """
+
+WHY = """<div class="why">{reason}</div><blockquote class="q">{quote}</blockquote>"""
 
 HERO_CARD = """<a class="hero-card" data-cat="{category}" href="{url}">
   <span class="hero-eyebrow">{icon}{category}</span>
@@ -457,6 +462,12 @@ def render_thread(related: list[dict]) -> str:
             when=html.escape(r["date"][5:] or r["date"]),
             title=html.escape(r["title"]),
             url=html.escape(r["url"], quote=True),
+            # 옛 .linked.json 에는 근거가 없다. 없으면 줄을 안 낸다
+            why=(
+                WHY.format(reason=html.escape(r["reason"]), quote=html.escape(r["quote"]))
+                if r.get("reason") and r.get("quote")
+                else ""
+            ),
         )
         for r in oldest_first
     )
