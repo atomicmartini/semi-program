@@ -16,7 +16,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from extract import _parse_json, _verify_quote
+from extract import BACKOFF, PAUSE, RETRIES, _call_model, _load_key, _parse_json, _verify_quote, should_retry
 from filter import filter_articles
 
 HERE = Path(__file__).parent
@@ -107,6 +107,63 @@ def verify_links(parsed: dict | None, candidates: list[dict], limit: int = MAX_R
     return out[:limit]
 
 
+PROMPT = """오늘 기사와 정말로 이어지는 과거 기사만 고르라. 다른 말은 하지 말고 JSON 으로만 답하라.
+
+이어진다 = 같은 사안·같은 기술 흐름이 실제로 이어진다는 뜻이다.
+같은 회사가 나온다거나 같은 분야라는 이유로 고르지 마라. 그건 이어지는 것이 아니다.
+하나도 없으면 links 를 빈 배열로 둬라. 억지로 고르지 마라.
+quote 는 그 과거 기사 본문에서 **그대로** 옮긴다. 지어내면 코드가 대조해서 버린다.
+
+{{"links": [{{"url": "과거 기사 주소", "reason": "왜 이어지는지 한 줄", "quote": "과거 기사 원문 문장"}}]}}
+
+[오늘 기사]
+제목: {title}
+본문: {body}
+
+[과거 기사 후보]
+{candidates}
+"""
+
+
+def build_prompt(article: dict, candidates: list[dict]) -> str:
+    """오늘 기사와 후보 목록을 모델에 넘길 프롬프트로 엮는다."""
+    lines = []
+    for c in candidates:
+        date = (c.get("published") or "")[:10]
+        lines.append(f"- url: {c['url']}\n  날짜: {date}\n  제목: {c['title']}\n  본문: {c['summary'][:SUMMARY_CHARS]}")
+    return PROMPT.format(
+        title=article["title"],
+        body=article["summary"][:SUMMARY_CHARS],
+        candidates="\n".join(lines),
+    )
+
+
+def judge(article: dict, candidates: list[dict], key: str, call=None) -> tuple[list[dict], str | None]:
+    """후보를 모델에 한 번 넘겨 판정받는다. (연결 목록, 오류 원문)
+
+    실패를 삼키지 않는다 — 실패하면 흐름을 비우고 이유를 돌려준다 (CLAUDE.md).
+    """
+    if not candidates:
+        return [], None
+
+    call = call or _call_model
+    prompt = build_prompt(article, candidates)
+
+    for attempt in range(RETRIES):
+        try:
+            raw = call(prompt, key)
+            break
+        except Exception as e:  # noqa: BLE001 — 어떤 실패든 그 기사만 비우고 넘어간다
+            if attempt == RETRIES - 1 or not should_retry(e):
+                return [], f"{type(e).__name__} {e}"
+            time.sleep(BACKOFF * (attempt + 1))
+
+    parsed = _parse_json(raw)
+    if parsed is None:
+        return [], "모델 출력을 JSON 으로 못 읽음"
+    return verify_links(parsed, candidates), None
+
+
 def _load_all_past(before_day: str) -> list[dict]:
     """<before_day> 이전 날짜의, 반도체로 걸러진 기사를 전부 모은다."""
     past: list[dict] = []
@@ -124,15 +181,18 @@ def link_day(day: str) -> list[dict]:
     from pick import select_day
 
     picked, _, _ = select_day(day)
-    company_map = read_company_map()
-    vocab = read_topic_keywords()
-    pairs = read_relation_pairs()
     past = _load_all_past(day)
+    key = _load_key()
 
     linked = []
     for a in picked:
-        related = find_related(a, past, company_map, vocab, pairs)
-        linked.append({**a, "related": related})
+        candidates = shortlist(a, past)
+        related, error = judge(a, candidates, key)
+        entry = {**a, "related": related}
+        if error:
+            entry["link_error"] = error
+        linked.append(entry)
+        time.sleep(PAUSE)  # 몰아치면 429 가 난다
     return linked
 
 
@@ -159,10 +219,17 @@ def main(argv: list[str]) -> int:
 
     with_flow = [a for a in linked if a["related"]]
     print(f"{day} — {len(linked)}건 중 이어지는 흐름 있음 {len(with_flow)}건")
+
+    failed = [a for a in linked if a.get("link_error")]
+    for a in failed:
+        # 판정 실패를 조용히 넘기지 않는다 (CLAUDE.md).
+        print(f"  ! {a['title'][:40]} — 판정 실패: {a['link_error']}", file=sys.stderr)
+
     for a in with_flow:
-        names = ", ".join(f"{r['date']} {r['title']}" for r in a["related"])
         print(f"  · {a['title']}")
-        print(f"      → {names}")
+        for r in a["related"]:
+            print(f"      → {r['date']} {r['title']}")
+            print(f"        이유: {r['reason']}")
 
     return 0
 

@@ -6,7 +6,7 @@
 import unittest
 
 from companies import companies_mentioned
-from link import shortlist, tokens, verify_links
+from link import build_prompt, judge, shortlist, tokens, verify_links
 
 COMPANIES = {
     "삼성전자": "삼성전자",
@@ -93,6 +93,47 @@ class TestVerifyLinks(unittest.TestCase):
         cands = [self._candidate(str(i), "같은 본문 문장") for i in range(15)]
         parsed = {"links": [{"url": str(i), "reason": "이유", "quote": "같은 본문"} for i in range(15)]}
         self.assertEqual(len(verify_links(parsed, cands, limit=10)), 10)
+
+
+class TestBuildPrompt(unittest.TestCase):
+    def test_includes_candidate_urls_and_trims_summary(self):
+        today = {"url": "t", "title": "오늘", "summary": "오늘 요약", "published": "2026-08-20"}
+        cands = [{"url": "a", "title": "과거", "summary": "가" * 500, "published": "2026-05-05"}]
+        prompt = build_prompt(today, cands)
+        self.assertIn("a", prompt)
+        self.assertIn("오늘", prompt)
+        self.assertNotIn("가" * 400, prompt)   # 앞 300자만 넣는다
+
+
+class TestJudge(unittest.TestCase):
+    """모델을 진짜로 부르지 않는다 — 호출 함수를 바꿔 끼운다."""
+
+    def setUp(self):
+        self.cands = [{"url": "a", "title": "과거", "summary": "co-packaged optics 채택", "published": "2026-05-05"}]
+        self.today = {"url": "t", "title": "오늘", "summary": "CPO 청사진", "published": "2026-08-20"}
+
+    def test_returns_verified_links_on_good_answer(self):
+        answer = '{"links": [{"url": "a", "reason": "같은 CPO 흐름", "quote": "co-packaged optics 채택"}]}'
+        links, err = judge(self.today, self.cands, "열쇠", call=lambda p, k: answer)
+        self.assertIsNone(err)
+        self.assertEqual(len(links), 1)
+
+    def test_reports_error_when_model_fails(self):
+        def boom(prompt, key):
+            raise RuntimeError("모델이 죽었다")
+        links, err = judge(self.today, self.cands, "열쇠", call=boom)
+        self.assertEqual(links, [])
+        self.assertIn("모델이 죽었다", err)   # 실패를 조용히 넘기지 않는다 (CLAUDE.md)
+
+    def test_broken_json_is_an_error_not_a_crash(self):
+        links, err = judge(self.today, self.cands, "열쇠", call=lambda p, k: "말이 안 되는 답")
+        self.assertEqual(links, [])
+        self.assertIsNotNone(err)
+
+    def test_no_candidates_means_no_model_call(self):
+        called = []
+        links, err = judge(self.today, [], "열쇠", call=lambda p, k: called.append(1) or "{}")
+        self.assertEqual((links, err, called), ([], None, []))
 
 
 if __name__ == "__main__":
