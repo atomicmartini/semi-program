@@ -23,7 +23,6 @@
 | --- | --- | --- | --- | --- | --- |
 | 삼성전자 뉴스룸 | `https://news.samsung.com/kr/feed` | 한국어 | `[공식]` | 20 | 2026-08-22 |
 | SK하이닉스 뉴스룸 | `https://news.skhynix.co.kr/feed` | 한국어 | `[공식]` | 10 | 2026-08-22 |
-| Intel Newsroom | `https://newsroom.intel.com/feed` | 영어 | `[공식]` | 10 | 2026-08-22 |
 
 ## 후보 (아직 안 씀)
 
@@ -60,6 +59,13 @@
 | TSMC 뉴스룸 | `https://pr.tsmc.com/rss/newsroom` | 2026-08-22 | HTTP 403 차단 |
 | ZDNet Korea | `https://zdnet.co.kr/news/news_xml.asp` | 2026-08-22 | HTTP 404 |
 | 디지털데일리 | `https://www.ddaily.co.kr/rss/allArticle.xml` | 2026-08-22 | HTML 반환, RSS 아님 |
+| Intel Newsroom | `https://newsroom.intel.com/feed` | 2026-09-04 | **SSL 인증서 검증 실패**(`CERTIFICATE_VERIFY_FAILED — unable to get local issuer certificate`). 이틀 연속 같은 오류. 2026-08-22 ~ 09-02 까지는 정상이었다 |
+
+> **Intel Newsroom 은 피드가 죽은 게 아니다.** 위의 404·403·폐간과 성격이 다르다 —
+> 이 컴퓨터의 파이썬이 인증서 발급기관을 못 찾는 **로컬 문제**라 다른 환경에서는 될 수 있다.
+> 고치려면 `certifi` 인증서 번들이 필요한데 **새 라이브러리**라 넣지 않았다(`CLAUDE.md`).
+> SSL 검증을 끄는 방법은 쓰지 않는다 — 중간자 공격에 열린다.
+> 이걸 되살리면 `[공식]` 등급 영어 출처가 하나 늘어난다. 되살릴 때는 여기서 위 표로 옮긴다.
 
 ## 아직 없는 것 — 채워야 할 자리
 
