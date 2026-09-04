@@ -18,6 +18,26 @@
 - **개념 19개**(CPO 추가) · 기업 38곳(8분류)
 - **`link-model-judge` 브랜치에 있고 아직 push 안 했다** — 사용자가 배포를 미뤄 달라고 했다
 
+**내일(2026-09-05) 오전 9시 이후에 할 일 — 이 순서 그대로**
+
+무료 모델 할당량은 **UTC 자정(한국시간 오전 9시)** 에 리셋된다. 9/04 19:30 에 이미 다 썼다.
+9/04 기사 16건은 **받아서 저장까지 끝났고**(`data/articles/2026-09-04.json`),
+요약만 429 로 실패했다. 아래를 순서대로 돌리면 된다.
+
+```
+python extract.py 2026-09-04     # 실패한 9건만 다시 부른다 (성공분은 건너뛴다)
+python extract.py 2026-09-03     # 9/04 수집에 9/03 기사 14건이 더 딸려 왔다
+python link.py 2026-09-04
+python link.py 2026-09-03
+python backfill.py               # 남은 할당량으로 과거분을 잇는다
+python render.py --all
+git add docs && git commit
+```
+그다음 **배포** — 사용자가 9/04 에 "오늘 신문까지 넣어서 배포" 를 요청했다:
+```
+git checkout main && git merge link-model-judge && git push
+```
+
 **매일 할 일 (백필이 끝날 때까지, 약 6일)**
 ```
 python backfill.py        # 남은 날짜를 최신순으로. 할당량(하루 50건)에 걸리면 스스로 멈춘다
