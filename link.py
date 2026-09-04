@@ -25,6 +25,7 @@ ARTICLE_DIR = HERE / "data" / "articles"
 MAX_RELATED = 10      # 기사 하나당 화면에 보여줄 최대 건수. 사용자가 정한 값
 SHORTLIST = 15        # 모델에게 넘길 후보 수. 늘리면 프롬프트가 길어진다
 SUMMARY_CHARS = 300   # 프롬프트에 넣는 요약 길이. 더 자르면 판정 근거가 얇아진다
+MIN_QUOTE_LEN = 10    # 이보다 짧은 인용구는 아무 문장에나 들어맞아 증거가 못 된다 (예: "CPO")
 
 # 한글은 2글자 이상 덩어리, 영문·숫자는 낱말 단위. 한 글자는 증거가 못 된다.
 _TOKEN = re.compile(r"[가-힣]{2,}|[a-zA-Z][a-zA-Z0-9\-]{1,}")
@@ -80,17 +81,31 @@ def verify_links(parsed: dict | None, candidates: list[dict], limit: int = MAX_R
 
     인용구가 그 과거 기사 원문에 실제로 있는지 코드가 대조한다.
     없으면 그 연결만 버린다 — 지어낸 연결을 화면에 내지 않는다 (CLAUDE.md).
+    이유(reason)가 비었거나 인용구가 너무 짧으면(10자 미만) 마찬가지로 버린다 —
+    짧은 인용구는 아무 문장에나 들어맞아 증거가 못 된다. 같은 주소가 두 번 오면
+    처음 것만 남긴다.
     """
     if not parsed:
         return []
 
     by_url = {c["url"]: c for c in candidates}
     out: list[dict] = []
+    seen_urls: set[str] = set()  # 모델이 같은 주소를 두 번 고르면 처음 것만 남긴다
     for item in parsed.get("links") or []:
-        past = by_url.get((item.get("url") or "").strip())
+        url = (item.get("url") or "").strip()
+        if url in seen_urls:
+            continue
+        seen_urls.add(url)
+
+        past = by_url.get(url)
         if past is None:
             continue  # 후보에 없던 주소를 지어낸 경우
+        reason = (item.get("reason") or "").strip()
+        if not reason:
+            continue  # 이유 없는 연결은 화면에 못 낸다 (render.py 가 어차피 숨긴다)
         quote = (item.get("quote") or "").strip()
+        if len(quote) < MIN_QUOTE_LEN:
+            continue  # 너무 짧으면 아무 문장에나 들어맞아 증거가 못 된다
         if not _verify_quote(quote, f"{past['title']} {past['summary']}"):
             continue
         out.append(
@@ -98,7 +113,7 @@ def verify_links(parsed: dict | None, candidates: list[dict], limit: int = MAX_R
                 "date": (past.get("published") or "")[:10],
                 "title": past["title"],
                 "url": past["url"],
-                "reason": (item.get("reason") or "").strip(),
+                "reason": reason,
                 "quote": quote,
             }
         )
@@ -163,7 +178,11 @@ def judge(article: dict, candidates: list[dict], key: str, call=None) -> tuple[l
                 return [], f"{type(e).__name__} {e}"
             time.sleep(BACKOFF * (attempt + 1))
 
-    parsed = _parse_json(raw)
+    try:
+        parsed = _parse_json(raw)
+    except Exception as e:  # noqa: BLE001 — content: null 처럼 raw 가 문자열이 아니면
+        # _parse_json 이 TypeError 를 낸다. 그 기사만 비우고 전체 실행은 끊지 않는다
+        return [], f"{type(e).__name__} {e}"
     if parsed is None:
         return [], "모델 출력을 JSON 으로 못 읽음"
     return verify_links(parsed, candidates), None
@@ -181,19 +200,52 @@ def _load_all_past(before_day: str) -> list[dict]:
     return past
 
 
+def load_done(day: str, article_dir: Path = ARTICLE_DIR) -> dict[str, dict]:
+    """이미 성공적으로 판정해 둔 기사. extract.load_done 과 같은 이어하기 패턴이다.
+
+    무료 모델 한도가 하루 50회라 136일치를 여러 날에 나눠 돌린다(backfill.py).
+    한도가 도중에 끊긴 뒤 다시 실행할 때, 이미 검증된 연결이 있는 기사까지
+    다시 모델에 물으면 (1) 아까운 한도를 또 쓰고 (2) 재호출 결과가 비면
+    검증된 연결을 잃는다 — 복구 불가능하다(.linked.json 은 gitignore 대상).
+    `judged` 표시가 있고 `link_error` 가 없는 기사만 '끝난 것'으로 본다 —
+    표시가 없는 옛 데이터나 실패한 기사는 다시 판정하도록 뺀다 (item 3).
+    """
+    path = article_dir / f"{day}.linked.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return {
+        a["url"]: a
+        for a in data.get("articles") or []
+        if a.get("judged") and not a.get("link_error")
+    }
+
+
 def link_day(day: str) -> list[dict]:
-    """오늘 선별된 기사마다 이어지는 흐름을 붙인다."""
+    """오늘 선별된 기사마다 이어지는 흐름을 붙인다.
+
+    이미 판정해 둔(성공한) 기사는 모델을 다시 부르지 않는다 — load_done() 참조.
+    """
     from pick import select_day
 
     picked, _, _ = select_day(day)
     past = _load_all_past(day)
     key = _load_key()
+    done = load_done(day, ARTICLE_DIR)
 
     linked = []
     for a in picked:
+        if a["url"] in done:
+            linked.append(done[a["url"]])
+            continue
         candidates = shortlist(a, past)
         related, error = judge(a, candidates, key)
-        entry = {**a, "related": related}
+        # judged 는 이 기사를 새 파이프라인이 실제로 판정했다는 표시다 — 옛 키워드
+        # 규칙이 남긴 '링크 0건·오류 0건' 파일과 구분하는 유일한 방법이다 (item 3).
+        entry = {**a, "related": related, "judged": not error}
         if error:
             entry["link_error"] = error
         linked.append(entry)

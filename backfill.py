@@ -5,8 +5,10 @@ link.py <날짜> 는 한 번에 하루치만 판정한다. 그런데 OpenRouter 
 손으로 어디까지 했는지 챙기면 실수하기 쉬워 이 러너를 만든다.
 
 진행 상황을 따로 기록하지 않는다 — data/articles/<날짜>.linked.json 자체가 기록이다.
-그 파일에 근거(reason) 있는 연결이 있거나, 흐름이 진짜로 없어서(오류 없이) 빈 것이면 끝난 것이다.
-link_error 가 남아 있으면 아직 안 끝난 것으로 본다.
+그 파일의 기사마다 새 파이프라인이 붙이는 `judged` 표시가 있고, 근거(reason) 있는
+연결이 있거나 흐름이 진짜로 없어서(오류 없이) 빈 것이면 끝난 것이다.
+link_error 가 남아 있거나 `judged` 표시가 없으면(옛 키워드 규칙이 남긴 파일 포함)
+아직 안 끝난 것으로 본다.
 
 새 날짜부터 처리한다 — 첫 화면에 뜨는 게 최신 날짜라 거기부터 고쳐야 눈에 먼저 띈다.
 오늘 한도를 다 쓰면(무료 모델 하루 50회 초과) 남은 날짜를 텅 빈 결과로 밀어붙이지 않고
@@ -47,10 +49,13 @@ def needs_judging(day: str, article_dir: Path = ARTICLE_DIR) -> bool:
 
     .linked.json 이 없으면 당연히 필요하다.
     있어도 link_error 가 하나라도 남아 있으면 그 판정은 실패한 채 저장된 것 — 다시 해야 한다.
-    연결(related)이 하나라도 있는데 그중 reason 을 가진 게 하나도 없으면
-    옛 형식이거나 깨진 결과로 보고 다시 한다.
-    연결이 아예 없고 오류도 없으면 — 모델이 정말로 '이어지는 흐름 없음' 이라 답한 것이니
-    끝난 것으로 본다. 억지로 다시 돌리지 않는다 (CLAUDE.md).
+    새 파이프라인이 실제로 판정한 기사에는 `judged` 표시가 붙는다(link.link_day 참조).
+    이 표시가 없는 기사가 하나라도 있으면 다시 한다 — 옛 키워드 규칙도 '링크 0건·오류 0건'과
+    똑같은 모양을 만들기 때문에, 표시 없이는 "옛 데이터"와 "모델이 진짜 흐름 없음이라 답한 것"을
+    구분할 방법이 없다 (item 3). 표시만으로는 안 걸러지는 옛 형식(연결은 있는데 reason 이
+    하나도 없는 경우)도 다시 한다.
+    셋 다 아니면 — 모델이 정말로 '이어지는 흐름 없음' 이라 답했거나 근거 있는 연결이 있는
+    것이니 끝난 것으로 본다. 억지로 다시 돌리지 않는다 (CLAUDE.md).
     """
     path = article_dir / f"{day}.linked.json"
     if not path.exists():
@@ -63,6 +68,9 @@ def needs_judging(day: str, article_dir: Path = ARTICLE_DIR) -> bool:
     articles = data.get("articles") or []
     if any(a.get("link_error") for a in articles):
         return True
+
+    if not all(a.get("judged") for a in articles):
+        return True  # 옛 규칙이 남긴 파일이거나 아직 새로 판정 못 받은 기사가 있다
 
     related = [r for a in articles for r in (a.get("related") or [])]
     if related and not any("reason" in r for r in related):

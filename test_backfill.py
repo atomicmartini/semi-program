@@ -44,19 +44,27 @@ class TestNeedsJudging(unittest.TestCase):
 
     def test_genuinely_empty_flows_without_errors_is_done(self):
         # 모델이 정말 '이어지는 흐름 없음' 이라 답한 경우 — 억지로 다시 돌리지 않는다 (CLAUDE.md).
-        _write(self.dir_, "2026-08-20.linked.json", {"articles": [{"related": []}]})
+        # judged 표시가 있어야 새 파이프라인이 실제로 판정한 것으로 인정한다 (item 3).
+        _write(self.dir_, "2026-08-20.linked.json", {"articles": [{"related": [], "judged": True}]})
         self.assertFalse(needs_judging("2026-08-20", self.dir_))
+
+    def test_old_rule_data_without_judged_marker_needs_judging(self):
+        # 옛 키워드 규칙(06-연결고리-기준)도 '링크 0건·오류 0건'과 똑같은 모양을 만든다.
+        # judged 표시가 없으면 그걸 "모델이 진짜 흐름 없음이라 답한 것"과 구분할 수 없어
+        # 다시 판정해야 한다 — 안 그러면 이 옛 파일들이 영원히 재판정 대상에서 빠진다 (item 3).
+        _write(self.dir_, "2026-08-20.linked.json", {"articles": [{"related": []}]})
+        self.assertTrue(needs_judging("2026-08-20", self.dir_))
 
     def test_links_present_with_reason_is_done(self):
         _write(self.dir_, "2026-08-20.linked.json", {
-            "articles": [{"related": [{"date": "2026-05-01", "reason": "같은 흐름", "quote": "q"}]}]
+            "articles": [{"related": [{"date": "2026-05-01", "reason": "같은 흐름", "quote": "q"}], "judged": True}]
         })
         self.assertFalse(needs_judging("2026-08-20", self.dir_))
 
     def test_links_present_without_reason_needs_judging(self):
         # 옛 형식이거나 깨진 결과 — reason 이 하나도 없다.
         _write(self.dir_, "2026-08-20.linked.json", {
-            "articles": [{"related": [{"date": "2026-05-01", "quote": "q"}]}]
+            "articles": [{"related": [{"date": "2026-05-01", "quote": "q"}], "judged": True}]
         })
         self.assertTrue(needs_judging("2026-08-20", self.dir_))
 
@@ -72,7 +80,7 @@ class TestDatesToProcess(unittest.TestCase):
             for day in ("2026-08-18", "2026-08-19", "2026-08-20"):
                 _write(dir_, f"{day}.json", {})
             # 08-19 만 이미 끝난 것으로 둔다.
-            _write(dir_, "2026-08-19.linked.json", {"articles": [{"related": []}]})
+            _write(dir_, "2026-08-19.linked.json", {"articles": [{"related": [], "judged": True}]})
 
             self.assertEqual(dates_to_process(dir_), ["2026-08-20", "2026-08-18"])
 
@@ -140,7 +148,7 @@ class TestRun(unittest.TestCase):
             calls.append(day)
             if day == "2026-08-19":
                 return [{"url": "a", "related": [], "link_error": "HTTPError HTTP Error 429: Too Many Requests"}]
-            return [{"url": "b", "related": []}]
+            return [{"url": "b", "related": [], "judged": True}]
 
         result = run(article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
 
@@ -160,7 +168,7 @@ class TestRun(unittest.TestCase):
             calls.append(day)
             if day == "2026-08-19":
                 return [{"url": "a", "related": [], "link_error": "HTTP 429: Rate limit exceeded: free-models-per-day"}]
-            return [{"url": "b", "related": []}]
+            return [{"url": "b", "related": [], "judged": True}]
 
         result = run(article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
 
@@ -171,7 +179,7 @@ class TestRun(unittest.TestCase):
         def fake_link_day(day):
             if day == "2026-08-20":
                 return [{"url": "a", "related": [], "link_error": "ModelError 모델이 이상한 답을 줌"}]
-            return [{"url": "b", "related": []}]
+            return [{"url": "b", "related": [], "judged": True}]
 
         result = run(article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
 
@@ -185,7 +193,7 @@ class TestRun(unittest.TestCase):
 
     def test_limit_caps_dates_processed_this_run(self):
         def fake_link_day(day):
-            return [{"url": day, "related": []}]
+            return [{"url": day, "related": [], "judged": True}]
 
         result = run(limit=1, article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
 
@@ -195,7 +203,7 @@ class TestRun(unittest.TestCase):
 
     def test_no_pending_dates_does_nothing(self):
         for day in ("2026-08-18", "2026-08-19", "2026-08-20"):
-            _write(self.dir_, f"{day}.linked.json", {"articles": [{"related": []}]})
+            _write(self.dir_, f"{day}.linked.json", {"articles": [{"related": [], "judged": True}]})
         called = []
         result = run(article_dir=self.dir_, link_day=lambda d: called.append(d), save_day=self._save_day)
         self.assertEqual(called, [])

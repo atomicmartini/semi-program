@@ -12,24 +12,30 @@ class TestRenderThread(unittest.TestCase):
     def test_empty_returns_empty_string(self):
         self.assertEqual(render_thread([]), "")
 
+    def _ev(self, **kw):
+        # 근거(reason·quote) 없는 연결은 이제 통째로 걸러진다(item 1) — 정렬·링크·건수처럼
+        # 이 필터와 무관한 걸 테스트할 때는 근거를 채워 준다.
+        base = {"reason": "같은 흐름", "quote": "원문 인용구"}
+        return {**base, **kw}
+
     def test_orders_oldest_first(self):
         # link.py 는 최신순으로 준다 — 화면에서는 타임라인이라 오래된 것부터 보여야 한다
         related = [
-            {"date": "2026-08-21", "title": "B", "url": "u2"},
-            {"date": "2026-08-19", "title": "A", "url": "u1"},
+            self._ev(date="2026-08-21", title="B", url="u2"),
+            self._ev(date="2026-08-19", title="A", url="u1"),
         ]
         html = render_thread(related)
         self.assertLess(html.index("08-19"), html.index("08-21"))
 
     def test_links_to_original_article(self):
-        related = [{"date": "2026-08-19", "title": "A", "url": "https://example.com/a"}]
+        related = [self._ev(date="2026-08-19", title="A", url="https://example.com/a")]
         html = render_thread(related)
         self.assertIn('href="https://example.com/a"', html)
 
     def test_shows_count(self):
         related = [
-            {"date": "2026-08-19", "title": "A", "url": "u1"},
-            {"date": "2026-08-20", "title": "B", "url": "u2"},
+            self._ev(date="2026-08-19", title="A", url="u1"),
+            self._ev(date="2026-08-20", title="B", url="u2"),
         ]
         html = render_thread(related)
         self.assertIn("2건", html)
@@ -48,10 +54,30 @@ class TestRenderThreadEvidence(unittest.TestCase):
         self.assertIn("같은 CPO 채택 흐름", html)
         self.assertIn("co-packaged optics 채택을 가속", html)
 
-    def test_survives_old_data_without_reason(self):
-        # 옛 .linked.json 에는 reason·quote 가 없다. 깨지지 않아야 한다
+    def test_drops_old_data_without_reason(self):
+        # 옛 .linked.json(06-연결고리-기준) 에는 reason·quote 가 없다. 인용구 없는 관계는
+        # 쓰지 않는다는 규칙(CLAUDE.md) 이 render_thread 에도 그대로 적용된다 — 예전에는
+        # 링크만 남기고 근거 줄만 숨겼지만, 이제는 연결 자체를 화면에 안 낸다 (item 1).
         html = render_thread([{"date": "2026-05-05", "title": "과거", "url": "http://a"}])
-        self.assertIn("과거", html)
+        self.assertEqual(html, "")
+        self.assertNotIn("과거", html)
+
+    def test_drops_reason_without_quote_and_quote_without_reason(self):
+        # 반쪽만 있는 것도 안 된다 — 둘 다 있어야 근거로 인정한다.
+        only_reason = [{"date": "2026-05-05", "title": "과거", "url": "http://a", "reason": "이유"}]
+        only_quote = [{"date": "2026-05-05", "title": "과거", "url": "http://a", "quote": "인용구"}]
+        self.assertEqual(render_thread(only_reason), "")
+        self.assertEqual(render_thread(only_quote), "")
+
+    def test_count_reflects_only_verified_entries(self):
+        # 근거 없는 항목은 건수에서도 빠진다 — 화면에 안 보이는데 "2건"이라 하면 거짓말이다.
+        related = [
+            self._related()[0],
+            {"date": "2026-05-01", "title": "근거 없음", "url": "http://b"},
+        ]
+        html = render_thread(related)
+        self.assertIn("1건", html)
+        self.assertNotIn("2건", html)
 
     def test_escapes_html_in_quote(self):
         html = render_thread(self._related(quote="<script>x</script>"))

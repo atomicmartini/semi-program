@@ -453,25 +453,27 @@ def choose_summary(article: dict, extracted: dict[str, dict]) -> tuple[str, bool
 
 
 def render_thread(related: list[dict]) -> str:
-    """흐름이 없으면 빈 문자열. link.py 는 최신순으로 주지만 화면은 오래된 것부터 보여준다."""
-    if not related:
+    """흐름이 없으면 빈 문자열. link.py 는 최신순으로 주지만 화면은 오래된 것부터 보여준다.
+
+    이유(reason)·인용구(quote) 가 없는 연결은 아예 싣지 않는다 — 인용구 없는 관계는
+    쓰지 않는다 (CLAUDE.md). 옛 규칙(06-연결고리-기준)이 남긴 .linked.json 은 근거가
+    없으므로 이 조건에 걸려 통째로 걸러진다. 걸러내고 남는 게 없으면 흐름 블록 자체를
+    안 낸다 — 오늘 흐름이 원래 없을 때와 같은 모양이다.
+    """
+    verified = [r for r in related if (r.get("reason") or "").strip() and (r.get("quote") or "").strip()]
+    if not verified:
         return ""
-    oldest_first = sorted(related, key=lambda r: r["date"])
+    oldest_first = sorted(verified, key=lambda r: r["date"])
     steps = "".join(
         STEP.format(
             when=html.escape(r["date"][5:] or r["date"]),
             title=html.escape(r["title"]),
             url=html.escape(r["url"], quote=True),
-            # 옛 .linked.json 에는 근거가 없다. 없으면 줄을 안 낸다
-            why=(
-                WHY.format(reason=html.escape(r["reason"]), quote=html.escape(r["quote"]))
-                if r.get("reason") and r.get("quote")
-                else ""
-            ),
+            why=WHY.format(reason=html.escape(r["reason"]), quote=html.escape(r["quote"])),
         )
         for r in oldest_first
     )
-    return THREAD.format(n=len(related), steps=steps)
+    return THREAD.format(n=len(verified), steps=steps)
 
 
 def search_entry(a: dict, day: str, extracted: dict[str, dict]) -> dict:
