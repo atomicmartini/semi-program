@@ -14,6 +14,7 @@ link_error 가 남아 있으면 아직 안 끝난 것으로 본다.
 """
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -23,8 +24,16 @@ HERE = Path(__file__).parent
 ARTICLE_DIR = HERE / "data" / "articles"
 
 # OpenRouter 무료 모델이 하루 한도에 걸리면 이 문구와 함께 HTTP 429 를 준다.
-# link.py 의 judge() 는 이걸 "HTTPError ..." 식 문자열로 link_error 에 그대로 남긴다.
+# 하지만 extract._call_model 은 urllib.request.urlopen 을 그대로 쓰는데, 이 함수는
+# 429 응답이 오면 본문을 읽기도 전에 HTTPError 를 던진다 — 그래서 이 본문 문구는
+# link.judge() 가 남기는 link_error 문자열에 실제로는 절대 안 실린다.
+# 실제 link_error 는 str(HTTPError) 그대로인 "HTTP Error 429: Too Many Requests" 뿐이다
+# (data/articles/*.linked.json 에 남은 45건 전부 이 형태 하나다).
 QUOTA_PHRASE = "Rate limit exceeded: free-models-per-day"
+# link.judge() 가 실제로 남기는 모양(f"{type(e).__name__} {e}")에 맞춰 "HTTP Error 429"
+# 를 앵커로 잡는다. 그냥 "429" 를 아무 데서나 찾으면 기사 제목에 우연히 429 가 있어도
+# 멈추게 되니, HTTPError 의 문자열 형태에 붙여서만 본다.
+_HTTP_429 = re.compile(r"HTTP Error 429\b")
 
 
 def base_dates(article_dir: Path = ARTICLE_DIR) -> list[str]:
@@ -69,14 +78,19 @@ def dates_to_process(article_dir: Path = ARTICLE_DIR) -> list[str]:
 
 
 def is_quota_error(msg: str | None) -> bool:
-    """이 오류가 '오늘 무료 모델 한도를 다 썼다' 는 뜻인지 가린다.
+    """이 오류에 멈춰야 하는지 가린다 — 안전한 쪽으로 판단이 기운다.
 
-    HTTP 429 이면서 그 한도 문구가 같이 있을 때만 그렇다고 본다.
-    몰아쳐서 순간적으로 막힌 보통의 429 까지 전체 실행 중단으로 몰면 안 된다.
+    본래는 '하루 한도(daily cap)' 와 '순간적으로 몰아쳐서 걸린 429' 를 구분하려
+    했지만, 몸통(본문) 문구는 link_error 문자열에 실제로 절대 안 실린다 (위 주석).
+    그래서 두 가지를 구분하지 않고 **HTTP 429 면 무조건 멈춘다.**
+    안 멈춰도 됐는데 멈추면 다음 실행 한 번 더 도는 비용이지만, 멈춰야 하는데
+    안 멈추면 89일치 .linked.json 을 빈 결과로 덮어써 복구 불가능한 손실이 난다 —
+    싼 쪽(재실행)으로 넘어지게 만든다.
+    본문 문구가 나중에 실제로 실리게 되면(QUOTA_PHRASE) 그것도 그대로 인정한다.
     """
     if not msg:
         return False
-    return "429" in msg and QUOTA_PHRASE in msg
+    return bool(_HTTP_429.search(msg)) or QUOTA_PHRASE in msg
 
 
 def run(limit: int | None = None, article_dir: Path = ARTICLE_DIR, link_day=None, save_day=None) -> dict:

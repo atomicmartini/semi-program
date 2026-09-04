@@ -78,15 +78,35 @@ class TestDatesToProcess(unittest.TestCase):
 
 
 class TestIsQuotaError(unittest.TestCase):
+    """실제로 link.py 가 남기는 문자열을 그대로 박아 테스트한다 — 회귀 방지.
+
+    data/articles/*.linked.json 에 지금 실제로 남아 있는 link_error 는
+    전부 "HTTPError HTTP Error 429: Too Many Requests" 하나뿐이다.
+    본문 문구(QUOTA_PHRASE)는 urllib.request.urlopen 이 429 응답의 본문을
+    읽기 전에 HTTPError 를 던지기 때문에 실제로는 절대 안 실린다 — 이 문구'만'
+    보고 판단하면 실제 한도 초과를 하나도 못 잡는다 (이번에 고친 버그).
+    """
+
+    def test_real_http_error_string_is_detected(self):
+        # link.judge() 가 실제로 남기는 형태 그대로 — 이게 감지 안 되면 러너가 절대 안 멈춘다.
+        self.assertTrue(is_quota_error("HTTPError HTTP Error 429: Too Many Requests"))
+
+    def test_non_429_model_error_is_not_quota(self):
+        self.assertFalse(is_quota_error("ModelError 모델 출력을 JSON 으로 못 읽음"))
+
     def test_matches_daily_quota_message_with_429(self):
+        # 나중에 본문 문구가 실제로 실리게 되더라도 여전히 잡아야 한다.
         msg = "ModelError HTTP 429: Rate limit exceeded: free-models-per-day, please try again later"
         self.assertTrue(is_quota_error(msg))
 
-    def test_plain_429_without_quota_phrase_is_not_quota(self):
-        self.assertFalse(is_quota_error("HTTPError HTTP Error 429: Too Many Requests"))
+    def test_quota_phrase_alone_is_still_detected(self):
+        # 429 표기가 없어도 한도 문구만으로 이미 충분히 위험 신호다 — 안전한 쪽으로 잡는다.
+        self.assertTrue(is_quota_error("Rate limit exceeded: free-models-per-day"))
 
-    def test_quota_phrase_without_429_is_not_quota(self):
-        self.assertFalse(is_quota_error("Rate limit exceeded: free-models-per-day"))
+    def test_bare_429_digits_without_http_error_shape_is_not_quota(self):
+        # 기사 제목 등에 우연히 "429" 가 들어간 경우까지 멈추게 하면 안 된다 —
+        # HTTPError 의 실제 문자열 모양("HTTP Error 429")에 앵커를 건다.
+        self.assertFalse(is_quota_error("429번째 기사 제목입니다"))
 
     def test_none_is_not_quota(self):
         self.assertFalse(is_quota_error(None))
@@ -110,13 +130,16 @@ class TestRun(unittest.TestCase):
         self.saved[day] = linked
         _write(self.dir_, f"{day}.linked.json", {"date": day, "articles": linked})
 
-    def test_stops_on_quota_error_and_leaves_earlier_dates_pending(self):
+    def test_stops_on_real_http_error_string_and_leaves_earlier_dates_pending(self):
+        # 실제 link_error 문자열을 그대로 쓴다 (data/articles/*.linked.json 에 실려 있는 그대로).
+        # 이 테스트는 고치기 전 is_quota_error(문구만 검사)에서는 반드시 실패한다 —
+        # 그때는 이 문자열이 한도로 안 잡혀서 러너가 안 멈추고 08-18 까지 밀고 나갔을 것이다.
         calls = []
 
         def fake_link_day(day):
             calls.append(day)
             if day == "2026-08-19":
-                return [{"url": "a", "related": [], "link_error": "HTTP 429: Rate limit exceeded: free-models-per-day"}]
+                return [{"url": "a", "related": [], "link_error": "HTTPError HTTP Error 429: Too Many Requests"}]
             return [{"url": "b", "related": []}]
 
         result = run(article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
@@ -128,6 +151,21 @@ class TestRun(unittest.TestCase):
         self.assertIsNotNone(result["processed"][-1]["quota_error"])
         self.assertIn("2026-08-18", result["remaining"])
         self.assertIn("2026-08-19", result["remaining"])  # 한도 걸린 날짜는 다음에 다시 시도해야 한다
+
+    def test_stops_on_synthetic_quota_phrase_message_too(self):
+        # 본문 문구가 나중에 실제로 실리게 되는 경우를 대비한 형태도 여전히 멈춰야 한다.
+        calls = []
+
+        def fake_link_day(day):
+            calls.append(day)
+            if day == "2026-08-19":
+                return [{"url": "a", "related": [], "link_error": "HTTP 429: Rate limit exceeded: free-models-per-day"}]
+            return [{"url": "b", "related": []}]
+
+        result = run(article_dir=self.dir_, link_day=fake_link_day, save_day=self._save_day)
+
+        self.assertEqual(calls, ["2026-08-20", "2026-08-19"])
+        self.assertTrue(result["quota_hit"])
 
     def test_non_quota_error_reports_and_continues(self):
         def fake_link_day(day):
