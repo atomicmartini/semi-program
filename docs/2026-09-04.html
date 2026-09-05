@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반도체 뉴스 데일리 — 2026-09-04</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  :root {
+    /* docs/slices/09-디자인시스템.md 참조. --bg·--fg 는 카테고리 칩 전용(인라인)이라
+       페이지 배경 토큰은 이름이 겹치지 않게 --page 로 뒀다. */
+    --page:#fbfbfa; --surface:#fff;
+    --text:#1c1b19; --text-muted:#63605a; --text-faint:#94908a;
+    --border:#e4e2dd; --border-soft:#f0eeea; --chip-bg:#f0eee9;
+    /* 슬라이스 10 — 포인트는 남색 하나. 링크도 같은 색을 쓴다(두 색이면 '단일 포인트'가 아니다) */
+    --accent:#0b2e6b; --link:#0b2e6b; --success:#0a7d3c;
+    --radius-sm:8px; --radius-lg:14px;
+    --shadow-card:0 1px 2px rgba(28,27,25,.04), 0 4px 12px rgba(28,27,25,.06);
+    --shadow-hover:0 2px 4px rgba(28,27,25,.06), 0 8px 20px rgba(28,27,25,.10);
+  }
+  html, body { margin:0; padding:0; background:var(--page); }
+  body { color:var(--text); font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;
+    line-height:1.6; word-break:keep-all; }
+  /* 큰 히어로 마스트헤드 — 화면 전체 폭을 원본 회로 일러스트로 채우고, 글자를 그 위 가운데 얹는다.
+     사진을 안 쓴 이유: 출처·라이선스를 매번 확인해야 하는데, 우리가 그린 그림은 그 부담이 없다 */
+  .hero-mast { position:relative; width:100%; min-height:34vh; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--accent); }
+  .hero-mast-bg { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .hero-mast-scrim { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(11,46,107,.25), rgba(11,46,107,.72)); }
+  .hero-mast-text { position:relative; z-index:1; text-align:center; padding:24px; max-width:640px; }
+  .hero-title { font-size:44px; font-weight:800;
+    line-height:1.25; margin:0 0 14px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.25); }
+  .hero-tag { font-size:16px; color:rgba(255,255,255,.88); margin:0; }
+  @media (max-width:768px) {
+    .hero-mast { min-height:26vh; }
+    .hero-title { font-size:30px; }
+  }
+
+  .wrap { max-width:1060px; margin:0 auto; padding:14px 24px 24px; }
+
+  /* 탭·칩 공통 — 테두리 없는 채움 알약. 선택 안 됨=옅은 웜그레이, 선택됨=포인트색 */
+  nav.tabs { display:flex; align-items:center; gap:8px; margin:0 0 18px; flex-wrap:wrap; }
+  nav.tabs a { display:inline-block; padding:7px 15px; border-radius:99px; font-size:14px; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); text-decoration:none; }
+  nav.tabs a.on { background:var(--accent); color:#fff; font-weight:700; }
+  /* 검색만 알약을 길게 — 아이콘 하나뿐이라 좌우 여백으로 길이를 준다 */
+  nav.tabs a.tab-search { margin-left:auto; padding-left:26px; padding-right:26px; }
+  .meta { color:var(--text-muted); font-size:14px; margin:6px 0 20px; }
+  .searchbox { display:flex; gap:8px; margin:0 0 18px; }
+  .searchbox input { flex:1; font-size:15px; padding:10px 16px; border-radius:99px;
+    border:1px solid #cfccc4; font-family:inherit; }
+  .searchbox input:focus { outline:2px solid var(--link); outline-offset:1px; }
+  .shint { color:var(--text-faint); font-size:13px; margin:0 0 16px; }
+  .card { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:16px 18px; margin-bottom:14px; transition:box-shadow .15s, transform .15s; }
+  .card:hover { box-shadow:var(--shadow-hover); transform:translateY(-1px); }
+
+  /* 헤드라인 캐러셀 — 오늘 상위 3건. 나머지 카드와 같은 흰 바탕+그림자, 스크롤로 넘긴다 */
+  .hero-wrap { position:relative; margin:0 0 22px; }
+  .hero-scroll { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:2px 2px 6px; }
+  .hero-scroll::-webkit-scrollbar { display:none; }
+  .hero-card { flex:0 0 78%; max-width:420px; scroll-snap-align:start; border-radius:var(--radius-lg);
+    padding:20px 22px 18px; box-shadow:var(--shadow-card); background:var(--surface); color:var(--text);
+    text-decoration:none; display:block; }
+  .hero-eyebrow { font-size:12px; font-weight:700; color:var(--accent); }
+  .hero-card h2 { font-size:21px; line-height:1.35; margin:10px 0 8px; font-weight:800; }
+  .hero-sum { font-size:13.5px; color:var(--text-muted); margin:0 0 14px; }
+  .hero-foot { font-size:12px; color:var(--text-faint); font-weight:600; }
+  .hero-arrow { position:absolute; top:44%; transform:translateY(-50%); width:34px; height:34px;
+    border-radius:50%; border:1px solid var(--border); background:var(--surface); box-shadow:var(--shadow-hover);
+    color:var(--text); font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .hero-arrow.prev { left:-6px; } .hero-arrow.next { right:-6px; }
+
+  .cat { font-size:12px; color:var(--text-faint); }
+  .tier { font-size:12px; color:var(--success); }
+  .card h2 { font-size:17px; margin:4px 0 6px; overflow-wrap:break-word; }
+  .sum { color:var(--text-muted); font-size:14px; margin:0; overflow-wrap:break-word; }
+  .by-ai { font-size:11px; color:var(--text-faint); border:1px solid var(--border); border-radius:99px;
+    padding:1px 7px; margin-left:6px; white-space:nowrap; vertical-align:1px; }
+  .src { font-size:12px; color:var(--text-faint); margin-top:10px; }
+  .src a { color:var(--text-muted); }
+  .none { color:var(--text-faint); }
+  a.term { color:var(--link); text-decoration:none; border-bottom:1px dashed currentColor; }
+  a.term:hover { background:#eef3ff; }
+  details.thread { border-top:1px solid var(--border); padding-top:10px; margin-top:10px; }
+  details.thread summary { cursor:pointer; font-size:13px; color:var(--link); list-style:none;
+    font-weight:600; display:flex; align-items:center; gap:6px; }
+  details.thread summary::-webkit-details-marker { display:none; }
+  details.thread summary .arw { transition:transform .15s; display:inline-block; }
+  details.thread[open] summary .arw { transform:rotate(90deg); }
+  .rail { position:relative; margin:14px 0 0; padding-left:74px; }
+  .rail::before { content:""; position:absolute; left:60px; top:8px; bottom:8px;
+    width:2px; background:#cfccc4; }
+  .step { position:relative; margin-bottom:14px; }
+  .step:last-child { margin-bottom:0; }
+  .step .when { position:absolute; left:-74px; top:-1px; width:48px; text-align:right;
+    font-size:12px; color:var(--text-faint); font-variant-numeric:tabular-nums; line-height:1.5; }
+  .step .why { font-size:12px; color:var(--text-muted); margin-top:3px; }
+  .step .q { margin:4px 0 0; padding-left:9px; border-left:2px solid var(--border);
+    font-size:12px; color:var(--text-faint); }
+  .step::before { content:""; position:absolute; left:-16px; top:5px; width:9px; height:9px;
+    border-radius:50%; background:#b8b4ac; border:2px solid var(--surface); }
+  .step .what a { font-size:13.5px; color:var(--text-muted); line-height:1.5; text-decoration:none; }
+  .step .what a:hover { text-decoration:underline; }
+  .entry { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:18px 20px; margin-bottom:14px; scroll-margin-top:16px; }
+  .entry:target { box-shadow:0 0 0 3px #eef3ff, var(--shadow-card); }
+  .ehead { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .entry h2 { font-size:19px; margin:0; overflow-wrap:break-word; }
+  .en { font-size:13px; color:var(--text-faint); }
+  .entry .cat { font-size:11px; background:#f2f1ee; padding:2px 8px; border-radius:99px; }
+  .def { color:var(--text-muted); font-size:14px; margin:8px 0 0; overflow-wrap:break-word; }
+  .entry .meta { font-size:12px; color:var(--text-faint); margin:12px 0 0;
+    padding-top:10px; border-top:1px solid var(--border); }
+  .entry .meta a { color:var(--text-muted); }
+  /* 출처 꼬리표 — 표준·제조사 공식 페이지에서 온 설명인지 아닌지를 가른다 */
+  .stag { font-size:11px; border:1px solid #d9d6d0; border-radius:99px; padding:1px 6px; }
+  footer { margin-top:32px; padding-top:14px; border-top:1px solid var(--border);
+    font-size:12px; color:var(--text-faint); }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px; }
+  /* 위 뉴스·개념·기업 탭과 같은 크기로 맞춘다. 색은 분류마다 다르지 않다 — 선택됨/0건만 다르다 */
+  .chip { font-size:14px; padding:7px 15px; border-radius:99px; cursor:pointer; font-weight:600;
+    background:var(--chip-bg); color:var(--text-muted); }
+  .chip.on { background:var(--accent); color:#fff; font-weight:700; }
+  .chip.empty { color:#c4c1ba; cursor:default; }
+  .chip .n { opacity:.6; margin-left:5px; }
+  /* 본문 두 칸 — 왼쪽 위에 달력, 오른쪽에 기사. 달력이 없는 페이지는 .solo 로 한 칸이 된다 */
+  .cols { display:grid; grid-template-columns:214px minmax(0,1fr); gap:26px; align-items:start; }
+  .cols.solo { grid-template-columns:minmax(0,1fr); }
+
+  /* 달력 — 기사가 있는 날만 누를 수 있다. 없는 날은 흐리게 두고 링크를 안 건다 */
+  .cal { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:12px 12px 10px; position:sticky; top:14px; }
+  .cal-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .cal-label { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .cal-step { display:flex; gap:4px; }
+  .cal-step button { width:22px; height:22px; border:none; border-radius:99px; cursor:pointer;
+    background:var(--chip-bg); color:var(--text-muted); font-size:11px; line-height:1;
+    font-family:inherit; padding:0; }
+  .cal-step button:hover:not(:disabled) { background:var(--accent); color:#fff; }
+  .cal-step button:disabled { opacity:.35; cursor:default; }
+  .cal-month { display:none; }
+  .cal-month.on { display:block; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-grid span, .cal-grid a, .cal-grid b { display:flex; align-items:center; justify-content:center;
+    height:26px; font-size:12px; border-radius:7px; font-variant-numeric:tabular-nums; }
+  .cal-dow { color:var(--text-faint); font-size:11px; }
+  .cal-grid span.off { color:#c4c1ba; }
+  .cal-grid a { color:var(--text); font-weight:600; text-decoration:none; background:var(--chip-bg); }
+  .cal-grid a:hover { background:var(--accent); color:#fff; }
+  .cal-grid b { background:var(--accent); color:#fff; }
+  .cgroup { margin:0 0 22px; }
+  .cgroup h2 { font-size:15px; margin:0 0 8px; padding-bottom:6px;
+    border-bottom:1px solid var(--border); }
+  .cgroup h2 .n { font-size:12px; color:var(--text-faint); margin-left:7px; font-weight:400; }
+  .colist { display:flex; gap:8px; flex-wrap:wrap; }
+  a.co { font-size:14px; padding:7px 13px; border-radius:var(--radius-sm); background:var(--surface);
+    box-shadow:var(--shadow-card); color:var(--text); text-decoration:none;
+    transition:box-shadow .15s, transform .15s; }
+  a.co:hover { box-shadow:var(--shadow-hover); transform:translateY(-1px); color:var(--link); }
+  a.co .n { font-size:12px; color:var(--text-faint); margin-left:6px; }
+  .profile { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:18px 20px; margin-bottom:18px; }
+  .ctags { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 0; }
+  .ctag { font-size:11px; background:#f2f1ee; color:var(--text-muted); padding:2px 9px;
+    border-radius:99px; }
+  .colist-articles { background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card);
+    padding:6px 18px; }
+  .carow { display:flex; gap:6px 14px; align-items:baseline; padding:9px 0;
+    border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
+  .carow:last-child { border-bottom:none; }
+  .carow .when { font-size:12px; color:var(--text-faint); font-variant-numeric:tabular-nums;
+    white-space:nowrap; }
+  .carow .what a { color:var(--text); text-decoration:none; font-size:14px; overflow-wrap:break-word; }
+  .carow .what a:hover { text-decoration:underline; }
+  .carow .src { font-size:11px; color:var(--text-faint); margin-left:6px; }
+
+  /* 좁은 화면엔 왼쪽 칸을 놓을 자리가 없다. 한 칸으로 접고 달력은 기사 아래로 내린다 */
+  @media (max-width:900px) {
+    .cols { grid-template-columns:minmax(0,1fr); }
+    .side { order:2; }
+    .cal { position:static; }
+  }
+
+  /* 모바일 — 여백을 줄이고 글이 화면 밖으로 안 넘치게 한다 */
+  @media (max-width:600px) {
+    .wrap { padding:14px 14px 20px; }
+    .card, .entry, .profile { padding:14px; }
+    .colist-articles { padding:4px 14px; }
+    .entry h2 { font-size:17px; }
+    .rail { padding-left:0; } .rail::before { left:5px; }
+    .step { padding-left:22px; }
+    .step .when { position:static; width:auto; text-align:left; display:block; margin-bottom:2px; }
+    .step::before { left:1px; top:6px; }
+  }
+
+  /* 선(라인)만 있는 흑백 아이콘 — 카테고리마다 색 있는 이모지를 쓰던 자리를 대신한다 */
+  .icon { width:15px; height:15px; vertical-align:-2.5px; margin-right:3px;
+    fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  nav.tabs.top a .icon { width:17px; height:17px; vertical-align:-3px; }
+  nav.tabs a.tab-search .icon { margin-right:0; }
+  nav.tabs.bottom .icon { width:21px; height:21px; margin-right:0; vertical-align:0; }
+
+  /* 하단 탭바 — 모바일(≤768px) 전용, 데스크톱에선 상단 탭을 그대로 쓴다 */
+  nav.tabs.bottom { display:none; }
+  @media (max-width:768px) {
+    nav.tabs.top { display:none; }
+    nav.tabs.bottom {
+      display:flex; position:fixed; left:0; right:0; bottom:0; z-index:20;
+      background:var(--surface); box-shadow:0 -2px 16px rgba(28,27,25,.10);
+      padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    }
+    nav.tabs.bottom a { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+      padding:6px 4px 4px; font-size:11px; color:var(--text-faint); text-decoration:none;
+      border-radius:0; background:none; font-weight:400; }
+    nav.tabs.bottom a.on { color:var(--accent); font-weight:700; background:none; }
+    body { padding-bottom:64px; }
+    .hero-arrow { display:none; }
+    .hero-card { flex-basis:88%; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="ic-package" viewBox="0 0 20 20"><path d="M10 2 3 6v8l7 4 7-4V6z"/><path d="M3 6l7 4 7-4"/><path d="M10 10v8"/></symbol>
+  <symbol id="ic-factory" viewBox="0 0 20 20"><path d="M3 17V9l4 3V9l4 3V6h6v11z"/></symbol>
+  <symbol id="ic-memory" viewBox="0 0 20 20"><rect x="6" y="6" width="8" height="8" rx="1"/>
+    <path d="M6 3v3M10 3v3M14 3v3M6 14v3M10 14v3M14 14v3M3 6h3M3 10h3M3 14h3M14 6h3M14 10h3M14 14h3"/></symbol>
+  <symbol id="ic-ai" viewBox="0 0 20 20"><path d="M11 2 4 12h5l-1 6 8-11h-5z"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/>
+    <path d="M10 2v2.4M10 15.6V18M18 10h-2.4M4.4 10H2M15.5 4.5l-1.7 1.7M6.2 13.8l-1.7 1.7M15.5 15.5l-1.7-1.7M6.2 6.2 4.5 4.5"/></symbol>
+  <symbol id="ic-policy" viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="14" rx="1"/>
+    <path d="M7 7h6M7 10h6M7 13h3"/></symbol>
+  <symbol id="ic-trend" viewBox="0 0 20 20"><polyline points="3 14 8 9 11 12 17 5"/><polyline points="12.5 5 17 5 17 9.5"/></symbol>
+  <symbol id="ic-dash" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><line x1="7" y1="10" x2="13" y2="10"/></symbol>
+  <symbol id="ic-news" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="1"/><path d="M6 8h8M6 11h8M6 14h4"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 20 20"><path d="M2 4.5h6a2 2 0 0 1 2 2v10a2 2 0 0 0-2-1.5H2z"/>
+    <path d="M18 4.5h-6a2 2 0 0 0-2 2v10a2 2 0 0 1 2-1.5h6z"/></symbol>
+  <symbol id="ic-building" viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16"/>
+    <path d="M7 5.3h.01M10 5.3h.01M13 5.3h.01M7 8.6h.01M10 8.6h.01M13 8.6h.01M7 11.9h.01M10 11.9h.01M13 11.9h.01"
+      stroke-width="2"/><path d="M8 18v-4h4v4"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6"/><line x1="13.5" y1="13.5" x2="18" y2="18"/></symbol>
+</defs>
+</svg><div class="hero-mast">
+  <svg class="hero-mast-bg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice">
+    <rect width="1200" height="420" fill="#0b2e6b"/>
+    <g stroke="#ffffff" stroke-opacity=".14" stroke-width="2">
+      <path d="M0 90h260v-60h500v90h300"/>
+      <path d="M0 220h140v110h700"/>
+      <path d="M0 340h360v70"/>
+      <path d="M1200 130h-160v90h-120v160"/>
+      <path d="M1200 300h-260"/>
+      <path d="M760 0v100"/>
+      <path d="M980 0v60h140"/>
+      <path d="M60 420v-70h240"/>
+    </g>
+    <g fill="#ffffff" fill-opacity=".16">
+      <circle cx="260" cy="30" r="5"/><circle cx="260" cy="90" r="5"/>
+      <circle cx="140" cy="220" r="5"/><circle cx="360" cy="340" r="5"/>
+      <circle cx="360" cy="410" r="5"/><circle cx="920" cy="130" r="5"/>
+      <circle cx="800" cy="220" r="5"/><circle cx="800" cy="360" r="5"/>
+      <circle cx="980" cy="60" r="5"/><circle cx="760" cy="0" r="5"/>
+      <circle cx="300" cy="420" r="5"/>
+    </g>
+    <rect x="530" y="140" width="140" height="140" rx="14" fill="#0b2e6b" stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5"/>
+    <g stroke="#ffffff" stroke-opacity=".5" stroke-width="2.5">
+      <path d="M560 140v-20M590 140v-20M620 140v-20M650 140v-20"/>
+      <path d="M560 280v20M590 280v20M620 280v20M650 280v20"/>
+      <path d="M530 170h-20M530 195h-20M530 220h-20M530 245h-20"/>
+      <path d="M670 170h20M670 195h20M670 220h20M670 245h20"/>
+    </g>
+    <rect x="558" y="168" width="84" height="84" rx="6" fill="none" stroke="#ffffff" stroke-opacity=".65" stroke-width="2.5"/>
+  </svg>
+  <div class="hero-mast-scrim"></div>
+  <div class="hero-mast-text">
+    <h1 class="hero-title">반도체 뉴스 데일리</h1>
+    <p class="hero-tag">매일 아침, 반도체 업계 핵심 뉴스와 지난 흐름을 한 화면에 잇습니다</p>
+  </div>
+</div>
+<div class="wrap">
+<nav class="tabs top">
+  <a class="on" href="index.html">뉴스</a>
+  <a class="" href="concepts.html">개념 19</a>
+  <a class="" href="companies.html">기업 38</a>
+  <a class="tab-search " href="search.html" aria-label="검색"><svg class="icon"><use href="#ic-search"/></svg></a>
+</nav>
+<div class="cols">
+<aside class="side"><div class="cal" data-months="2026-09,2026-08,2026-07,2026-06,2026-05,2026-04,2026-03,2026-02,2026-01,2025-12,2025-11" data-start="2026-09"><div class="cal-bar"><span class="cal-label"></span><span class="cal-step"><button type="button" class="cal-prev" aria-label="이전 달">◀</button><button type="button" class="cal-next" aria-label="다음 달">▶</button></span></div><div class="cal-month" data-month="2026-09"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><a href="2026-09-01.html">1</a><a href="2026-09-02.html">2</a><a href="2026-09-03.html">3</a><b>4</b><a href="2026-09-05.html">5</a><span class="off">6</span><span class="off">7</span><span class="off">8</span><span class="off">9</span><span class="off">10</span><span class="off">11</span><span class="off">12</span><span class="off">13</span><span class="off">14</span><span class="off">15</span><span class="off">16</span><span class="off">17</span><span class="off">18</span><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><span class="off">24</span><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div><div class="cal-month" data-month="2026-08"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><span class="off">2</span><span class="off">3</span><a href="2026-08-04.html">4</a><a href="2026-08-05.html">5</a><a href="2026-08-06.html">6</a><a href="2026-08-07.html">7</a><a href="2026-08-08.html">8</a><span class="off">9</span><a href="2026-08-10.html">10</a><a href="2026-08-11.html">11</a><a href="2026-08-12.html">12</a><a href="2026-08-13.html">13</a><a href="2026-08-14.html">14</a><a href="2026-08-15.html">15</a><span class="off">16</span><a href="2026-08-17.html">17</a><a href="2026-08-18.html">18</a><a href="2026-08-19.html">19</a><a href="2026-08-20.html">20</a><a href="2026-08-21.html">21</a><a href="2026-08-22.html">22</a><span class="off">23</span><a href="2026-08-24.html">24</a><a href="2026-08-25.html">25</a><a href="2026-08-26.html">26</a><a href="2026-08-27.html">27</a><a href="2026-08-28.html">28</a><a href="2026-08-29.html">29</a><a href="2026-08-30.html">30</a><a href="2026-08-31.html">31</a></div></div><div class="cal-month" data-month="2026-07"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-07-01.html">1</a><a href="2026-07-02.html">2</a><a href="2026-07-03.html">3</a><span class="off">4</span><span class="off">5</span><span class="off">6</span><a href="2026-07-07.html">7</a><a href="2026-07-08.html">8</a><span class="off">9</span><span class="off">10</span><a href="2026-07-11.html">11</a><span class="off">12</span><span class="off">13</span><a href="2026-07-14.html">14</a><span class="off">15</span><a href="2026-07-16.html">16</a><span class="off">17</span><a href="2026-07-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2026-07-24.html">24</a><a href="2026-07-25.html">25</a><span class="off">26</span><span class="off">27</span><span class="off">28</span><a href="2026-07-29.html">29</a><a href="2026-07-30.html">30</a><a href="2026-07-31.html">31</a></div></div><div class="cal-month" data-month="2026-06"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off">1</span><a href="2026-06-02.html">2</a><a href="2026-06-03.html">3</a><a href="2026-06-04.html">4</a><a href="2026-06-05.html">5</a><span class="off">6</span><span class="off">7</span><span class="off">8</span><a href="2026-06-09.html">9</a><a href="2026-06-10.html">10</a><a href="2026-06-11.html">11</a><a href="2026-06-12.html">12</a><span class="off">13</span><span class="off">14</span><span class="off">15</span><a href="2026-06-16.html">16</a><a href="2026-06-17.html">17</a><span class="off">18</span><span class="off">19</span><a href="2026-06-20.html">20</a><span class="off">21</span><span class="off">22</span><a href="2026-06-23.html">23</a><span class="off">24</span><a href="2026-06-25.html">25</a><span class="off">26</span><a href="2026-06-27.html">27</a><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div><div class="cal-month" data-month="2026-05"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-05-01.html">1</a><a href="2026-05-02.html">2</a><span class="off">3</span><span class="off">4</span><a href="2026-05-05.html">5</a><a href="2026-05-06.html">6</a><span class="off">7</span><a href="2026-05-08.html">8</a><a href="2026-05-09.html">9</a><span class="off">10</span><span class="off">11</span><a href="2026-05-12.html">12</a><a href="2026-05-13.html">13</a><a href="2026-05-14.html">14</a><a href="2026-05-15.html">15</a><a href="2026-05-16.html">16</a><span class="off">17</span><span class="off">18</span><a href="2026-05-19.html">19</a><a href="2026-05-20.html">20</a><a href="2026-05-21.html">21</a><a href="2026-05-22.html">22</a><a href="2026-05-23.html">23</a><span class="off">24</span><span class="off">25</span><span class="off">26</span><a href="2026-05-27.html">27</a><a href="2026-05-28.html">28</a><a href="2026-05-29.html">29</a><a href="2026-05-30.html">30</a><span class="off">31</span></div></div><div class="cal-month" data-month="2026-04"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><a href="2026-04-01.html">1</a><span class="off">2</span><a href="2026-04-03.html">3</a><span class="off">4</span><span class="off">5</span><span class="off">6</span><a href="2026-04-07.html">7</a><a href="2026-04-08.html">8</a><span class="off">9</span><span class="off">10</span><span class="off">11</span><span class="off">12</span><a href="2026-04-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2026-04-16.html">16</a><span class="off">17</span><span class="off">18</span><span class="off">19</span><a href="2026-04-20.html">20</a><span class="off">21</span><a href="2026-04-22.html">22</a><a href="2026-04-23.html">23</a><span class="off">24</span><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><a href="2026-04-29.html">29</a><a href="2026-04-30.html">30</a></div></div><div class="cal-month" data-month="2026-03"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><a href="2026-03-01.html">1</a><span class="off">2</span><a href="2026-03-03.html">3</a><a href="2026-03-04.html">4</a><span class="off">5</span><span class="off">6</span><span class="off">7</span><a href="2026-03-08.html">8</a><span class="off">9</span><span class="off">10</span><a href="2026-03-11.html">11</a><span class="off">12</span><a href="2026-03-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2026-03-16.html">16</a><span class="off">17</span><a href="2026-03-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><a href="2026-03-23.html">23</a><span class="off">24</span><a href="2026-03-25.html">25</a><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2026-02"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off">1</span><a href="2026-02-02.html">2</a><a href="2026-02-03.html">3</a><a href="2026-02-04.html">4</a><a href="2026-02-05.html">5</a><a href="2026-02-06.html">6</a><span class="off">7</span><span class="off">8</span><span class="off">9</span><a href="2026-02-10.html">10</a><a href="2026-02-11.html">11</a><span class="off">12</span><a href="2026-02-13.html">13</a><span class="off">14</span><span class="off">15</span><span class="off">16</span><a href="2026-02-17.html">17</a><span class="off">18</span><a href="2026-02-19.html">19</a><span class="off">20</span><span class="off">21</span><span class="off">22</span><a href="2026-02-23.html">23</a><a href="2026-02-24.html">24</a><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span></div></div><div class="cal-month" data-month="2026-01"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><a href="2026-01-02.html">2</a><span class="off">3</span><span class="off">4</span><a href="2026-01-05.html">5</a><a href="2026-01-06.html">6</a><span class="off">7</span><span class="off">8</span><a href="2026-01-09.html">9</a><span class="off">10</span><span class="off">11</span><span class="off">12</span><a href="2026-01-13.html">13</a><span class="off">14</span><span class="off">15</span><span class="off">16</span><span class="off">17</span><span class="off">18</span><a href="2026-01-19.html">19</a><span class="off">20</span><a href="2026-01-21.html">21</a><span class="off">22</span><span class="off">23</span><span class="off">24</span><span class="off">25</span><a href="2026-01-26.html">26</a><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2025-12"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><a href="2025-12-01.html">1</a><a href="2025-12-02.html">2</a><span class="off">3</span><span class="off">4</span><span class="off">5</span><span class="off">6</span><span class="off">7</span><a href="2025-12-08.html">8</a><a href="2025-12-09.html">9</a><a href="2025-12-10.html">10</a><a href="2025-12-11.html">11</a><a href="2025-12-12.html">12</a><span class="off">13</span><span class="off">14</span><span class="off">15</span><span class="off">16</span><a href="2025-12-17.html">17</a><a href="2025-12-18.html">18</a><span class="off">19</span><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2025-12-24.html">24</a><span class="off">25</span><span class="off">26</span><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span><span class="off">31</span></div></div><div class="cal-month" data-month="2025-11"><div class="cal-grid"><span class="cal-dow">일</span><span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off"></span><span class="off">1</span><span class="off">2</span><a href="2025-11-03.html">3</a><span class="off">4</span><span class="off">5</span><a href="2025-11-06.html">6</a><span class="off">7</span><span class="off">8</span><span class="off">9</span><a href="2025-11-10.html">10</a><span class="off">11</span><span class="off">12</span><a href="2025-11-13.html">13</a><span class="off">14</span><span class="off">15</span><a href="2025-11-16.html">16</a><a href="2025-11-17.html">17</a><span class="off">18</span><a href="2025-11-19.html">19</a><span class="off">20</span><span class="off">21</span><span class="off">22</span><span class="off">23</span><a href="2025-11-24.html">24</a><span class="off">25</span><a href="2025-11-26.html">26</a><span class="off">27</span><span class="off">28</span><span class="off">29</span><span class="off">30</span></div></div></div></aside>
+<main>
+<div class="meta">2026-09-04 · 10건</div>
+<div class="chips"><span class="chip on" data-cat="">전체<span class="n">10</span></span><span class="chip" data-cat="패키징"><svg class="icon"><use href="#ic-package"/></svg>패키징<span class="n">3</span></span><span class="chip" data-cat="파운드리·공정"><svg class="icon"><use href="#ic-factory"/></svg>파운드리·공정<span class="n">1</span></span><span class="chip empty" data-cat="메모리"><svg class="icon"><use href="#ic-memory"/></svg>메모리<span class="n">0</span></span><span class="chip" data-cat="AI·가속기"><svg class="icon"><use href="#ic-ai"/></svg>AI·가속기<span class="n">1</span></span><span class="chip" data-cat="장비·소재"><svg class="icon"><use href="#ic-gear"/></svg>장비·소재<span class="n">1</span></span><span class="chip empty" data-cat="정책·규제"><svg class="icon"><use href="#ic-policy"/></svg>정책·규제<span class="n">0</span></span><span class="chip empty" data-cat="투자·실적"><svg class="icon"><use href="#ic-trend"/></svg>투자·실적<span class="n">0</span></span><span class="chip" data-cat="미분류"><svg class="icon"><use href="#ic-dash"/></svg>미분류<span class="n">4</span></span></div>
+<div class="hero-wrap">
+  <div class="hero-scroll"><a class="hero-card" data-cat="정책·규제" href="https://news.samsung.com/kr/%ec%9e%90%ec%9b%90%ec%88%9c%ed%99%98%ec%9d%98-%eb%82%a0-%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-%ec%88%9c%ed%99%98%ec%9e%90%ec%9b%90-%ec%9d%b8%ec%a0%95-%ed%99%95%eb%8c%80%ec%9e%90%ec%9b%90">
+  <span class="hero-eyebrow"><svg class="icon"><use href="#ic-policy"/></svg>정책·규제</span>
+  <h2>[자원순환의 날] 삼성전자, 순환자원 인정 확대…자원의 선순환 실천</h2>
+  <p class="hero-sum">매년 9월 6일 자원순환의 날을 맞아 삼성전자가 순환자원 인정 범위를 확대했다고 발표했다. 이는 생산 과정에서 버려지는 물질을 새 원료로 재활용해 자원 선순환을 실천하려는 노력이다.</p>
+  <div class="hero-foot">[공식] · 삼성전자 뉴스룸 · 2026-09-04 18:00</div>
+</a>
+<a class="hero-card" data-cat="AI·가속기" href="https://news.samsung.com/kr/%ec%82%bc%ec%84%b1%ec%a0%84%ec%9e%90-ifa-2026%ec%84%9c-%ec%82%bc%ec%84%b1-%ed%81%ac%eb%a6%ac%ec%97%90%ec%9d%b4%ed%84%b0-%ed%97%88%eb%b8%8c-%ec%97%b0%eb%8b%a4">
+  <span class="hero-eyebrow"><svg class="icon"><use href="#ic-ai"/></svg>AI·가속기</span>
+  <h2>삼성전자, IFA 2026서 ‘삼성 크리에이터 허브’ 연다</h2>
+  <p class="hero-sum">삼성전자는 독일 베를린에서 열리는 IFA 2026에서 &#x27;삼성 크리에이터 허브&#x27;를 운영하고 글로벌 인플루언서와 콘텐츠 크리에이터를 위한 전용 공간을 마련한다. 해당 허브에서는 삼성 AI 생태계 체험 프로그램을 선보일 예정이다.</p>
+  <div class="hero-foot">[공식] · 삼성전자 뉴스룸 · 2026-09-04 17:00</div>
+</a>
+<a class="hero-card" data-cat="미분류" href="https://news.samsung.com/kr/%ec%84%b8%ea%b3%84-%ec%b5%9c%ec%b4%88-%ea%b8%b0%ec%88%a0%eb%a1%9c-%ec%95%95%eb%8f%84%ec%a0%81-%eb%aa%b0%ec%9e%85%ea%b0%90-%ec%82%bc%ec%84%b1-%ec%98%a4%eb%94%94%ec%84%b8">
+  <span class="hero-eyebrow"><svg class="icon"><use href="#ic-dash"/></svg>미분류</span>
+  <h2>“세계 최초 기술로 압도적 몰입감”… 삼성 오디세이, 게임스컴 2026서 차세대 게이밍 경험의 미래 선보여</h2>
+  <p class="hero-sum">삼성전자는 독일 쾰른에서 열린 게임스컴 2026에 참가해 차세대 게이밍 디스플레이 라인업과 혁신 기술을 선보였다. 삼성 부스에서는 신제품 체험과 글로벌 게임사와의 협업 콘텐츠, 이벤트 매치 등이 진행되어 게이머와 스트리머 등이 다양한 체험을 했다.</p>
+  <div class="hero-foot">[공식] · 삼성전자 뉴스룸 · 2026-09-04 17:00</div>
+</a>
+</div>
+  <button type="button" class="hero-arrow prev" aria-label="이전">‹</button>
+<button type="button" class="hero-arrow next" aria-label="다음">›</button>
+</div>
+<div class="card" data-cat="투자·실적">
+  <span class="cat">투자·실적</span> <span class="tier">[2차]</span>
+  <h2>Chip Industry Week In Review</h2>
+  <p class="sum">이번 주 반도체 산업에서는 인도가 134억 달러 규모의 Semicon 2.0 계획을 발표하고, 희토류 재활용에 7500만 달러가 투입되는 등 투자 소식이 많았다. 또한 MediaTek이 NVLink Fusion 기술과 협력 계약을 체결하고, PCIe 6/7 테스트, AI 기반 팹 운영 등 다양한 기술 동향이 보고되었다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 1건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">08-27</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/lg-chem-to-showcase-advanced-packaging-material-solutions-for-ai-semiconductors-at-semicon-taiwan-2026/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=lg-chem-to-showcase-advanced-packaging-material-solutions-for-ai-semiconductors-at-semicon-taiwan-2026">LG Chem to Showcase Advanced Packaging Material Solutions for AI Semiconductors at SEMICON Taiwan 2026</a><div class="why">오늘 기사가 SEMICON Taiwan을 언급했는데, 과거 기사는 LG Chem의 해당 전시회 참가 및 고급 패키징 솔루션 구체 내용을 이어서 다룬다.</div><blockquote class="q">LG Chem will participate in SEMICON Taiwan 2026, Asia’s largest semiconductor exhibition, to showcase advanced packaging and power semiconductor material solutions for AI semiconductors and expand collaboration with semiconductor customers.</blockquote></div>
+</div>
+</div>
+</details>
+
+  <div class="src">Semi Engineering · 발행 2026-09-04 16:01 · <a href="https://semiengineering.com/chip-industry-week-in-review-154/">원문</a></div>
+</div>
+<div class="card" data-cat="정책·규제">
+  <span class="cat">정책·규제</span> <span class="tier">[2차]</span>
+  <h2>삼성전자, 불량 <a class="term" href="concepts.html#wafer">웨이퍼</a> 등 재활용…폐기물 6859톤 감축</h2>
+  <p class="sum">삼성전자는 사업장에서 발생하는 폐기물의 순환자원 인정을 확대하고 재활용 범위를 넓혀 올해 8월 기준 누적 38건의 순환자원 인정을 취득했다. 지난해 연간 6859톤의 폐기물을 감축했다고 밝혔다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">더일렉 반도체 · 발행 2026-09-04 11:07 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61808">원문</a></div>
+</div>
+<div class="card" data-cat="AI·가속기">
+  <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
+  <h2>퀄컴, &#x27;아드레노 뉴럴 퓨전&#x27; 출격…모바일 GPU 아키텍처 대수술</h2>
+  <p class="sum">퀄컴이 모바일 게이밍 환경을 개선한 인공지능 기반 GPU 기술인 &#x27;아드레노 뉴럴 퓨전&#x27;을 선보였다. 이 기술은 렌더링 비용과 전력 소모를 줄이며 더 뛰어난 그래픽 품질을 구현할 수 있도록 칩과 가장 가까운 곳에서 연산과 데이터를 처리하도록 아키텍처를 혁신했다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">더일렉 반도체 · 발행 2026-09-04 07:46 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61803">원문</a></div>
+</div>
+<div class="card" data-cat="AI·가속기">
+  <span class="cat">AI·가속기</span> <span class="tier">[2차]</span>
+  <h2>열받는 반도체</h2>
+  <p class="sum">AI 반도체 설계와 생산에서 발열 관리가 필수 조건이 되었으며, 전력·성능·면적에 열을 주요 변수로 추가해야 한다는 의견이 제기되었다. 인하대 등에서 열린 워크숍에서 AI 반도체 발열 원인과 소자·소재·<a class="term" href="concepts.html#packaging">패키징</a> 기술 해결 방안이 논의되었다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">더일렉 반도체 · 발행 2026-09-04 22:08 · <a href="https://www.thelec.kr/news/articleView.html?idxno=61871">원문</a></div>
+</div>
+<div class="card" data-cat="장비·소재">
+  <span class="cat">장비·소재</span> <span class="tier">[2차]</span>
+  <h2>Manz Asia and SUSS Announce Strategic Collaboration in Semiconductor Inkjet Technology</h2>
+  <p class="sum">만츠 아시아는 수스와 반도체 잉크젯 기술 분야에서 전략적 협력을 발표했다. 양사는 차세대 잉크젯 솔루션을 공동 개발하여 반도체 제조 및 고급 <a class="term" href="concepts.html#packaging">패키징</a> 응용 분야를 발전시킬 계획이다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">Semiconductor Digest (패키징) · 발행 2026-09-04 06:53 · <a href="https://www.semiconductor-digest.com/manz-asia-and-suss-announce-strategic-collaboration-in-semiconductor-inkjet-technology/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=manz-asia-and-suss-announce-strategic-collaboration-in-semiconductor-inkjet-technology">원문</a></div>
+</div>
+<div class="card" data-cat="패키징">
+  <span class="cat">패키징</span> <span class="tier">[2차]</span>
+  <h2>EV Group Addresses Critical Manufacturing Challenges for Next-Generation <a class="term" href="concepts.html#co-packaged-optics">Co-Packaged Optics</a></h2>
+  <p class="sum">EV Group은 <a class="term" href="concepts.html#wafer">wafer</a> bonding 및 나노임프린트 리소그래피 기술을 통해 고객과 파트너가 차세대 코-패키지드 옵틱스(<a class="term" href="concepts.html#co-packaged-optics">CPO</a>) 제조의 주요 과제를 해결할 수 있도록 지원한다고 발표했다. 이들 기술은 AI 기반 데이터센터 및 HPC 애플리케이션을 위한 확장 가능한 CPO 아키텍처 개발에 활용되고 있다. <span class="by-ai">AI 요약</span></p>
+  <details class="thread" open>
+  <summary><span class="arw">›</span>이어지는 흐름 3건</summary>
+  <div class="rail"><div class="step">
+  <span class="when">05-20</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/ev-group-highlights-hybrid-bonding-layer-transfer-and-maskless-lithography-technologies-for-heterogeneous-integration-and-advanced-packaging-at-ectc-2026/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=ev-group-highlights-hybrid-bonding-layer-transfer-and-maskless-lithography-technologies-for-heterogeneous-integration-and-advanced-packaging-at-ectc-2026">EV Group Highlights Hybrid Bonding, Layer Transfer and Maskless Lithography Technologies for Heterogeneous Integration and Advanced Packaging at ECTC 2026</a><div class="why">EVG의 하이브리드 본딩, 레이어 트랜스퍼, 마스크리스 리소그래피 기술을 통한 이종 통합 및 고급 패키징 솔루션은 차세대 CPO 제조 과제 해결과 직접 연결된다.</div><blockquote class="q">EV Group today announced that it will showcase its latest solutions for heterogeneous integration and advanced packaging at the 2026 IEEE Electronic Components and Technology Conference (ECTC), taking place May 26-29 in Orlando, Fla.</blockquote></div>
+</div>
+<div class="step">
+  <span class="when">05-29</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/imec-and-ev-group-demonstrate-wafer-to-wafer-hybrid-bonding-with-200nm-interconnect-pitch-and-record-high-overlay-accuracy/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=imec-and-ev-group-demonstrate-wafer-to-wafer-hybrid-bonding-with-200nm-interconnect-pitch-and-record-high-overlay-accuracy">Imec and EV Group Demonstrate Wafer-to-Wafer Hybrid Bonding with 200nm Interconnect Pitch and Record High Overlay Accuracy</a><div class="why">웨이퍼-투-웨이퍼 하이브리드 본딩의 200nm 인터커넥트 피치 및 오버레이 정확도 향상은 CPO의 핵심 제조 과제인 정밀 웨이퍼 bonding과 이어진다.</div><blockquote class="q">Imec and EV Group (EVG) are focusing on advancing the overlay performance required for advanced logic-to-logic and memory-to-logic tier stacking.</blockquote></div>
+</div>
+<div class="step">
+  <span class="when">08-06</span>
+  <div class="what"><a href="https://www.semiconductor-digest.com/conference-report-hybrid-bonding-advances-at-ectc-meeting/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=conference-report-hybrid-bonding-advances-at-ectc-meeting">Conference Report: Hybrid Bonding Advances at ECTC Meeting</a><div class="why">하이브리드 본딩 기술 한계를 넘어서는 EVG 등을 포함한 산업 동향은 차세대 CPO 제작에 필요한 웨이퍼 bonding 기술 흐름을 보여준다.</div><blockquote class="q">Dave Lammers surveys how Applied Materials, EV Group, imec, ITRI, Leti, and Tokyo Electron are pushing hybrid bonding past its current limits.</blockquote></div>
+</div>
+</div>
+</details>
+
+  <div class="src">3D InCites · 발행 2026-09-04 01:26 · <a href="https://www.3dincites.com/2026/09/ev-group-addresses-critical-manufacturing-challenges-for-next-generation-co-packaged-optics/">원문</a></div>
+</div>
+<div class="card" data-cat="패키징">
+  <span class="cat">패키징</span> <span class="tier">[2차]</span>
+  <h2>When the Package Becomes an Electrical Design Variable</h2>
+  <p class="sum">AI 전원 무결성은 이제 PCB만이 아니라 패키지 내부에서도 고려되어야 한다. 칩, 패키지, 보드를 하나의 전원 분배 네트워크(PDN)로 취급해야 한다. <span class="by-ai">AI 요약</span></p>
+  
+  <div class="src">EE Times · 발행 2026-09-04 16:50 · <a href="https://www.eetimes.com/when-the-package-becomes-an-electrical-design-variable/">원문</a></div>
+</div>
+
+</main>
+</div>
+<footer>출처 data/sources.md · 개념 설명은 출처를 확인해 넣습니다.<br>
+이 페이지는 투자 조언이 아닙니다.</footer>
+</div>
+<nav class="tabs bottom">
+  <a class="on" href="index.html"><svg class="icon"><use href="#ic-news"/></svg>뉴스</a>
+  <a class="" href="concepts.html"><svg class="icon"><use href="#ic-book"/></svg>개념</a>
+  <a class="" href="companies.html"><svg class="icon"><use href="#ic-building"/></svg>기업</a>
+  <a class="" href="search.html"><svg class="icon"><use href="#ic-search"/></svg>검색</a>
+</nav>
+<script>
+document.addEventListener('click', function (e) {
+  var arrow = e.target.closest('.hero-arrow');
+  if (arrow) {
+    var scroller = arrow.closest('.hero-wrap').querySelector('.hero-scroll');
+    var dir = arrow.classList.contains('next') ? 1 : -1;
+    scroller.scrollBy({left: dir * scroller.clientWidth * 0.86, behavior: 'smooth'});
+    return;
+  }
+  var chip = e.target.closest('.chip:not(.empty)');
+  if (!chip) return;
+  var want = chip.dataset.cat;
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.classList.toggle('on', c === chip);
+  });
+  document.querySelectorAll('.card, .hero-card').forEach(function (card) {
+    card.hidden = want !== '' && card.dataset.cat !== want;
+  });
+});
+
+/* 달력 — 달마다 한 판을 미리 그려 두고 한 판만 보여준다. 화살표로 앞뒤 달을 넘긴다 */
+(function () {
+  var cal = document.querySelector('.cal');
+  if (!cal) return;
+  var months = cal.dataset.months.split(',');   /* 최신 달이 앞 */
+  var at = months.indexOf(cal.dataset.start);
+  var label = cal.querySelector('.cal-label');
+  var prev = cal.querySelector('.cal-prev');
+  var next = cal.querySelector('.cal-next');
+
+  function show() {
+    var month = months[at];
+    cal.querySelectorAll('.cal-month').forEach(function (m) {
+      m.classList.toggle('on', m.dataset.month === month);
+    });
+    label.textContent = month.slice(0, 4) + '년 ' + Number(month.slice(5)) + '월';
+    prev.disabled = at >= months.length - 1;   /* 더 과거가 없다 */
+    next.disabled = at <= 0;                   /* 더 최근이 없다 */
+  }
+
+  prev.addEventListener('click', function () { if (at < months.length - 1) { at++; show(); } });
+  next.addEventListener('click', function () { if (at > 0) { at--; show(); } });
+  show();
+})();
+</script>
+</body>
+</html>

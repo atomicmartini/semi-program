@@ -296,7 +296,7 @@
 <div class="searchbox">
   <input id="q" type="search" placeholder="제목·요약으로 검색 (예: HBM, 인텔, 파운드리)" autocomplete="off">
 </div>
-<p class="shint" id="shint">전체 282건에서 찾습니다.</p>
+<p class="shint" id="shint">전체 296건에서 찾습니다.</p>
 <div id="results"></div>
 <script>
 (function () {
@@ -317,7 +317,7 @@
 
   function render() {
     var q = box.value.trim().toLowerCase();
-    if (!q) { results.innerHTML = ''; hint.textContent = '전체 282건에서 찾습니다.'; return; }
+    if (!q) { results.innerHTML = ''; hint.textContent = '전체 296건에서 찾습니다.'; return; }
     if (!DATA) { results.innerHTML = '<p class="none">색인을 불러오는 중…</p>'; return; }
     var hits = DATA.filter(function (e) {
       return (e.title + ' ' + e.summary).toLowerCase().indexOf(q) !== -1;
