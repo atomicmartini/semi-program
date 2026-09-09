@@ -46,6 +46,9 @@
 | Arm | Arm Holdings, ARM 홀딩스 | EDA·IP | Arm Holdings | 영국 | CPU 아키텍처와 설계자산(IP)을 설계해 반도체 회사에 라이선스한다. 칩을 직접 만들지 않고 기술을 빌려주는 것이 본업이다. | [Arm Company](https://www.arm.com/company) `[공식]` | 2026-08-24 |
 | 지멘스EDA | Siemens EDA, Mentor Graphics | EDA·IP | Siemens EDA | 미국 | 집적회로와 전자 시스템의 설계·검증·제조를 위한 EDA 소프트웨어·하드웨어·서비스를 공급한다. 지멘스의 EDA 사업 부문이다. | [Siemens EDA](https://www.siemens.com/en-us/company/electronic-design-automation/) `[공식]` | 2026-08-29 |
 | 램버스 | Rambus | EDA·IP | Rambus | 미국 | 반도체와 IP 제품을 만든다. 데이터를 더 빠르고 안전하게 하는 메모리 인터페이스 칩과 보안 IP 가 주력이다. | [Rambus About](https://www.rambus.com/about/) `[공식]` | 2026-08-24 |
+| GlobalFoundries | GF, 글로벌파운드리, 글로벌파운드리스 | 파운드리 | GlobalFoundries | 미국 | 2009년 AMD 의 제조 부문과 무바달라의 합작으로 출범한 파운드리. 고객이 설계한 칩을 위탁 생산하며 CMOS·RF·전력 반도체·실리콘 포토닉스·양자 기술 공정을 갖췄다고 밝힌다. | [About GF](https://gf.com/about-us/) `[공식]` | 2026-09-09 |
+| 세미파이브 | SEMIFIVE, SemiFive | 디자인하우스 | SEMIFIVE | 한국 | 2019년 서울에서 설립된 맞춤형 SoC 설계 회사. 사양 협의·아키텍처 설계부터 검증·레이아웃·패키지·양산까지 대행하는 ASIC 턴키가 본업이며, 삼성 파운드리 SAFE 디자인 솔루션 파트너라고 밝힌다. | [SEMIFIVE](https://www.semifive.com/) `[공식]` | 2026-09-09 |
+| 미스트랄 AI | Mistral AI, Mistral, 미스트랄 | AI·소프트웨어 | Mistral AI | 프랑스 | 2023년 4월 설립된 프랑스 AI 회사. 공개형(open) 프런티어 모델을 내세우며 모델·개발 도구·응용·컴퓨트를 함께 만든다고 밝힌다. | [About Mistral](https://mistral.ai/about) `[공식]` | 2026-09-09 |
 
 > 위 10개는 시작점이다. 기사에 나오는 대로 늘려 간다.
 > 늘릴 때는 **정식명을 바꾸지 말고 별칭만 더한다** — 정식명이 바뀌면 과거 기록과 어긋난다.
