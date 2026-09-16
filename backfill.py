@@ -44,7 +44,15 @@ def base_dates(article_dir: Path = ARTICLE_DIR) -> list[str]:
     return sorted(p.stem for p in article_dir.glob("*.json") if "." not in p.stem)
 
 
-def needs_judging(day: str, article_dir: Path = ARTICLE_DIR) -> bool:
+def picked_urls(day: str) -> set[str]:
+    """그 날짜에 지금 고른 기사들의 주소. 판정 대상은 pick.py 가 고르는 것이다."""
+    from pick import select_day
+
+    picked, _, _ = select_day(day)
+    return {a["url"] for a in picked}
+
+
+def needs_judging(day: str, article_dir: Path = ARTICLE_DIR, urls_of=None) -> bool:
     """이 날짜를 다시 판정해야 하는가.
 
     .linked.json 이 없으면 당연히 필요하다.
@@ -75,6 +83,21 @@ def needs_judging(day: str, article_dir: Path = ARTICLE_DIR) -> bool:
     related = [r for a in articles for r in (a.get("related") or [])]
     if related and not any("reason" in r for r in related):
         return True
+
+    # 저장한 뒤에 도착한 기사가 있는가. RSS 는 과거 날짜 기사를 나중에 흘려보내서
+    # (한 번 수집에 여러 날짜가 같이 늘어난다) 이미 판정한 날에 새 기사가 붙는다.
+    # 파일만 보면 담긴 기사가 '전부 judged' 라 끝난 것처럼 보이고, 그 새 기사들은
+    # 영영 판정되지 않는다 — 2026-09-09 에서 6건이 실제로 이렇게 빠졌다.
+    # pick.py 는 실제 데이터 폴더만 읽으므로 다른 폴더를 받았으면(테스트) 이 검사를 건너뛴다.
+    if urls_of is None and article_dir == ARTICLE_DIR:
+        urls_of = picked_urls
+    if urls_of is not None:
+        judged = {a.get("url") for a in articles if a.get("judged")}
+        try:
+            if urls_of(day) - judged:
+                return True
+        except (OSError, json.JSONDecodeError, KeyError):
+            pass  # 원본을 못 읽으면 판단 근거가 없다 — 위 검사 결과를 그대로 쓴다
 
     return False
 

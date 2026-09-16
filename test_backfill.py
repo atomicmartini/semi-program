@@ -68,6 +68,36 @@ class TestNeedsJudging(unittest.TestCase):
         })
         self.assertTrue(needs_judging("2026-08-20", self.dir_))
 
+    def test_article_arriving_after_judgment_needs_judging(self):
+        """RSS 는 과거 날짜 기사를 나중에 흘려보낸다. 파일만 보면 '전부 judged' 라
+        영영 판정되지 않는다 — 2026-09-09 에서 실제로 6건이 이렇게 빠졌다."""
+        _write(self.dir_, "2026-08-20.linked.json", {
+            "articles": [{"url": "a", "related": [], "judged": True}]
+        })
+        self.assertTrue(
+            needs_judging("2026-08-20", self.dir_, urls_of=lambda _: {"a", "b"})
+        )
+
+    def test_all_picked_articles_judged_is_done(self):
+        _write(self.dir_, "2026-08-20.linked.json", {
+            "articles": [{"url": "a", "related": [], "judged": True},
+                         {"url": "b", "related": [], "judged": True}]
+        })
+        self.assertFalse(
+            needs_judging("2026-08-20", self.dir_, urls_of=lambda _: {"a", "b"})
+        )
+
+    def test_article_dropped_from_picks_does_not_trigger_rejudging(self):
+        # 새 기사가 들어오면 pick.py 가 순위를 다시 매겨 옛 기사가 10건 밖으로 밀린다.
+        # 밀려난 것 때문에 다시 부르면 할당량만 쓴다 — 판정 안 된 기사만 기준이다.
+        _write(self.dir_, "2026-08-20.linked.json", {
+            "articles": [{"url": "a", "related": [], "judged": True},
+                         {"url": "b", "related": [], "judged": True}]
+        })
+        self.assertFalse(
+            needs_judging("2026-08-20", self.dir_, urls_of=lambda _: {"a"})
+        )
+
     def test_unreadable_file_needs_judging(self):
         (self.dir_ / "2026-08-20.linked.json").write_text("이건 JSON 이 아니다", encoding="utf-8")
         self.assertTrue(needs_judging("2026-08-20", self.dir_))
