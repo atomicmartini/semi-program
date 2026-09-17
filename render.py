@@ -7,6 +7,7 @@
 import calendar
 import html
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -452,15 +453,23 @@ def choose_summary(article: dict, extracted: dict[str, dict]) -> tuple[str, bool
     return article["summary"], False
 
 
-def render_thread(related: list[dict]) -> str:
+def render_thread(related: list[dict], title: str = "") -> str:
     """흐름이 없으면 빈 문자열. link.py 는 최신순으로 주지만 화면은 오래된 것부터 보여준다.
 
     이유(reason)·인용구(quote) 가 없는 연결은 아예 싣지 않는다 — 인용구 없는 관계는
     쓰지 않는다 (CLAUDE.md). 옛 규칙(06-연결고리-기준)이 남긴 .linked.json 은 근거가
     없으므로 이 조건에 걸려 통째로 걸러진다. 걸러내고 남는 게 없으면 흐름 블록 자체를
     안 낸다 — 오늘 흐름이 원래 없을 때와 같은 모양이다.
+
+    **제목이 오늘 기사와 같은 연결도 뺀다.** 같은 기사가 다른 날짜로 또 올라오면
+    자기 자신과 이어진 흐름이 된다. `link.shortlist` 가 이제 후보 단계에서 막지만,
+    그 전에 저장된 흐름에는 남아 있다 — 다시 판정하면 무료 모델 할당량을 쓰므로
+    여기서 거른다.
     """
     verified = [r for r in related if (r.get("reason") or "").strip() and (r.get("quote") or "").strip()]
+    if title:
+        key = re.sub(r"\s+", "", title).lower()
+        verified = [r for r in verified if re.sub(r"\s+", "", r.get("title", "")).lower() != key]
     if not verified:
         return ""
     oldest_first = sorted(verified, key=lambda r: r["date"])
@@ -645,7 +654,7 @@ def _render_card(a: dict, terms: list[dict], related_map: dict, extracted: dict)
         summary=glossary.link_terms(html.escape(summary[:300]), terms),
         # 모델이 쓴 문장이다. 기자가 쓴 것처럼 보이지 않게 밝힌다.
         made_by=' <span class="by-ai">AI 요약</span>' if by_model else "",
-        thread=render_thread(related_map.get(a["url"], [])),
+        thread=render_thread(related_map.get(a["url"], []), a["title"]),
         source=html.escape(a["source"]),
         published=html.escape((a.get("published") or "—")[:16].replace("T", " ")),
         url=html.escape(a["url"], quote=True),

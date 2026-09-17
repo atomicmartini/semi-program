@@ -267,3 +267,32 @@ class TestLinkDayResume(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestShortlistSkipsSameArticle(unittest.TestCase):
+    """같은 기사가 다른 날짜로 또 올라오면 자기 자신과 이어진다.
+
+    filter.py 는 같은 날 안에서만 제목 중복을 거른다. 뉴스룸이 같은 글을 이틀에 걸쳐
+    올리거나 언론이 재게재하면 통과하고, TF-IDF 는 글이 똑같으니 1등으로 올린다.
+    실측 — 화면에 실린 연결 81건 중 2건이 이 경우였다(9/17 첫 화면 포함).
+    """
+
+    def _article(self, title, summary, published="2026-09-17"):
+        return {"url": title, "title": title, "summary": summary, "published": published}
+
+    def test_same_title_candidate_is_dropped(self):
+        today = self._article("SK하이닉스, 용수 사용 17만 톤 절감", "이천·청주 재이용을 늘렸다")
+        dup = self._article("SK하이닉스, 용수 사용 17만 톤 절감", "이천·청주 재이용을 늘렸다", "2026-09-10")
+        other = self._article("SK하이닉스 HBM4 양산", "HBM4 를 양산한다", "2026-09-01")
+        got = shortlist(today, [dup, other])
+        self.assertNotIn(dup["url"], [c["url"] for c in got])
+
+    def test_whitespace_and_case_differences_still_count_as_same(self):
+        today = self._article("EV Group  Addresses CPO", "wafer bonding")
+        dup = self._article("ev group addresses cpo", "wafer bonding", "2026-08-01")
+        self.assertEqual(shortlist(today, [dup]), [])
+
+    def test_different_title_is_kept(self):
+        today = self._article("SK하이닉스, 용수 사용 절감", "재이용을 늘렸다")
+        other = self._article("SK하이닉스, 용수 재이용 확대", "이천·청주 공장에서 늘린다", "2026-09-10")
+        self.assertEqual(len(shortlist(today, [other])), 1)

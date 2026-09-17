@@ -183,3 +183,32 @@ class TestSearchEntry(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRenderThreadSkipsSameStory(unittest.TestCase):
+    """이미 저장된 '자기 자신과 이어진' 연결은 화면에서 뺀다.
+
+    link.py 의 shortlist 가 이제 후보 단계에서 막지만, 그 전에 저장된 흐름에는
+    남아 있다. 다시 판정하면 무료 모델 할당량을 쓰므로 화면에서 거른다.
+    """
+
+    def _related(self, title):
+        return [{"date": "2026-09-10", "title": title, "url": "http://a",
+                 "reason": "같은 사안", "quote": "인용구가 충분히 길다"}]
+
+    def test_same_title_link_is_hidden(self):
+        html = render_thread(self._related("용수 사용 17만 톤 절감"), title="용수 사용 17만 톤 절감")
+        self.assertEqual(html, "")
+
+    def test_whitespace_and_case_differences_still_hidden(self):
+        html = render_thread(self._related("EV Group  Addresses CPO"), title="ev group addresses cpo")
+        self.assertEqual(html, "")
+
+    def test_different_title_still_shown(self):
+        html = render_thread(self._related("용수 재이용 확대"), title="용수 사용 17만 톤 절감")
+        self.assertIn("용수 재이용 확대", html)
+
+    def test_works_without_title_argument(self):
+        # 옛 호출부가 깨지지 않아야 한다
+        html = render_thread(self._related("아무 제목"))
+        self.assertIn("아무 제목", html)

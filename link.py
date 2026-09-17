@@ -48,12 +48,23 @@ def _vector(toks: list[str], idf: dict[str, float], default_idf: float) -> dict[
     return {w: x / norm for w, x in vec.items()}
 
 
+def _same_story(one: str, other: str) -> bool:
+    """제목이 사실상 같은가. 공백과 대소문자만 다른 것은 같은 기사로 본다."""
+    return re.sub(r"\s+", "", one).lower() == re.sub(r"\s+", "", other).lower()
+
+
 def shortlist(article: dict, past: list[dict], limit: int = SHORTLIST) -> list[dict]:
     """모델에게 넘길 후보를 고른다. 판정이 아니라 '놓치지 않기' 다.
 
     흔한 말(`메모리`)은 문서빈도가 높아 가중치가 저절로 낮아진다 — 옛 기준이
     `메모리` 하나로 이어 버리던 문제를 수식이 대신 막는다.
+
+    **제목이 같은 과거 기사는 후보에서 뺀다.** filter.py 는 같은 날 안에서만 제목
+    중복을 거르므로, 뉴스룸이 같은 글을 이틀에 걸쳐 올리면 통과한다. 글이 똑같으니
+    TF-IDF 가 1등으로 올리고, 모델은 당연히 '같은 사안' 이라 답한다 — 자기 자신과
+    이어진 흐름이 화면에 실린다(9/17 첫 화면에서 실제로 그랬다).
     """
+    past = [a for a in past if not _same_story(a["title"], article["title"])]
     if not past:
         return []
 
