@@ -295,19 +295,31 @@ def save(articles: list[dict]) -> tuple[dict[str, int], int]:
     return added, skipped
 
 
+def parse_args(argv: list[str]) -> tuple[str, str, str, bool] | None:
+    """(시작달, 끝달, 사이트, 전부받기). 꼴이 안 맞으면 None.
+
+    `--all` 은 달마다 PER_MONTH 건 제한을 건너뛴다 — 날짜당 기사가 적은 날을 채울 때 쓴다.
+    """
+    take_all = "--all" in argv
+    rest = [a for a in argv if a != "--all"]
+    if len(rest) not in (2, 3):
+        return None
+    return rest[0], rest[1], (rest[2] if len(rest) == 3 else ""), take_all
+
+
 def main(argv: list[str]) -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-    if len(argv) not in (2, 3):
-        print("사용법: python archive.py <시작달> <끝달> [사이트]"
+    parsed = parse_args(argv)
+    if parsed is None:
+        print("사용법: python archive.py <시작달> <끝달> [사이트] [--all]"
               "   예: python archive.py 2025-11 2026-04 더일렉", file=sys.stderr)
         return 1
 
-    start, end = argv[0], argv[1]
-    only = argv[2] if len(argv) == 3 else ""
-    print(f"{start} ~ {end} 과거 기사 수집 (달마다 최대 {PER_MONTH}건)"
-          + (f" · {only} 만" if only else ""))
+    start, end, only, take_all = parsed
+    limit = "제한 없음(--all)" if take_all else f"달마다 최대 {PER_MONTH}건"
+    print(f"{start} ~ {end} 과거 기사 수집 ({limit})" + (f" · {only} 만" if only else ""))
 
     raw, status = collect(start, end, only)
     print(f"\n받은 기사 {len(raw)}건")
@@ -315,7 +327,7 @@ def main(argv: list[str]) -> int:
     kept, dropped = filter_articles(raw)
     print(f"  반도체 관련 {len(kept)}건 · 버림 {len(dropped)}건")
 
-    picked = pick_monthly(kept)
+    picked = kept if take_all else pick_monthly(kept)
     added, skipped = save(picked)
 
     print(f"\n달별 확보 건수 (요청 {PER_MONTH}건)")

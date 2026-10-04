@@ -42,7 +42,17 @@
 | 이름 | 주소 | 등급 | 확인일 | 비고 |
 | --- | --- | --- | --- | --- |
 | 더일렉 반도체 (목록) | `https://www.thelec.kr/news/articleList.html?page=N&sc_section_code=S1N2&view_type=sm` | `[2차]` | 2026-08-23 | `view_type=sm` 이어야 요약이 함께 온다. 쪽당 약 20건 |
-| Semiconductor Digest 패키징 (목록) | `https://www.semiconductor-digest.com/category/packaging/page/N/` | `[2차]` | 2026-08-23 | 워드프레스 표준 페이지네이션. 날짜가 `May 1, 2025` 형식 |
+| ~~Semiconductor Digest 패키징 (목록)~~ | `https://www.semiconductor-digest.com/category/packaging/page/N/` | `[2차]` | **2026-10-05 — 못 씀** | 아래 참조 |
+
+> **Semiconductor Digest 목록은 2026-10-05 기준 쓸 수 없다.** 사이트가 날짜를
+> `May 1, 2025` 에서 **`1 week ago` 같은 상대 표기로 바꿨다**(`<div class="time">`).
+> 블록 안에 `datetime=`·`datePublished` 같은 기계용 날짜가 **하나도 없다**(직접 확인).
+> "2주 전" 을 날짜로 환산하면 **지어낸 값**이 되므로 하지 않는다 (`CLAUDE.md`).
+> 정확한 날짜를 알려면 기사 원문 페이지를 열어야 하는데, `archive.py` 는
+> **"기사별 원문 페이지는 열지 않는다"** 를 설계 전제로 삼고 있다(모듈 독스트링).
+> 바꾸려면 그 전제부터 다시 정해야 한다.
+> **RSS 쪽은 멀쩡하다** — 최근분은 '쓰는 곳' 표의 피드로 계속 들어온다(한 번에 100건).
+> 못 받는 것은 **과거분뿐**이다.
 
 | 안 쓰는 곳 | 왜 |
 | --- | --- |

@@ -6,7 +6,7 @@ HTML 조각은 2026-08-23 에 실제 목록 페이지에서 그대로 떼어 온
 
 import unittest
 
-from archive import parse_digest_list, parse_thelec_list, pick_monthly
+from archive import parse_args, parse_digest_list, parse_thelec_list, pick_monthly
 
 THELEC_HTML = """
 <ul class="altlist-webzine">
@@ -170,3 +170,30 @@ class TestPickMonthly(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestAllFlag(unittest.TestCase):
+    """`--all` 은 달마다 5건 제한을 건너뛴다.
+
+    원래 목적은 '이어지는 흐름 재료 확보' 라 달마다 5건이면 됐다. 지금은 날짜당 기사가
+    적은 날(164일 중 88일이 1건)을 채우는 데 쓰므로 목록이 주는 것을 다 받아야 한다.
+    """
+
+    def _articles(self, n, month="2026-09"):
+        return [{"url": f"u{i}", "title": f"t{i}", "summary": "s",
+                 "published": f"{month}-{(i % 28) + 1:02d}T00:00:00"} for i in range(n)]
+
+    def test_parse_args_reads_all_flag(self):
+        self.assertEqual(parse_args(["2026-09", "2026-09", "--all"]),
+                         ("2026-09", "2026-09", "", True))
+
+    def test_parse_args_without_flag_keeps_cap(self):
+        self.assertEqual(parse_args(["2026-09", "2026-09"]),
+                         ("2026-09", "2026-09", "", False))
+
+    def test_parse_args_keeps_site_filter_with_flag(self):
+        self.assertEqual(parse_args(["2026-09", "2026-09", "더일렉", "--all"]),
+                         ("2026-09", "2026-09", "더일렉", True))
+
+    def test_parse_args_rejects_wrong_count(self):
+        self.assertIsNone(parse_args(["2026-09"]))
